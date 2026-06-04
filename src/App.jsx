@@ -6,6 +6,9 @@ import CalendarView from './components/CalendarView.jsx';
 import Checklist from './components/Checklist.jsx';
 import Scholarships from './components/Scholarships.jsx';
 import Colleges from './components/Colleges.jsx';
+import PortfolioTracker from './components/PortfolioTracker.jsx';
+import Gallery from './components/Gallery.jsx';
+import Decisions from './components/Decisions.jsx';
 import Savings from './components/Savings.jsx';
 import Motivation from './components/Motivation.jsx';
 import { useProgress } from './lib/util.js';
@@ -16,8 +19,11 @@ const TABS = [
   { id: 'timeline',  label: 'Roadmap',      emoji: '🛣️' },
   { id: 'calendar',  label: 'Calendar',     emoji: '📅' },
   { id: 'checklist', label: 'Checklist',    emoji: '✅' },
+  { id: 'portfolio', label: 'Portfolio',    emoji: '🎨' },
+  { id: 'gallery',   label: 'Gallery',      emoji: '🖼️' },
   { id: 'scholar',   label: 'Scholarships', emoji: '🏆' },
   { id: 'colleges',  label: 'Colleges',     emoji: '🎓' },
+  { id: 'decisions', label: 'Decisions',    emoji: '📬' },
   { id: 'savings',   label: 'Savings',      emoji: '🐖' },
 ];
 
@@ -62,8 +68,11 @@ export default function App() {
         {tab === 'timeline'  && <Timeline {...progress} />}
         {tab === 'calendar'  && <CalendarView {...progress} />}
         {tab === 'checklist' && <Checklist {...progress} />}
+        {tab === 'portfolio' && <PortfolioTracker />}
+        {tab === 'gallery'   && <Gallery />}
         {tab === 'scholar'   && <Scholarships {...progress} />}
         {tab === 'colleges'  && <Colleges />}
+        {tab === 'decisions' && <Decisions />}
         {tab === 'savings'   && <Savings />}
       </main>
 

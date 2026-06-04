@@ -222,3 +222,64 @@ h3 { margin: 18px 0 8px; }
   .cal-ev::before { content: '●'; font-size: 10px; }
   h2 { font-size: 1.35rem; }
 }
+
+/* ---------- Buttons: variants ---------- */
+.btn.primary { background: linear-gradient(135deg, var(--violet), var(--pink)); }
+.btn.small { padding: 7px 11px; font-size: .8rem; }
+.btn.danger { background: #fff; color: var(--red); border: 1px solid #fecaca; }
+.btn.ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+.chip.on { background: var(--violet); color: #fff; border-color: var(--violet); }
+.tag.purple { background: #ede9fe; color: #5b21b6; }
+
+/* ---------- Colleges: cost box ---------- */
+.cost-box { background: #f9fafb; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 10px 0; }
+.cost-box .kv { font-size: .85rem; }
+.cost-box .net { color: var(--green); }
+.costnote { font-size: .8rem; color: var(--muted); margin: 8px 0; line-height: 1.4; }
+
+/* ---------- Portfolio tracker ---------- */
+.pf-tips { background: #fdf4ff; border: 1px solid #f5d0fe; border-radius: 12px; padding: 12px 16px; margin: 12px 0; font-size: .88rem; }
+.pf-tips ul { margin: 8px 0 0; padding-left: 18px; }
+.pf-tips li { margin: 4px 0; }
+.add-piece { margin: 10px 0; }
+.editor { display: flex; flex-direction: column; gap: 10px; }
+.form-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.editor label { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; font-weight: 600; color: var(--muted); flex: 1; min-width: 140px; }
+.editor label.full { width: 100%; }
+.editor input, .editor select, .editor textarea {
+  padding: 9px 11px; border: 1px solid var(--line); border-radius: 9px; font-size: .92rem; font-weight: 400; color: var(--ink);
+}
+.editor input:focus, .editor select:focus, .editor textarea:focus { outline: none; border-color: var(--violet); }
+.tag-picker { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.picker-label { font-size: .78rem; font-weight: 700; color: var(--muted); margin-right: 4px; }
+.editor-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.micro { font-size: .68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; margin-right: 2px; align-self: center; }
+.piece-img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 8px; }
+
+/* ---------- Gallery / SlideRoom ---------- */
+.gallery-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; margin-top: 16px; }
+.art-frame { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); cursor: pointer; transition: transform .12s; }
+.art-frame:hover { transform: translateY(-3px); }
+.art-frame img { width: 100%; height: 170px; object-fit: cover; display: block; }
+.art-frame.noimg img { display: none; }
+.art-placeholder { height: 170px; display: grid; place-items: center; font-size: 2.4rem; background: #f3f0fb; }
+.art-frame figcaption { padding: 9px 11px; font-size: .85rem; }
+.lightbox { position: relative; background: #fff; border-radius: 16px; max-width: 640px; width: 100%; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.4); }
+.lightbox img { width: 100%; max-height: 70vh; object-fit: contain; background: #111; display: block; }
+.lightbox-meta { padding: 14px 18px; }
+.lightbox-meta p { margin: 8px 0 0; font-size: .9rem; color: var(--muted); }
+.modal-backdrop { position: fixed; inset: 0; background: rgba(31,41,55,.6); display: grid; place-items: center; padding: 18px; z-index: 30; }
+.modal-x { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,.5); color: #fff; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; z-index: 2; font-size: 1rem; }
+
+/* ---------- Decisions ---------- */
+.decision-day { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; background: linear-gradient(135deg, #7c3aed, #ec4899); color: #fff; border-radius: var(--radius); padding: 16px 18px; margin: 12px 0 18px; box-shadow: var(--shadow); }
+.decision-day.soon { animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { box-shadow: 0 6px 24px rgba(124,58,237,.2); } 50% { box-shadow: 0 6px 34px rgba(236,72,153,.5); } }
+.dd-emoji { font-size: 1.9rem; }
+.decision-day .muted { color: rgba(255,255,255,.85); }
+.decision-day .celebrate { margin-left: auto; background: rgba(255,255,255,.2); padding: 6px 12px; border-radius: 999px; font-weight: 700; }
+.card.decision.pick, .card.college.pick, .card.piece.pick { border: 2px solid var(--violet); }
+.stage-picker { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.card.decision label { display: flex; flex-direction: column; gap: 3px; font-size: .76rem; font-weight: 700; color: var(--muted); margin-top: 6px; }
+.card.decision input, .card.decision textarea { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: .88rem; font-weight: 400; color: var(--ink); }
+.card.decision input:focus, .card.decision textarea:focus { outline: none; border-color: var(--violet); }

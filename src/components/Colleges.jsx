@@ -27,9 +27,19 @@ export default function Colleges() {
               <div className="kv"><span>Acceptance</span><strong>{c.accept}</strong></div>
               <div className="kv"><span>App due</span><strong className={d < 30 && d >= 0 ? 'warn' : ''}>{fmt(c.appDeadline)} {d >= 0 ? `(${d}d)` : '(passed)'}</strong></div>
               <div className="kv"><span>Aid due</span><strong>{fmt(c.aidDeadline)}</strong></div>
+              {c.visitDate && <div className="kv"><span>Visit (tentative)</span><strong>{fmt(c.visitDate)}</strong></div>}
+
+              <div className="cost-box">
+                {c.totalPrice && <div className="kv"><span>Total price</span><strong>{c.totalPrice}</strong></div>}
+                {c.avgAid && <div className="kv"><span>Avg aid</span><strong>{c.avgAid}</strong></div>}
+                {c.netPrice && <div className="kv"><span>Avg net price</span><strong className="net">{c.netPrice}</strong></div>}
+                {c.costNote && <p className="costnote">{c.costNote}</p>}
+                {c.npcLink && <a className="btn small" href={c.npcLink} target="_blank" rel="noreferrer">Net Price Calculator ↗</a>}
+              </div>
+
               <p className="deliverable"><strong>What they value:</strong> {c.values}</p>
               <p className="deliverable money"><strong>💸 Affordability:</strong> {c.affordability}</p>
-              <div className="tags">{c.verify && <span className="tag amber">Verify dates</span>}</div>
+              <div className="tags">{c.verify && <span className="tag amber">Verify costs &amp; dates</span>}</div>
               <a className="btn" href={c.link} target="_blank" rel="noreferrer">Admissions ↗</a>
             </div>
           );

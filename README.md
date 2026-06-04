@@ -18,8 +18,11 @@ sent via **Resend** on a daily **Vercel Cron** schedule.
 | 🛣️ Roadmap | Full chronological timeline; check things off live |
 | 📅 Calendar | Month grid; tap any event for details + links |
 | ✅ Checklist | Filter by category, hide-done, big progress bar |
+| 🎨 Portfolio | Piece-by-piece tracker: idea → in-progress → revise → final, tagged by school + scholarship, with notes and target dates |
+| 🖼️ Gallery | A SlideRoom-style wall to review finished pieces (with image links) before uploading |
 | 🏆 Scholarships | When to start, the deliverable, the deadline, the link |
-| 🎓 Colleges | Where/when to apply, what each school values, affordability + **Family Rules** |
+| 🎓 Colleges | Where/when to apply, what each values, **total price + avg aid + avg net price + Net Price Calculator link**, affordability + **Family Rules** |
+| 📬 Decisions | Per-school status (planning → applied → accepted/waitlist/denied → committed), award + net price log, and a **May 1 Decision Day** countdown |
 | 🐖 Savings | Log deposits/scholarship wins toward the $8k–$12k goal |
 
 **One source of truth:** every date, school, scholarship, and rule lives in
@@ -107,6 +110,9 @@ before trusting the reminder:
 - NH Charitable Foundation open/close
 - FAFSA 2027–28 open date
 - MassArt / MECA&D / RISD / CalArts application + aid deadlines
+- **Campus visit dates** — the four visit milestones use placeholder dates; book official tours and replace them
+- **National Portfolio Day** — Boston is confirmed **Nov 1, 2026** (Hynes Center); the full 2026–27 schedule is still being posted at nationalportfolioday.org, so check for other nearby dates
+- **School costs & aid** — total price, average aid, and average net price are recent published *estimates*. Always run each school's **Net Price Calculator** for your real number. For MassArt, the NH **New England Regional** tuition rate is the key advantage — the calculator will show it.
 
 ---
 

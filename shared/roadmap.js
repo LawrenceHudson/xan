@@ -22,6 +22,8 @@ export const CATEGORIES = {
   financial:   { label: 'Financial Aid',  color: '#10b981', emoji: '💸' },
   recommend:   { label: 'Rec Letters',    color: '#0ea5e9', emoji: '✉️' },
   savings:     { label: 'Savings',        color: '#22c55e', emoji: '🐖' },
+  visit:       { label: 'Campus Visit',   color: '#14b8a6', emoji: '🏫' },
+  decision:    { label: 'Decision Day',   color: '#ef4444', emoji: '📬' },
 };
 
 // ---------------------------------------------------------------------------
@@ -39,6 +41,12 @@ export const COLLEGES = [
     appDeadline: '2026-12-01',
     aidDeadline: '2027-02-01',
     affordability: 'Best financial fit. NE resident rate + automatic merit review. What you pay can vary with portfolio score, so strengthening the portfolio directly lowers cost.',
+    npcLink: 'https://npc.collegeboard.org/app/massart',
+    totalPrice: '~$66,920/yr (out-of-state sticker)',
+    costNote: 'Violet is an NH resident → eligible for the New England Regional Tuition rate, which cuts tuition well below the out-of-state sticker. This is the family’s single biggest cost advantage — confirm the exact NE-regional figure in the Net Price Calculator.',
+    avgAid: 'Avg need grant ~$10,433/yr · avg merit ~$3,933/yr',
+    netPrice: '~$24,159/yr (overall avg net price)',
+    visitDate: '2026-09-26',
     verify: true,
   },
   {
@@ -52,6 +60,12 @@ export const COLLEGES = [
     appDeadline: '2026-12-01',
     aidDeadline: '2027-02-15',
     affordability: 'Workable with strong merit aid; may need some borrowing or better-than-benchmark aid. Stack Scholastic wins for added scholarship value.',
+    npcLink: 'https://www.meca.edu/admissions/tuition-financial-aid/net-price-calculator/',
+    totalPrice: '~$67,215/yr (COA; tuition+fees ~$44,760)',
+    costNote: '100% of students receive aid. First-year merit scholarships commonly land ~$15k–$23k; Scholastic Art Award wins add extra value here.',
+    avgAid: 'Avg aid package ~$20,277–$21,026/yr',
+    netPrice: '~$35,395–$39,639/yr (avg net price)',
+    visitDate: '2026-10-17',
     verify: true,
   },
   {
@@ -65,6 +79,12 @@ export const COLLEGES = [
     appDeadline: '2027-01-15',
     aidDeadline: '2027-02-01',
     affordability: 'Aspirational reach. Expensive even with decent aid. Do NOT build the financial plan around RISD — only pursue if the real net price lands within the family guardrails.',
+    npcLink: 'https://risd.clearcostcalculator.com/student',
+    totalPrice: '~$93,776/yr (2026–27 COA; tuition ~$66,460)',
+    costNote: 'Institutional funding is primarily NEED-based — requires the CSS Profile in addition to FAFSA. Aid materials due ~Feb 15. Run the NPC before committing time.',
+    avgAid: 'Avg aid package ~$41,993/yr',
+    netPrice: '~$42,106/yr (avg net price)',
+    visitDate: '2026-11-07',
     verify: true,
   },
   {
@@ -78,6 +98,12 @@ export const COLLEGES = [
     appDeadline: '2027-01-05',
     aidDeadline: '2027-02-01',
     affordability: 'Riskiest financially under the current plan. Treat as a creative reach, not a financial base case.',
+    npcLink: 'https://calarts.edu/admissions-aid/tuition/net-price-calculator',
+    totalPrice: '~$81,346/yr (COA; tuition ~$58,996–$61,359)',
+    costNote: 'Cross-country travel adds real cost on top of the sticker. Merit starts at ~$10k/yr but is limited and competitive. Highest net price of the four.',
+    avgAid: 'Avg aid package ~$28,420/yr',
+    netPrice: '~$47,183–$55,225/yr (avg net price)',
+    visitDate: '2026-10-10',
     verify: true,
   },
 ];
@@ -166,6 +192,8 @@ export const SCHOLARSHIPS = [
 // ---------------------------------------------------------------------------
 export const EVENTS = [
   // ---- Summer 2026: foundation ----
+  { id: 'm-meca-precollege-start', date: '2026-07-10', category: 'portfolio', title: 'MECA&D Pre-College 3-week build begins', detail: 'Violet is enrolled! 3-week intensive (Jul 10–31). Treat every piece you make here as potential portfolio + scholarship material — photograph and log each one in the Portfolio tab.', link: 'https://www.meca.edu/pre-college/', remind: [14, 7, 1] },
+  { id: 'm-meca-precollege-end', date: '2026-07-31', category: 'portfolio', title: 'MECA&D Pre-College ends — log every piece', detail: 'Wrap-up: pick your 3–4 strongest pieces from the program for YoungArts + early apps. Add them to the Gallery and tag school/scholarship fit.', link: 'https://www.meca.edu/pre-college/', remind: [3, 1] },
   { id: 'm-portfolio-summer', date: '2026-08-15', category: 'portfolio', title: 'Finalize 3–4 strong portfolio pieces', detail: 'Lock in your best work for YoungArts + early apps. Quality over quantity.', link: '', remind: [14, 7, 1] },
   { id: 'm-savings-goal', date: '2026-07-01', category: 'savings', title: 'Set savings goal & start tracking', detail: 'Target $8k–$12k by Fall 2027 (~$533–$800/mo). Log monthly progress in the Savings tab.', link: '', remind: [7] },
   { id: 'm-youngarts-prep', date: '2026-08-01', category: 'scholarship', title: 'Prep YoungArts submission', detail: 'YoungArts opens ~Summer 2026. Get your portfolio pieces submission-ready.', link: 'https://youngarts.org/apply/', remind: [14, 7] },
@@ -174,6 +202,15 @@ export const EVENTS = [
   { id: 'm-elks-open', date: '2026-08-01', category: 'scholarship', title: 'Elks MVS opens — start application', detail: 'Portable to any 4-yr U.S. college. Needs a recommendation letter.', link: 'https://www.elks.org/scholars/scholarships/mvs.cfm', remind: [7, 1] },
   { id: 'm-cocacola-open', date: '2026-08-03', category: 'scholarship', title: 'Coca-Cola Scholars opens — apply', detail: '$20,000, school-agnostic, highly portable.', link: 'https://www.coca-colascholarsfoundation.org/apply/', remind: [7, 1] },
   { id: 'm-rec-requests', date: '2026-09-15', category: 'recommend', title: 'Ask teachers for recommendation letters', detail: 'Give recommenders 4+ weeks. Needed for Elks, NHCF, and several college apps.', link: '', remind: [14, 7] },
+
+  // ---- Required campus visits (one per school) — confirm/booking dates ----
+  { id: 'm-visit-massart', date: '2026-09-26', category: 'visit', title: 'Visit MassArt (Boston) — required tour', detail: 'See the campus before applying. Best-fit/affordability pick — picture yourself here. Book an official tour + portfolio chat. Confirm a date that works for the family.', link: 'https://massart.edu/admissions/visit', remind: [14, 7, 1] },
+  { id: 'm-visit-calarts', date: '2026-10-10', category: 'visit', title: 'Visit CalArts (Valencia, CA) — tour', detail: 'Cross-country — plan travel early or do an official virtual tour if an in-person trip isn’t feasible. Creative reach.', link: 'https://admissions.calarts.edu/portal/visit', remind: [30, 14, 7] },
+  { id: 'm-visit-meca', date: '2026-10-17', category: 'visit', title: 'Visit MECA&D (Portland, ME) — tour', detail: 'Easy New England drive — Violet already knows the building from Pre-College. Do an official admissions tour so it counts as demonstrated interest.', link: 'https://www.meca.edu/admissions/visit/', remind: [14, 7, 1] },
+  { id: 'm-visit-risd', date: '2026-11-07', category: 'visit', title: 'Visit RISD (Providence, RI) — tour', detail: 'Aspirational reach. Pair with a Providence trip. Book the official tour. Confirm a date.', link: 'https://www.risd.edu/admissions/visit', remind: [14, 7, 1] },
+
+  // ---- National Portfolio Day (free portfolio reviews from all 4 schools in one room) ----
+  { id: 'm-npd-boston', date: '2026-11-01', category: 'portfolio', title: 'National Portfolio Day — Boston (Hynes Center)', detail: 'FREE portfolio reviews with admissions reps & faculty from art schools nationwide — MassArt, MECA&D, RISD, CalArts typically all attend. Bring your best 10–15 pieces. Closest NPD to NH. Register when the 2026–27 season opens; full schedule is still being posted.', link: 'https://nationalportfolioday.org/schedule/', remind: [30, 14, 7, 1] },
 
   // ---- Oct–Dec 2026: FAFSA, Scholastic, college apps ----
   { id: 'm-fafsa-open', date: '2026-10-01', category: 'financial', title: 'FAFSA 2027–28 opens — file early', detail: 'File as early as possible. Earlier filing = more available aid.', link: 'https://studentaid.gov/h/apply-for-aid/fafsa', remind: [7, 1] },
@@ -190,6 +227,9 @@ export const EVENTS = [
   { id: 'm-risd-app', date: '2027-01-15', category: 'application', title: 'RISD application due', detail: 'Portfolio + visual responses + GPA. Aspirational reach.', link: 'https://www.risd.edu/admissions', remind: [30, 14, 7, 1] },
   { id: 'm-nhcf-due', date: '2027-04-09', category: 'scholarship', title: 'NH Charitable Foundation deadline', detail: 'One app opens many NH funds. Needs rec letter.', link: 'https://www.nhcf.org/what-we-offer/support-for-students/apply-for-a-scholarship/', remind: [30, 14, 7, 1] },
   { id: 'm-compare-offers', date: '2027-04-15', category: 'financial', title: 'Compare aid offers & appeal', detail: 'Line up net prices vs. the family guardrails. Appeal where there’s room.', link: '', remind: [14, 7] },
+
+  // ---- THE BIG DAY ----
+  { id: 'm-decision-day', date: '2027-05-01', category: 'decision', title: '🎉 Decision Day — commit & pay enrollment deposit', detail: 'National College Decision Day. Pick the school, submit the enrollment deposit, and decline the others. Make the final choice against the family guardrails. This is the finish line of the whole roadmap — you earned it.', link: '', remind: [30, 14, 7, 1] },
 ];
 
 // ---------------------------------------------------------------------------
@@ -218,3 +258,23 @@ export const QUOTES = [
   'Reach schools are reachable. That’s why they’re called reach.',
   'One portfolio piece. One application. One deadline. Repeat. You win.',
 ];
+
+// ---------------------------------------------------------------------------
+// PORTFOLIO — guidance for the piece-by-piece tracker + gallery.
+// ---------------------------------------------------------------------------
+export const PORTFOLIO = {
+  // Most art schools want a focused, strong body of work. Aim for the high end
+  // so you can curate down per school. Confirm each school's exact requirement.
+  targetPieces: 15,
+  pieceStatuses: ['idea', 'in-progress', 'revise', 'final'],
+  slideroom: {
+    link: 'https://www.slideroom.com/',
+    note: 'SlideRoom is the platform most art schools use to receive your portfolio. Many colleges link their SlideRoom submission from the application portal. Use the Gallery tab here to review your finished pieces before you upload them.',
+  },
+  tips: [
+    'Show range: observational drawing, color work, and at least one personal/conceptual project.',
+    'Schools want to see your thinking — include 1–2 process or sketchbook pieces, not just polished finals.',
+    'Photograph work in even, natural light against a clean background. Bad photos sink good art.',
+    'Curate per school: lead with your strongest 3 pieces. You don’t have to submit the same set everywhere.',
+  ],
+};
