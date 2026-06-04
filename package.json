@@ -1,0 +1,21 @@
+{
+  "name": "violet-art-roadmap",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Interactive art-school roadmap, calendar, checklist, and scholarship tracker for Violet (Fall 2027 enrollment).",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "reminders:test": "node api/send-reminders.js"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.2"
+  }
+}
