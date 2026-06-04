@@ -61,3 +61,82 @@ export function useProgress() {
   }, [setDone]);
   return { done, toggle };
 }
+
+// ---- Custom items (user-added milestones shown on Calendar + Checklist) -----
+// Shape matches EVENTS so the existing screens render them with no changes:
+//   { id, date, category, title, detail, link, remind, custom:true }
+export function useCustomItems() {
+  const [items, setItems] = useStored('viol_custom', []);
+  const add = useCallback((it) => {
+    setItems((list) => [
+      { id: `custom-${Date.now()}`, category: 'custom', remind: [7, 1], custom: true, ...it },
+      ...list,
+    ]);
+  }, [setItems]);
+  const remove = useCallback((id) => {
+    setItems((list) => list.filter((x) => x.id !== id));
+  }, [setItems]);
+  return { items, add, remove };
+}
+
+// ---- Volunteer records ------------------------------------------------------
+//   { id, org, role, date, hours, ongoing, description, link }
+export function useVolunteer() {
+  const [items, setItems] = useStored('viol_volunteer', []);
+  const add = useCallback((v) => {
+    setItems((list) => [{ id: `vol-${Date.now()}`, ...v }, ...list]);
+  }, [setItems]);
+  const update = useCallback((id, patch) => {
+    setItems((list) => list.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+  }, [setItems]);
+  const remove = useCallback((id) => {
+    setItems((list) => list.filter((x) => x.id !== id));
+  }, [setItems]);
+  return { items, add, update, remove };
+}
+
+// Map a volunteer record to the event shape used by Checklist + Calendar.
+export function volunteerToEvent(v) {
+  const bits = [];
+  if (v.hours) bits.push(`${v.hours} hr${Number(v.hours) === 1 ? '' : 's'}`);
+  if (v.ongoing) bits.push('ongoing');
+  if (v.description) bits.push(v.description);
+  return {
+    id: v.id,
+    date: v.date || '',
+    category: 'volunteer',
+    title: v.role ? `${v.role} — ${v.org}` : (v.org || 'Volunteer work'),
+    detail: bits.join(' · '),
+    link: v.link || '',
+    volunteer: true,
+  };
+}
+
+// ---- Light / dark theme -----------------------------------------------------
+export function useTheme() {
+  const [theme, setTheme] = useStored('viol_theme', 'light');
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+  const toggle = useCallback(() => {
+    setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+  }, [setTheme]);
+  return { theme, toggle };
+}
+
+// ---- Browser download helpers ----------------------------------------------
+export function downloadText(filename, text) {
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  triggerDownload(filename, url);
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+export function triggerDownload(filename, href) {
+  const a = document.createElement('a');
+  a.href = href;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}

@@ -1,17 +1,22 @@
 import { useState } from 'react';
 import { EVENTS, CATEGORIES } from '../../shared/roadmap.js';
-import { fmt, statusOf, daysUntil } from '../lib/util.js';
+import { fmt, statusOf, daysUntil, useCustomItems, useVolunteer, volunteerToEvent } from '../lib/util.js';
 
 export default function Checklist({ done, toggle }) {
   const [filter, setFilter] = useState('all');
   const [hideDone, setHideDone] = useState(false);
+  const { items: custom } = useCustomItems();
+  const { items: volunteer } = useVolunteer();
 
-  let rows = [...EVENTS].sort((a, b) => daysUntil(a.date) - daysUntil(b.date));
+  const all = [...EVENTS, ...custom, ...volunteer.map(volunteerToEvent)];
+  const sortKey = (e) => (e.date ? daysUntil(e.date) : 99999);
+
+  let rows = [...all].sort((a, b) => sortKey(a) - sortKey(b));
   if (filter !== 'all') rows = rows.filter((e) => e.category === filter);
   if (hideDone) rows = rows.filter((e) => !done[e.id]);
 
-  const completed = EVENTS.filter((e) => done[e.id]).length;
-  const pct = Math.round((completed / EVENTS.length) * 100);
+  const completed = all.filter((e) => done[e.id]).length;
+  const pct = all.length ? Math.round((completed / all.length) * 100) : 0;
 
   return (
     <div className="screen">
@@ -38,8 +43,8 @@ export default function Checklist({ done, toggle }) {
 
       <ul className="evlist">
         {rows.map((e) => {
-          const st = statusOf(e.date, done[e.id]);
-          const c = CATEGORIES[e.category];
+          const st = e.date ? statusOf(e.date, done[e.id]) : (done[e.id] ? 'done' : 'soon');
+          const c = CATEGORIES[e.category] || { label: 'Item', emoji: '•', color: '#6b7280' };
           return (
             <li key={e.id} className={`evrow ${st}`}>
               <label className="cbx big-check">
@@ -49,7 +54,7 @@ export default function Checklist({ done, toggle }) {
                 <span className="pill" style={{ background: c.color }}>{c.emoji} {c.label}</span>
                 <strong className={done[e.id] ? 'struck' : ''}>{e.title}</strong>
                 <span className="muted small">
-                  {fmt(e.date)}
+                  {e.date ? fmt(e.date) : 'No date'}
                   {!done[e.id] && st === 'overdue' && ' · ⚠️ overdue'}
                   {!done[e.id] && st === 'urgent' && ' · ⏰ this week'}
                 </span>

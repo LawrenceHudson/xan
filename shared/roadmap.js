@@ -24,6 +24,8 @@ export const CATEGORIES = {
   savings:     { label: 'Savings',        color: '#22c55e', emoji: '🐖' },
   visit:       { label: 'Campus Visit',   color: '#14b8a6', emoji: '🏫' },
   decision:    { label: 'Decision Day',   color: '#ef4444', emoji: '📬' },
+  volunteer:   { label: 'Volunteer',      color: '#0891b2', emoji: '🤝' },
+  custom:      { label: 'Custom',         color: '#8b5cf6', emoji: '📌' },
 };
 
 // ---------------------------------------------------------------------------
@@ -276,5 +278,83 @@ export const PORTFOLIO = {
     'Schools want to see your thinking — include 1–2 process or sketchbook pieces, not just polished finals.',
     'Photograph work in even, natural light against a clean background. Bad photos sink good art.',
     'Curate per school: lead with your strongest 3 pieces. You don’t have to submit the same set everywhere.',
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// ACHIEVEMENTS — categories for the big-wins tracker.
+// ---------------------------------------------------------------------------
+export const ACHIEVEMENT_CATEGORIES = {
+  award:       { label: 'Award / Honor',        emoji: '🏆', color: '#f59e0b' },
+  exhibition:  { label: 'Exhibition / Show',    emoji: '🖼️', color: '#7c3aed' },
+  sale:        { label: 'Sale / Commission',    emoji: '💰', color: '#22c55e' },
+  publication: { label: 'Publication',          emoji: '📚', color: '#0ea5e9' },
+  academic:    { label: 'Academic',             emoji: '🎓', color: '#6366f1' },
+  project:     { label: 'Creative Project',     emoji: '🎨', color: '#ec4899' },
+  leadership:  { label: 'Leadership',           emoji: '👥', color: '#14b8a6' },
+  press:       { label: 'Press / Recognition',  emoji: '📣', color: '#ef4444' },
+};
+
+// A couple of seeds so the page isn't empty the first time — Violet can edit
+// or delete these. (These are real wins Loren mentioned.)
+export const ACHIEVEMENT_SEEDS = [
+  { category: 'award',     title: 'Won the Art 2026 award',            venue: '',               date: '2026-01-01', description: 'Recognized for outstanding studio work.', link: '' },
+  { category: 'sale',      title: 'Sold a piece at the AVA Gallery',   venue: 'AVA Gallery',    date: '',           description: 'First gallery sale.',                    link: '' },
+  { category: 'publication', title: 'Illustrated a book',              venue: '',               date: '',           description: 'Provided illustrations for a published book.', link: '' },
+];
+
+// ---------------------------------------------------------------------------
+// RESUME — friendly guidance + the two résumé "slots" the upload tab manages.
+// ---------------------------------------------------------------------------
+export const RESUME_GUIDE = {
+  slots: [
+    {
+      id: 'art',
+      label: 'Art Résumé',
+      emoji: '🎨',
+      blurb: 'A one-page snapshot of you AS AN ARTIST. Art schools and gallery/portfolio reviewers read this.',
+      include: [
+        'Exhibitions & shows (where, what, when) — group shows count.',
+        'Awards & honors (Scholastic, YoungArts, school prizes, the Art 2026 award).',
+        'Sales & commissions (e.g., the AVA Gallery piece) and any published/illustrated work.',
+        'Training: pre-college programs (MECA&D summer), workshops, notable classes.',
+        'Skills & media: drawing, painting, digital, printmaking, software (Procreate, Photoshop).',
+      ],
+    },
+    {
+      id: 'career',
+      label: 'Young-Career Résumé',
+      emoji: '💼',
+      blurb: 'A traditional one-page résumé for jobs, scholarships, and general applications.',
+      include: [
+        'Contact line: name, town, email, phone (keep it simple and professional).',
+        'Education: high school, expected graduation, GPA if it helps you.',
+        'Experience: jobs, internships, babysitting/tutoring — anything with responsibility.',
+        'Volunteer & activities: pull straight from the Volunteer tab.',
+        'Awards, skills, and interests to round it out.',
+      ],
+    },
+  ],
+  tips: [
+    'Keep it to ONE page. Reviewers skim — make the top third count.',
+    'Lead with strong verbs: “Exhibited,” “Illustrated,” “Organized,” “Sold,” “Led.”',
+    'Be specific with numbers: “Sold 3 pieces,” “Volunteered 40+ hours,” “Group show of 12 artists.”',
+    'Save and submit as a PDF so the formatting never breaks.',
+    'Update it whenever you add a win to the Achievements tab — then re-upload here.',
+  ],
+  // Browser size guard for the upload (DataURL in localStorage).
+  maxBytes: 1.5 * 1024 * 1024,
+};
+
+// ---------------------------------------------------------------------------
+// VOLUNTEER — light guidance for the service-hours tracker.
+// ---------------------------------------------------------------------------
+export const VOLUNTEER_GUIDE = {
+  intro: 'Colleges like to see genuine, sustained service — depth beats a long random list. Aim for a couple of things you actually care about and stick with them.',
+  tips: [
+    'Quality over quantity: 1–2 ongoing commitments look stronger than ten one-offs.',
+    'Art-adjacent service is gold — teaching a kids’ art class, painting a mural, helping at a gallery.',
+    'Log hours as you go; it’s nearly impossible to reconstruct later.',
+    'Anything you log here can flow onto your Young-Career résumé.',
   ],
 };

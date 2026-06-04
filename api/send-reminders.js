@@ -13,6 +13,7 @@
 // ============================================================================
 
 import { EVENTS, CATEGORIES, STUDENT } from '../shared/roadmap.js';
+import { APP_VERSION } from '../shared/version.js';
 
 function todayLocal() {
   const n = new Date();
@@ -75,7 +76,7 @@ function buildHtml(items) {
   </div>`;
 }
 
-async function sendEmail(items) {
+async function postResend({ subject, html }) {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.REMINDER_FROM || "Violet's Roadmap <onboarding@resend.dev>";
   const to = (process.env.REMINDER_TO || '').split(',').map((s) => s.trim()).filter(Boolean);
@@ -83,25 +84,56 @@ async function sendEmail(items) {
   if (!key) return { sent: false, reason: 'RESEND_API_KEY not set' };
   if (to.length === 0) return { sent: false, reason: 'REMINDER_TO is empty' };
 
-  const subject = items.length === 1
-    ? `🎨 Reminder: ${items[0].title}`
-    : `🎨 ${items.length} roadmap reminders coming up`;
-
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from, to, subject, html: buildHtml(items) }),
+    body: JSON.stringify({ from, to, subject, html }),
   });
 
   if (!resp.ok) {
     const text = await resp.text();
     return { sent: false, reason: `Resend ${resp.status}: ${text}` };
   }
-  return { sent: true, to, count: items.length };
+  return { sent: true, to };
+}
+
+async function sendEmail(items) {
+  const subject = items.length === 1
+    ? `🎨 Reminder: ${items[0].title}`
+    : `🎨 ${items.length} roadmap reminders coming up`;
+  const r = await postResend({ subject, html: buildHtml(items) });
+  return r.sent ? { ...r, count: items.length } : r;
+}
+
+// Ad-hoc test email (Admin tab → "Send test email").
+function buildTestHtml() {
+  return `
+  <div style="font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;max-width:600px;margin:0 auto">
+    <div style="background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;padding:24px;border-radius:16px">
+      <div style="font-size:22px;font-weight:800">🎨 ${STUDENT.name}'s Roadmap — Test Email</div>
+      <div style="opacity:.9;margin-top:6px">If you're reading this, email reminders are working. ✅</div>
+    </div>
+    <p style="color:#6b7280;font-size:13px;text-align:center;margin-top:16px">
+      Sent from the Admin tab · app v${APP_VERSION} · ${new Date().toLocaleString('en-US')}
+    </p>
+  </div>`;
+}
+
+async function sendTestEmail() {
+  return postResend({ subject: `🎨 Test email — ${STUDENT.name}'s Roadmap is working`, html: buildTestHtml() });
 }
 
 // Vercel serverless handler.
 export default async function handler(req, res) {
+  // Test mode (Admin tab): send a canned email right now, no secret required.
+  // This is intentionally open so the in-app button can call it; it only ever
+  // emails the fixed REMINDER_TO list, so it can't be used to spam others.
+  const isTest = req.query?.test === '1' || /[?&]test=1\b/.test(req.url || '');
+  if (isTest) {
+    const result = await sendTestEmail();
+    return res.status(result.sent ? 200 : 400).json({ ok: result.sent, mode: 'test', ...result });
+  }
+
   // Optional auth: only allow Vercel Cron (or anyone with the secret).
   const secret = process.env.CRON_SECRET;
   if (secret) {

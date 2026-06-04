@@ -281,3 +281,95 @@ h3 { margin: 18px 0 8px; }
 .card.decision label { display: flex; flex-direction: column; gap: 3px; font-size: .76rem; font-weight: 700; color: var(--muted); margin-top: 6px; }
 .card.decision input, .card.decision textarea { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: .88rem; font-weight: 400; color: var(--ink); }
 .card.decision input:focus, .card.decision textarea:focus { outline: none; border-color: var(--violet); }
+
+/* ---------- Topbar actions / theme toggle ---------- */
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.theme-toggle { font-size: 1rem; line-height: 1; padding: 8px 11px; }
+
+/* ---------- Achievements ---------- */
+.card.achievement { display: flex; flex-direction: column; gap: 6px; }
+.achievement .card-head { align-items: flex-start; }
+.achievement .ach-title { font-size: 1.05rem; font-weight: 700; margin: 4px 0 0; }
+.achievement .ach-venue { font-size: .85rem; color: var(--muted); }
+.achievement .ach-date { font-size: .78rem; color: var(--muted); }
+.achievement .ach-desc { font-size: .88rem; line-height: 1.45; margin: 4px 0 0; }
+.achievement .row-actions { display: flex; gap: 8px; margin-top: 8px; }
+
+/* ---------- Résumé ---------- */
+.resume-slot { display: flex; flex-direction: column; gap: 8px; }
+.resume-slot .slot-head { display: flex; align-items: center; gap: 8px; }
+.resume-slot .slot-emoji { font-size: 1.4rem; }
+.resume-slot .slot-blurb { font-size: .86rem; color: var(--muted); line-height: 1.45; }
+.resume-list { margin: 6px 0 0; padding-left: 18px; font-size: .86rem; line-height: 1.5; }
+.resume-list li { margin: 3px 0; }
+.resume-file { display: flex; align-items: center; gap: 8px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 8px 12px; font-size: .86rem; }
+.resume-file .rf-name { font-weight: 700; }
+.resume-file .rf-when { color: var(--muted); font-size: .76rem; }
+
+/* ==========================================================================
+   DARK MODE — overrides applied when <html data-theme="dark">
+   ========================================================================== */
+[data-theme="dark"] {
+  --violet: #a78bfa;
+  --violet-2: #c4b5fd;
+  --pink: #f472b6;
+  --ink: #e5e7eb;
+  --muted: #9ca3af;
+  --bg: #14101f;
+  --card: #1d1830;
+  --line: #322a46;
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] code { background: #2a2340; color: #e9d5ff; }
+[data-theme="dark"] a { color: var(--violet-2); }
+
+/* Surfaces that hardcode white in light mode */
+[data-theme="dark"] .ghost,
+[data-theme="dark"] .tab,
+[data-theme="dark"] .btn.ghost,
+[data-theme="dark"] .chip,
+[data-theme="dark"] .evrow,
+[data-theme="dark"] .tl-body,
+[data-theme="dark"] .cal-cell,
+[data-theme="dark"] .modal-card,
+[data-theme="dark"] .lightbox,
+[data-theme="dark"] .art-frame,
+[data-theme="dark"] .btn.danger {
+  background: var(--card); color: var(--ink); border-color: var(--line);
+}
+[data-theme="dark"] .login-card { background: var(--card); color: var(--ink); }
+[data-theme="dark"] .login-card input { background: #14101f; color: var(--ink); border-color: var(--line); }
+
+/* Editors / inputs */
+[data-theme="dark"] .editor input,
+[data-theme="dark"] .editor select,
+[data-theme="dark"] .editor textarea,
+[data-theme="dark"] .savings-form input,
+[data-theme="dark"] .card.decision input,
+[data-theme="dark"] .card.decision textarea {
+  background: #14101f; color: var(--ink); border-color: var(--line);
+}
+[data-theme="dark"] .editor select option { background: #14101f; color: var(--ink); }
+
+/* Tinted helper panels */
+[data-theme="dark"] .card.highlight { background: linear-gradient(135deg, #241b3a, #2a1830); border-color: #3b2a55; }
+[data-theme="dark"] .pf-tips { background: #221a36; border-color: #3b2a55; }
+[data-theme="dark"] .cost-box { background: #181327; border-color: var(--line); }
+[data-theme="dark"] .walkaway { background: #2a210f; border-color: #5b4410; }
+[data-theme="dark"] .bar { background: #2a2340; }
+[data-theme="dark"] .cal-ev { background: #251d3c; color: var(--ink); }
+[data-theme="dark"] .art-placeholder { background: #251d3c; }
+
+/* Status tints (overdue/urgent) toned down for dark */
+[data-theme="dark"] .evrow.overdue,
+[data-theme="dark"] .cal-ev.overdue,
+[data-theme="dark"] .tl-item.overdue .tl-body { background: #2c1620; border-color: #5b2030; }
+[data-theme="dark"] .resume-file { background: #15241b; border-color: #1f5132; }
+
+/* Tag chips */
+[data-theme="dark"] .tag { background: #2a2340; color: var(--ink); }
+[data-theme="dark"] .tag.green { background: #14321f; color: #86efac; }
+[data-theme="dark"] .tag.blue { background: #112f3f; color: #7dd3fc; }
+[data-theme="dark"] .tag.amber { background: #33270c; color: #fcd34d; }
+[data-theme="dark"] .tag.purple { background: #281c45; color: #c4b5fd; }

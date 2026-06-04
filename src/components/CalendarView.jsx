@@ -1,14 +1,25 @@
 import { useState } from 'react';
 import { EVENTS, CATEGORIES } from '../../shared/roadmap.js';
-import { parseDate, fmt, statusOf } from '../lib/util.js';
+import { parseDate, fmt, statusOf, useCustomItems, useVolunteer, volunteerToEvent } from '../lib/util.js';
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DOW = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
 export default function CalendarView({ done, toggle }) {
-  const first = EVENTS.map((e) => parseDate(e.date)).sort((a, b) => a - b)[0] || new Date();
+  const { items: custom, add, remove } = useCustomItems();
+  const { items: volunteer } = useVolunteer();
+
+  const allEvents = [
+    ...EVENTS,
+    ...custom,
+    ...volunteer.map(volunteerToEvent).filter((v) => v.date),
+  ];
+
+  const first = allEvents.map((e) => parseDate(e.date)).sort((a, b) => a - b)[0] || new Date();
   const [cursor, setCursor] = useState(new Date(first.getFullYear(), first.getMonth(), 1));
   const [picked, setPicked] = useState(null);
+  const [adding, setAdding] = useState(false);
+  const [draft, setDraft] = useState({ title: '', date: '', detail: '', link: '' });
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
@@ -16,7 +27,7 @@ export default function CalendarView({ done, toggle }) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const byDay = {};
-  for (const e of EVENTS) {
+  for (const e of allEvents) {
     const d = parseDate(e.date);
     if (d.getFullYear() === year && d.getMonth() === month) {
       (byDay[d.getDate()] ||= []).push(e);
@@ -27,10 +38,51 @@ export default function CalendarView({ done, toggle }) {
   for (let i = 0; i < startDow; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
 
+  function saveCustom() {
+    if (!draft.title.trim() || !draft.date) return;
+    add({ ...draft });
+    const d = parseDate(draft.date);
+    setCursor(new Date(d.getFullYear(), d.getMonth(), 1));
+    setDraft({ title: '', date: '', detail: '', link: '' });
+    setAdding(false);
+  }
+
   return (
     <div className="screen">
       <h2>Calendar</h2>
-      <p className="muted">🔔 Every event auto-emails a reminder <strong>1 week before</strong> (and again 1 day before for deadlines).</p>
+      <p className="muted">🔔 Built-in events auto-email a reminder <strong>1 week before</strong> (and 1 day before deadlines). Add your own events too. 📌</p>
+
+      <div className="filters">
+        <button className="btn primary" onClick={() => setAdding((a) => !a)}>{adding ? 'Close' : '+ Add custom event'}</button>
+      </div>
+
+      {adding && (
+        <div className="card editor">
+          <div className="form-row">
+            <label className="full">Title
+              <input value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} placeholder="e.g., Portfolio review with Ms. Lee" />
+            </label>
+          </div>
+          <div className="form-row">
+            <label>Date
+              <input type="date" value={draft.date} onChange={(e) => setDraft({ ...draft, date: e.target.value })} />
+            </label>
+            <label>Link (optional)
+              <input value={draft.link} onChange={(e) => setDraft({ ...draft, link: e.target.value })} placeholder="https://…" />
+            </label>
+          </div>
+          <div className="form-row">
+            <label className="full">Notes
+              <textarea rows="2" value={draft.detail} onChange={(e) => setDraft({ ...draft, detail: e.target.value })} placeholder="Anything to remember." />
+            </label>
+          </div>
+          <div className="editor-actions">
+            <button className="btn" onClick={saveCustom}>Add to calendar</button>
+            <button className="btn ghost" onClick={() => setAdding(false)}>Cancel</button>
+          </div>
+          <p className="small muted">Custom events show on the Calendar and Checklist. (Email reminders only fire for the built-in milestones.)</p>
+        </div>
+      )}
 
       <div className="cal-nav">
         <button className="ghost" onClick={() => setCursor(new Date(year, month - 1, 1))}>← Prev</button>
@@ -79,6 +131,9 @@ export default function CalendarView({ done, toggle }) {
               <button className="btn alt" onClick={() => { toggle(picked.id); setPicked(null); }}>
                 {done[picked.id] ? 'Mark not done' : 'Mark done ✓'}
               </button>
+              {picked.custom && (
+                <button className="btn danger" onClick={() => { remove(picked.id); setPicked(null); }}>Remove</button>
+              )}
               <button className="btn ghost" onClick={() => setPicked(null)}>Close</button>
             </div>
           </div>
