@@ -8,12 +8,15 @@ import Scholarships from './components/Scholarships.jsx';
 import Colleges from './components/Colleges.jsx';
 import PortfolioTracker from './components/PortfolioTracker.jsx';
 import Gallery from './components/Gallery.jsx';
+import Writing from './components/Writing.jsx';
 import Decisions from './components/Decisions.jsx';
 import Savings from './components/Savings.jsx';
 import Achievements from './components/Achievements.jsx';
 import Resume from './components/Resume.jsx';
+import Recommendations from './components/Recommendations.jsx';
 import Volunteer from './components/Volunteer.jsx';
 import Admin from './components/Admin.jsx';
+import Note from './components/Note.jsx';
 import Motivation from './components/Motivation.jsx';
 import { useProgress, useTheme } from './lib/util.js';
 import { STUDENT } from '../shared/roadmap.js';
@@ -21,14 +24,17 @@ import { APP_VERSION } from '../shared/version.js';
 
 const TABS = [
   { id: 'dash',      label: 'Dashboard',    emoji: '🏠' },
+  { id: 'note',      label: 'From Dad',     emoji: '💌' },
   { id: 'timeline',  label: 'Roadmap',      emoji: '🛣️' },
   { id: 'calendar',  label: 'Calendar',     emoji: '📅' },
   { id: 'checklist', label: 'Checklist',    emoji: '✅' },
   { id: 'portfolio', label: 'Portfolio',    emoji: '🎨' },
   { id: 'gallery',   label: 'Gallery',      emoji: '🖼️' },
+  { id: 'writing',   label: 'Writing',      emoji: '✍️' },
   { id: 'achieve',   label: 'Achievements', emoji: '🏅' },
   { id: 'volunteer', label: 'Volunteer',    emoji: '🤝' },
   { id: 'resume',    label: 'Résumé',       emoji: '📄' },
+  { id: 'recs',      label: 'Recommendations', emoji: '📜' },
   { id: 'scholar',   label: 'Scholarships', emoji: '🏆' },
   { id: 'colleges',  label: 'Colleges',     emoji: '🎓' },
   { id: 'decisions', label: 'Decisions',    emoji: '📬' },
@@ -80,14 +86,17 @@ export default function App() {
 
       <main className="content">
         {tab === 'dash'      && <Dashboard {...progress} goTo={setTab} />}
+        {tab === 'note'      && <Note />}
         {tab === 'timeline'  && <Timeline {...progress} />}
         {tab === 'calendar'  && <CalendarView {...progress} />}
         {tab === 'checklist' && <Checklist {...progress} />}
         {tab === 'portfolio' && <PortfolioTracker />}
         {tab === 'gallery'   && <Gallery />}
+        {tab === 'writing'   && <Writing />}
         {tab === 'achieve'   && <Achievements />}
         {tab === 'volunteer' && <Volunteer />}
         {tab === 'resume'    && <Resume />}
+        {tab === 'recs'      && <Recommendations />}
         {tab === 'scholar'   && <Scholarships {...progress} />}
         {tab === 'colleges'  && <Colleges />}
         {tab === 'decisions' && <Decisions />}

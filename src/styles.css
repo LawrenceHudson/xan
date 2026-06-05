@@ -306,6 +306,23 @@ h3 { margin: 18px 0 8px; }
 .resume-file .rf-name { font-weight: 700; }
 .resume-file .rf-when { color: var(--muted); font-size: .76rem; }
 
+/* ---------- A Note From Dad (letter) ---------- */
+.letter {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--violet);
+  border-radius: var(--radius);
+  padding: 26px 28px;
+  margin: 14px 0;
+  box-shadow: var(--shadow);
+  max-width: 720px;
+  background-image: linear-gradient(135deg, rgba(124,58,237,.04), rgba(236,72,153,.04));
+}
+.letter-greeting { font-size: 1.25rem; font-weight: 800; color: var(--violet); margin: 0 0 12px; }
+.letter-p { font-size: 1rem; line-height: 1.7; margin: 0 0 14px; color: var(--ink); }
+.letter-signoff { font-size: 1.1rem; font-weight: 700; margin: 18px 0 0; color: var(--ink); }
+@media (max-width: 560px) { .letter { padding: 20px 18px; } }
+
 /* ==========================================================================
    DARK MODE — overrides applied when <html data-theme="dark">
    ========================================================================== */
@@ -373,3 +390,77 @@ h3 { margin: 18px 0 8px; }
 [data-theme="dark"] .tag.blue { background: #112f3f; color: #7dd3fc; }
 [data-theme="dark"] .tag.amber { background: #33270c; color: #fcd34d; }
 [data-theme="dark"] .tag.purple { background: #281c45; color: #c4b5fd; }
+
+/* ============================================================================
+   v1.4.0 — Writing tab, Admin feedback, 529 gift splash, achievement images,
+   dashboard momentum metrics.
+   ========================================================================== */
+
+/* Shared helpers used by the new screens */
+.empty { color: var(--muted); background: #faf5ff; border: 1px dashed var(--line); border-radius: 12px; padding: 16px; }
+.card.tinted { background: #faf5ff; border: 1px solid var(--line); }
+.tip-list { margin: 0; padding-left: 20px; }
+.tip-list li { margin: 4px 0; font-size: .9rem; line-height: 1.4; }
+.filters.wrap { flex-wrap: wrap; }
+.section-h { margin: 22px 0 10px; }
+.stat-of { font-size: 1rem; color: var(--muted); font-weight: 600; }
+
+/* --- Dashboard: nothing extra needed; reuses .cards/.card.stat --- */
+
+/* --- Login: two-panel stack (sign-in + 529 gift splash) --- */
+.login-stack { display: flex; flex-direction: column; gap: 18px; width: min(440px, 92vw); }
+.gift-splash {
+  background: linear-gradient(135deg, #fdf2f8, #f5f3ff);
+  border: 1px solid #efd9f5; border-radius: 18px; padding: 22px 24px;
+  box-shadow: var(--shadow); text-align: center;
+}
+.gift-emoji { font-size: 2rem; }
+.gift-splash h2 { margin: 6px 0 8px; font-size: 1.25rem; }
+.gift-splash p { color: var(--ink); font-size: .92rem; line-height: 1.45; margin: 0 0 12px; }
+.gift-bullets { text-align: left; margin: 0 0 16px; padding-left: 20px; }
+.gift-bullets li { margin: 5px 0; font-size: .88rem; }
+.gift-cta { display: inline-block; width: 100%; box-sizing: border-box; }
+
+/* --- Admin: bug/feature feedback list --- */
+.feedback-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.feedback-item {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  background: #fff; border: 1px solid var(--line); border-left-width: 4px;
+  border-radius: 10px; padding: 10px 12px;
+}
+.feedback-item.bug { border-left-color: #ef4444; }
+.feedback-item.feature { border-left-color: #7c3aed; }
+.feedback-tag { font-weight: 700; font-size: .82rem; white-space: nowrap; }
+.feedback-text { flex: 1 1 200px; font-size: .9rem; line-height: 1.35; }
+.feedback-when { white-space: nowrap; }
+
+/* --- Achievements: clickable image thumbnail + form preview --- */
+.ach-thumb {
+  display: block; width: 100%; padding: 0; border: none; background: none;
+  cursor: zoom-in; border-radius: 10px; overflow: hidden; margin: 4px 0 8px;
+}
+.ach-thumb img { width: 100%; height: 160px; object-fit: cover; display: block; border-radius: 10px; }
+.ach-thumb.noimg { display: none; }
+.ach-preview { width: 100%; }
+.ach-preview img { max-height: 200px; max-width: 100%; border-radius: 10px; object-fit: contain; }
+
+/* --- Writing tab --- */
+.card.writing .writing-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 4px 0 8px; }
+.writing-excerpt {
+  font-size: .86rem; line-height: 1.45; color: var(--ink);
+  background: #faf7ff; border-radius: 8px; padding: 8px 10px; margin: 8px 0;
+  white-space: pre-wrap;
+}
+.writing-body { font-family: inherit; line-height: 1.5; }
+.label-row { display: flex; justify-content: space-between; align-items: baseline; }
+.wc { font-size: .78rem; color: var(--muted); font-weight: 600; }
+.wc.over { color: #ef4444; }
+.check-inline { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; margin: 4px 0; cursor: pointer; }
+
+/* --- Dark-mode overrides for the new surfaces --- */
+[data-theme="dark"] .empty { background: #1b1530; }
+[data-theme="dark"] .card.tinted { background: #1b1530; }
+[data-theme="dark"] .gift-splash { background: linear-gradient(135deg, #2a1830, #241b3a); border-color: #3b2a55; }
+[data-theme="dark"] .gift-splash p { color: var(--ink); }
+[data-theme="dark"] .feedback-item { background: var(--card); border-color: var(--line); }
+[data-theme="dark"] .writing-excerpt { background: #1b1530; }

@@ -95,6 +95,51 @@ export function useVolunteer() {
   return { items, add, update, remove };
 }
 
+// ---- Feedback (bug / feature submissions, shown on the Admin tab) -----------
+//   { id, type: 'bug' | 'feature', text, when }
+export function useFeedback() {
+  const [items, setItems] = useStored('viol_feedback', []);
+  const add = useCallback((type, text) => {
+    const entry = { id: `fb-${Date.now()}`, type, text: text.trim(), when: new Date().toISOString() };
+    setItems((list) => [entry, ...list]);
+  }, [setItems]);
+  const remove = useCallback((id) => {
+    setItems((list) => list.filter((x) => x.id !== id));
+  }, [setItems]);
+  const clearAll = useCallback(() => setItems([]), [setItems]);
+  return { items, add, remove, clearAll };
+}
+
+// ---- Writing pieces (stories, poems, plays, D&D, college essays) ------------
+//   { id, category, status, title, body, date, favorite,
+//     prompt, school, wordLimit, link }
+export function useWriting() {
+  const [items, setItems] = useStored('viol_writing', []);
+  const add = useCallback((w) => {
+    const entry = {
+      id: `wr-${Date.now()}`,
+      category: 'story', status: 'idea', title: '', body: '',
+      date: '', favorite: false, prompt: '', school: '', wordLimit: '', link: '',
+      ...w,
+    };
+    setItems((list) => [entry, ...list]);
+    return entry.id;
+  }, [setItems]);
+  const update = useCallback((id, patch) => {
+    setItems((list) => list.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+  }, [setItems]);
+  const remove = useCallback((id) => {
+    setItems((list) => list.filter((x) => x.id !== id));
+  }, [setItems]);
+  return { items, add, update, remove };
+}
+
+// Count words in a writing body (used by the live counter + dashboard).
+export function wordCount(text) {
+  if (!text) return 0;
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
 // Map a volunteer record to the event shape used by Checklist + Calendar.
 export function volunteerToEvent(v) {
   const bits = [];

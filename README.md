@@ -14,20 +14,27 @@ sent via **Resend** on a daily **Vercel Cron** schedule.
 
 | Tab | What it does |
 |-----|--------------|
-| 🏠 Dashboard | % complete, overdue items, next 30 days, current best-fit school |
+| 🏠 Dashboard | % complete, overdue items, next 30 days, current best-fit school, plus a **Creative momentum** row (portfolio finals, achievements, writing pieces, volunteer hours, savings) |
+| 💌 From Dad | A personal letter to Violet about why this is a many-options plan; text lives in `DAD_NOTE` in `shared/roadmap.js` |
 | 🛣️ Roadmap | Full chronological timeline; check things off live |
 | 📅 Calendar | Month grid; tap any event for details + links |
 | ✅ Checklist | Filter by category, hide-done, big progress bar |
 | 🎨 Portfolio | Piece-by-piece tracker: idea → in-progress → revise → final, tagged by school + scholarship, with notes and target dates |
 | 🖼️ Gallery | A SlideRoom-style wall to review finished pieces (with image links) before uploading |
-| 🏅 Achievements | Log awards, exhibitions, sales, publications & more; add/edit/delete and **export the whole list as a TXT file** for résumés and applications |
+| ✍️ Writing | Collect stories, poems, plays, D&D campaigns, and **college essays**; live word counter, per-school essay prompts + word limits, ⭐ favorites, and per-piece TXT export |
+| 🏅 Achievements | Log awards, exhibitions, sales, publications & more; **link an image** and click the thumbnail to view it full-size; add/edit/delete and **export the whole list as a TXT file** |
 | 🤝 Volunteer | Track service hours (org, role, hours, ongoing); entries also surface on the **Checklist** |
 | 📄 Résumé | Friendly writing tips + two upload/download slots (an **art-focused** and a **young-career** résumé), stored in the browser |
+| 📜 Recommendations | Track each recommender (role, which schools, status, asked/needed-by dates, notes) and **store the finished letter file** so it's ready to attach to any application |
 | 🏆 Scholarships | When to start, the deliverable, the deadline, the link |
 | 🎓 Colleges | Where/when to apply, what each values, **total price + avg aid + avg net price + Net Price Calculator link**, affordability + **Family Rules** |
 | 📬 Decisions | Per-school status (planning → applied → accepted/waitlist/denied → committed), award + net price log, and a **May 1 Decision Day** countdown |
 | 🐖 Savings | Log deposits/scholarship wins toward the $8k–$12k goal |
-| 🛠️ Admin | App version, **release notes**, and a **Send test email** button to confirm reminder delivery |
+| 🛠️ Admin | App version, **release notes**, a **Send test email** button, and a **Bug / Feature submitter** (log items and clear them when handled) |
+
+**Login screen** doubles as a **529 gifting splash** — family & friends get a short
+pitch and a direct link to contribute to Violet's college-savings account (edit
+the copy in `GIFTING` in `shared/roadmap.js`).
 
 **Custom items:** on the **Calendar** she can add her own events (and remove them);
 these flow into the Checklist too. **Light/dark mode** toggles from the ☀️/🌙
@@ -68,9 +75,9 @@ npm run reminders:test
 
 1. Sign up at **https://resend.com** (free tier: 3,000 emails/month).
 2. Copy an **API key**.
-3. For quick testing you can send from `onboarding@resend.dev`. For real use,
-   add and **verify your own domain** in Resend, then send from e.g.
-   `roadmap@yourdomain.com`.
+3. The **xanderr.com** domain is verified in Resend, so reminders send from
+   `nick.cage@xanderr.com`. (For quick testing you can fall back to
+   `onboarding@resend.dev`.)
 
 ---
 

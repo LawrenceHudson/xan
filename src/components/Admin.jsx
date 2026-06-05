@@ -1,9 +1,24 @@
 import { useState } from 'react';
 import { APP_VERSION, CHANGELOG } from '../../shared/version.js';
-import { fmt } from '../lib/util.js';
+import { fmt, useFeedback } from '../lib/util.js';
+
+function whenLabel(iso) {
+  try {
+    return new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  } catch { return ''; }
+}
 
 export default function Admin() {
   const [status, setStatus] = useState(null); // null | 'sending' | {ok, msg}
+  const { items: feedback, add: addFeedback, remove: removeFeedback, clearAll: clearFeedback } = useFeedback();
+  const [fbType, setFbType] = useState('bug');
+  const [fbText, setFbText] = useState('');
+
+  function submitFeedback() {
+    if (!fbText.trim()) return;
+    addFeedback(fbType, fbText);
+    setFbText('');
+  }
 
   async function sendTest() {
     setStatus('sending');
@@ -46,6 +61,50 @@ export default function Admin() {
         </div>
         {status && status !== 'sending' && (
           <p className={status.ok ? 'celebrate' : 'danger'} style={{ marginTop: 8 }}>{status.msg}</p>
+        )}
+      </section>
+
+      <section>
+        <h3>🐞 Bugs & feature requests</h3>
+        <p className="muted small">Found something broken, or have an idea? Log it here. Items are saved in this browser and listed below — clear them once they’re handled.</p>
+        <div className="card editor">
+          <div className="filters">
+            <button className={`chip ${fbType === 'bug' ? 'on' : ''}`} onClick={() => setFbType('bug')}>🐞 Bug</button>
+            <button className={`chip ${fbType === 'feature' ? 'on' : ''}`} onClick={() => setFbType('feature')}>✨ Feature</button>
+          </div>
+          <div className="form-row">
+            <label className="full">
+              {fbType === 'bug' ? 'What’s the bug?' : 'What feature would you like?'}
+              <textarea
+                rows="3"
+                value={fbText}
+                onChange={(e) => setFbText(e.target.value)}
+                placeholder={fbType === 'bug' ? 'Describe what went wrong and where…' : 'Describe the feature you’d like to see…'}
+              />
+            </label>
+          </div>
+          <div className="editor-actions">
+            <button className="btn primary" onClick={submitFeedback} disabled={!fbText.trim()}>Submit</button>
+          </div>
+        </div>
+
+        {feedback.length > 0 && (
+          <>
+            <div className="filters" style={{ marginTop: 12 }}>
+              <span className="hidedone">{feedback.length} open</span>
+              <button className="btn small ghost" onClick={clearFeedback}>Clear all</button>
+            </div>
+            <ul className="feedback-list">
+              {feedback.map((f) => (
+                <li key={f.id} className={`feedback-item ${f.type}`}>
+                  <span className="feedback-tag">{f.type === 'bug' ? '🐞 Bug' : '✨ Feature'}</span>
+                  <span className="feedback-text">{f.text}</span>
+                  <span className="muted small feedback-when">{whenLabel(f.when)}</span>
+                  <button className="btn small danger" onClick={() => removeFeedback(f.id)}>Clear</button>
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </section>
 

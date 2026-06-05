@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { ACHIEVEMENT_CATEGORIES, ACHIEVEMENT_SEEDS, STUDENT } from '../../shared/roadmap.js';
 import { useStored, fmt, downloadText } from '../lib/util.js';
 
-const BLANK = { category: 'award', title: '', venue: '', date: '', description: '', link: '' };
+const BLANK = { category: 'award', title: '', venue: '', date: '', description: '', link: '', image: '' };
 
 export default function Achievements() {
   const [items, setItems] = useStored('viol_achievements', ACHIEVEMENT_SEEDS.map((s, i) => ({ id: `seed-${i}`, ...s })));
   const [draft, setDraft] = useState(BLANK);
   const [editing, setEditing] = useState(null); // id being edited, or 'new'
+  const [lightbox, setLightbox] = useState(null); // achievement being viewed full-size
 
   function startNew() { setDraft(BLANK); setEditing('new'); }
   function startEdit(it) { setDraft({ ...BLANK, ...it }); setEditing(it.id); }
@@ -38,6 +39,7 @@ export default function Achievements() {
       if (it.venue) lines.push(`   Where: ${it.venue}`);
       if (it.date) lines.push(`   Date: ${fmt(it.date)}`);
       if (it.description) lines.push(`   Notes: ${it.description}`);
+      if (it.image) lines.push(`   Image: ${it.image}`);
       if (it.link) lines.push(`   Link: ${it.link}`);
       lines.push('');
     });
@@ -86,6 +88,19 @@ export default function Achievements() {
             </label>
           </div>
           <div className="form-row">
+            <label className="full">Image URL (optional)
+              <input value={draft.image} onChange={(e) => setDraft({ ...draft, image: e.target.value })} placeholder="https://…/your-artwork.jpg" />
+              <span className="muted small">Paste a link to a photo of the piece — it shows on the card and opens full-size when clicked.</span>
+            </label>
+          </div>
+          {draft.image && (
+            <div className="form-row">
+              <div className="ach-preview">
+                <img src={draft.image} alt="Preview" onError={(e) => { e.target.style.display = 'none'; }} />
+              </div>
+            </div>
+          )}
+          <div className="form-row">
             <label className="full">Link (optional)
               <input value={draft.link} onChange={(e) => setDraft({ ...draft, link: e.target.value })} placeholder="https://…" />
             </label>
@@ -110,6 +125,11 @@ export default function Achievements() {
                 <h3>{c.emoji} {it.title}</h3>
                 <span className="tag" style={{ background: c.color, color: '#fff' }}>{c.label}</span>
               </div>
+              {it.image && (
+                <button type="button" className="ach-thumb" onClick={() => setLightbox(it)} title="Click to view full size">
+                  <img src={it.image} alt={it.title} onError={(e) => { e.target.closest('.ach-thumb').classList.add('noimg'); }} />
+                </button>
+              )}
               {it.venue && <div className="kv"><span>Where</span><strong>{it.venue}</strong></div>}
               {it.date && <div className="kv"><span>Date</span><strong>{fmt(it.date)}</strong></div>}
               {it.description && <p className="deliverable">{it.description}</p>}
@@ -122,6 +142,20 @@ export default function Achievements() {
           );
         })}
       </div>
+
+      {lightbox && (
+        <div className="modal-backdrop" onClick={() => setLightbox(null)}>
+          <div className="lightbox" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-x" onClick={() => setLightbox(null)}>✕</button>
+            <img src={lightbox.image} alt={lightbox.title} />
+            <div className="lightbox-meta">
+              <strong>{lightbox.title}</strong>
+              {lightbox.venue && <span className="muted"> · {lightbox.venue}</span>}
+              {lightbox.description && <p>{lightbox.description}</p>}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

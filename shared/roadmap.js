@@ -298,9 +298,9 @@ export const ACHIEVEMENT_CATEGORIES = {
 // A couple of seeds so the page isn't empty the first time — Violet can edit
 // or delete these. (These are real wins Loren mentioned.)
 export const ACHIEVEMENT_SEEDS = [
-  { category: 'award',     title: 'Won the Art 2026 award',            venue: '',               date: '2026-01-01', description: 'Recognized for outstanding studio work.', link: '' },
-  { category: 'sale',      title: 'Sold a piece at the AVA Gallery',   venue: 'AVA Gallery',    date: '',           description: 'First gallery sale.',                    link: '' },
-  { category: 'publication', title: 'Illustrated a book',              venue: '',               date: '',           description: 'Provided illustrations for a published book.', link: '' },
+  { category: 'award',     title: 'Won the Art 2026 award',            venue: '',               date: '2026-01-01', description: 'Recognized for outstanding studio work.', link: '', image: '' },
+  { category: 'sale',      title: 'Sold a piece at the AVA Gallery',   venue: 'AVA Gallery',    date: '',           description: 'First gallery sale.',                    link: '', image: '' },
+  { category: 'publication', title: 'Illustrated a book',              venue: '',               date: '',           description: 'Provided illustrations for a published book.', link: '', image: '' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -357,4 +357,96 @@ export const VOLUNTEER_GUIDE = {
     'Log hours as you go; it’s nearly impossible to reconstruct later.',
     'Anything you log here can flow onto your Young-Career résumé.',
   ],
+};
+
+// ---------------------------------------------------------------------------
+// A NOTE FROM DAD — shown on its own tab. Edit the words here anytime.
+// Wrap text in **double asterisks** to make it bold, *single* for italics.
+// ---------------------------------------------------------------------------
+export const DAD_NOTE = {
+  greeting: 'Hey kiddo,',
+  signoff: 'Love, Dad',
+  paragraphs: [
+    "I want you to know something important about this plan: **it is not a RISD-only plan.** It is a **many-options plan**.",
+    "The work you’re doing now — building your portfolio, keeping strong grades, saving money, applying for scholarships, and putting your applications together early — helps you no matter where you end up. It helps at RISD, but it also helps at **MECA&D, MassArt, and CalArts**. Those schools all care a lot about artistic potential, and in different ways they all use your portfolio, your application quality, and your overall preparation to decide both admission and aid.",
+    "Some of the things you’re applying for are **portable**, which means they help no matter which school you choose. **YoungArts** is a national arts competition with cash awards between **$250 and $10,000**; that recognition belongs to *you*, not one school. **Scholastic Art & Writing** is also national, and National Medalists are eligible for scholarships of up to **$12,500**; again, that recognition follows *you*. **Coca-Cola Scholars** is tied to attending an accredited U.S. college, not one specific school. **Elks Most Valuable Student** is also tied to attending a four-year accredited U.S. college, not one particular campus. **NH Charitable Foundation** is built to support New Hampshire students broadly, not just students attending one school in one state.",
+    "That means if you work hard on this plan and later decide that RISD is not the best fit financially, or artistically, or personally, that work is **not wasted**. It still makes you a stronger applicant. It still gives you more options. It still gives you a better shot at scholarships. It still gives you more control over your future.",
+    "In fact, some schools may reward this work even more directly. **MECA&D** gives incoming first-year scholarships ranging from **$15,000 to $23,000**, and it specifically gives extra renewable scholarships to students who won **Scholastic Art Awards**. **CalArts** says all admitted students are considered for merit scholarships, and that merit is driven first by the admissions **portfolio or audition**. **MassArt** says all applicants are automatically reviewed for merit scholarships, and its cost page notes that actual cost can vary based in part on the **portfolio score** received at admission. RISD, by contrast, is more heavily driven by **need-based institutional aid**, though it also has a specific YoungArts-related scholarship path for two domestic first-year students.",
+    "So the real win here is not just “getting into RISD.” The real win is becoming the kind of applicant who has **strong choices**. A strong portfolio, strong habits, and smart scholarship work can give you choices about where you go, how much debt you take on, and what kind of start you have as an artist. That is the point of the plan.",
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// WRITING — Violet is a strong writer (stories, poems, plays, D&D campaigns)
+// AND this is where she keeps her college essays. Categories keep it sortable.
+// ---------------------------------------------------------------------------
+export const WRITING_CATEGORIES = {
+  story:  { label: 'Story',         emoji: '📖', color: '#7c3aed' },
+  poem:   { label: 'Poem',          emoji: '🪶', color: '#ec4899' },
+  play:   { label: 'Play / Script', emoji: '🎭', color: '#f59e0b' },
+  dnd:    { label: 'D&D Campaign',  emoji: '🐉', color: '#16a34a' },
+  essay:  { label: 'College Essay', emoji: '🎓', color: '#0ea5e9' },
+  other:  { label: 'Other',         emoji: '✍️', color: '#6366f1' },
+};
+
+export const WRITING_GUIDE = {
+  intro:
+    'A home for your writing — stories, poems, plays, D&D campaigns — and the place to draft and save your college essays. Mark a favorite with a ⭐ to feature it.',
+  // Status flow mirrors the portfolio: an idea → drafting → revising → done.
+  statuses: [
+    { id: 'idea',     label: 'Idea',     emoji: '💡' },
+    { id: 'drafting', label: 'Drafting', emoji: '✏️' },
+    { id: 'revising', label: 'Revising', emoji: '🔁' },
+    { id: 'final',    label: 'Final',    emoji: '✅' },
+  ],
+  tips: [
+    'Paste or write directly in the body box — it saves to this browser automatically.',
+    'For college essays, fill in the school + prompt + word limit so you can tailor each one.',
+    'The word counter is live — most college essays cap around 500–650 words.',
+    'Star (⭐) the pieces you’re proudest of; they rise to the top of the list.',
+    'Use “Download .txt” to back a piece up or move it into an application portal.',
+  ],
+  // Common college-essay word limits, for the quick-pick on the essay form.
+  essayLimits: [150, 250, 350, 500, 650],
+};
+
+// ---------------------------------------------------------------------------
+// RECOMMENDATIONS — track each recommender AND store the letter file itself.
+// ---------------------------------------------------------------------------
+export const RECOMMENDATIONS_GUIDE = {
+  intro:
+    'Letters of recommendation in one place — track who you asked, where each letter is going, and store the finished letter so it’s ready whenever an application needs it.',
+  statuses: [
+    { id: 'asked',      label: 'Asked',        emoji: '✉️' },
+    { id: 'inprogress', label: 'In progress',  emoji: '⏳' },
+    { id: 'received',   label: 'Received',     emoji: '✅' },
+    { id: 'submitted',  label: 'Submitted',    emoji: '📨' },
+  ],
+  tips: [
+    'Most art schools want 1–2 letters. An art teacher who knows your work is gold.',
+    'Mix it up: one from an art teacher, one from an academic teacher or counselor.',
+    'Ask at least 3–4 weeks before the deadline — give recommenders time to do it well.',
+    'Give each recommender your résumé, a few portfolio images, and the due date.',
+    'Send a thank-you note after — and let them know where you got in. 💜',
+    'Keep a saved copy of each letter here so a “general” letter is always ready to attach.',
+  ],
+  // Browser size guard for the upload (DataURL in localStorage).
+  maxBytes: 1.5 * 1024 * 1024,
+};
+
+// ---------------------------------------------------------------------------
+// 529 GIFTING — splash shown on the login page. ORIGINAL copy; the link points
+// to the family's Fidelity gifting page. Edit the words here anytime.
+// ---------------------------------------------------------------------------
+export const GIFTING = {
+  url: 'https://digital.fidelity.com/prgw/digital/familygifting/mlgLandingPage?uuid=f374fc804cbe428b939e573d998ee299',
+  headline: 'Help Violet get to art school 🎨',
+  blurb:
+    'Birthdays, holidays, “just because” — instead of one more thing to dust, you can give something that compounds: a contribution to Violet’s 529 college-savings account. Every dollar goes straight toward tuition, supplies, and chasing the dream.',
+  bullets: [
+    'Quick & secure — give in a couple of minutes through Fidelity.',
+    'No account or login required to send a gift.',
+    'Any amount helps and grows tax-advantaged until she’s in school.',
+  ],
+  cta: 'Open the gifting page ↗',
 };

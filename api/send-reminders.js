@@ -5,7 +5,7 @@
 //
 // Required env vars (set in Vercel → Project → Settings → Environment Variables):
 //   RESEND_API_KEY   - from https://resend.com (free: 3,000/mo)
-//   REMINDER_FROM    - verified sender, e.g. "Violet's Roadmap <onboarding@resend.dev>"
+//   REMINDER_FROM    - verified sender, e.g. "Violet's Roadmap <nick.cage@xanderr.com>"
 //   REMINDER_TO      - comma-separated recipients
 //   CRON_SECRET      - (optional) shared secret; Vercel Cron sends it as Bearer
 //
@@ -78,7 +78,7 @@ function buildHtml(items) {
 
 async function postResend({ subject, html }) {
   const key = process.env.RESEND_API_KEY;
-  const from = process.env.REMINDER_FROM || "Violet's Roadmap <onboarding@resend.dev>";
+  const from = process.env.REMINDER_FROM || "Violet's Roadmap <nick.cage@xanderr.com>";
   const to = (process.env.REMINDER_TO || '').split(',').map((s) => s.trim()).filter(Boolean);
 
   if (!key) return { sent: false, reason: 'RESEND_API_KEY not set' };

@@ -8,9 +8,36 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.2.0';
+export const APP_VERSION = '1.5.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.5.0',
+    date: '2026-06-04',
+    notes: [
+      'New Recommendations tab — track each recommender (role, which schools, status, asked/needed-by dates, notes) AND store the finished letter itself, so a “general” letter is always ready to attach.',
+      'Reminder emails now send from nick.cage@xanderr.com (the verified xanderr.com domain).',
+    ],
+  },
+  {
+    version: '1.4.0',
+    date: '2026-06-04',
+    notes: [
+      'New Writing tab — collect stories, poems, plays, D&D campaigns, and college essays in one place, with a live word counter, per-school essay prompts/limits, ⭐ favorites, and TXT export.',
+      'Achievements can now link an image — click the thumbnail on any card to view the artwork full-size.',
+      'Admin tab has a Bug / Feature submitter — log items and clear them one-by-one or all at once.',
+      'Dashboard now shows a “Creative momentum” row: portfolio finals, achievements, writing pieces, volunteer hours, and savings progress.',
+      'The login screen now features a 529 gifting splash with a direct link for family & friends to contribute.',
+    ],
+  },
+  {
+    version: '1.3.0',
+    date: '2026-06-04',
+    notes: [
+      'Added a “From Dad” tab — a personal letter to Violet about why this is a many-options plan, not a RISD-only plan.',
+      'Letter text lives in shared/roadmap.js (DAD_NOTE) so it’s easy to edit anytime.',
+    ],
+  },
   {
     version: '1.2.0',
     date: '2026-06-04',
