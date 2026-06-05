@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { storeGet, storeSet, storeSubscribe } from './store.js';
 
 // ---- Dates (local, no external libs) ----------------------------------------
 export function parseDate(iso) {
@@ -37,26 +38,31 @@ export function statusOf(iso, done) {
   return 'upcoming';
 }
 
-// ---- LocalStorage hook ------------------------------------------------------
+// ---- Synced storage hook ----------------------------------------------------
+// Backed by the cross-device store (src/lib/store.js): reads/writes localStorage
+// instantly AND mirrors to the server so the same data appears in every browser
+// and device. Same [val, setVal] signature as a plain useState, so every screen
+// that calls it keeps working unchanged. setVal accepts a value or an updater fn.
 export function useStored(key, initial) {
-  const [val, setVal] = useState(() => {
-    try {
-      const raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : initial;
-    } catch {
-      return initial;
-    }
-  });
+  const initialRef = useRef(initial);
+  const [val, setVal] = useState(() => storeGet(key, initialRef.current));
+
   useEffect(() => {
-    try {
-      localStorage.setItem(key, JSON.stringify(val));
-    } catch (err) {
-      // Surface the failure instead of swallowing it — a silent QuotaExceededError
-      // here is what lets newly-added data "disappear" on the next reload.
-      reportStorageError(key, err);
-    }
-  }, [key, val]);
-  return [val, setVal];
+    // Re-sync on mount/key change (e.g. server hydration may have already run),
+    // then listen for any later change to this key (local set or server pull).
+    setVal(storeGet(key, initialRef.current));
+    return storeSubscribe(key, setVal);
+  }, [key]);
+
+  const set = useCallback((updater) => {
+    const prev = storeGet(key, initialRef.current);
+    const next = typeof updater === 'function' ? updater(prev) : updater;
+    // storeSet updates the cache + localStorage + server, then notifies this
+    // component's subscriber (above), which calls setVal — one update path.
+    storeSet(key, next);
+  }, [key]);
+
+  return [val, set];
 }
 
 // Broadcast a storage write failure so a banner can warn the user. The most

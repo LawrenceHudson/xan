@@ -11,6 +11,9 @@ export default function Login({ onUnlock }) {
     e.preventDefault();
     if (pw === expected) {
       sessionStorage.setItem('viol_auth', '1');
+      // Stash the password so the sync layer can send it as the API token
+      // (matched against APP_API_TOKEN on the server).
+      sessionStorage.setItem('viol_pw', pw);
       onUnlock();
     } else {
       setErr(true);

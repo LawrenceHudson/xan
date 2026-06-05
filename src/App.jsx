@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Login from './components/Login.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import Timeline from './components/Timeline.jsx';
@@ -19,6 +19,7 @@ import Note from './components/Note.jsx';
 import Motivation from './components/Motivation.jsx';
 import StorageBanner from './components/StorageBanner.jsx';
 import { useProgress, useTheme } from './lib/util.js';
+import { hydrate } from './lib/store.js';
 import { STUDENT } from '../shared/roadmap.js';
 import { APP_VERSION } from '../shared/version.js';
 
@@ -46,6 +47,13 @@ export default function App() {
   const [tab, setTab] = useState('dash');
   const progress = useProgress();
   const { theme, toggle: toggleTheme } = useTheme();
+
+  // Once signed in, pull the latest data from the server so this browser shows
+  // what was saved on any other device. Screens update live as it arrives; the
+  // app stays usable from local data the whole time (and if there's no server).
+  useEffect(() => {
+    if (authed) hydrate();
+  }, [authed]);
 
   if (!authed) return <Login onUnlock={() => setAuthed(true)} />;
 

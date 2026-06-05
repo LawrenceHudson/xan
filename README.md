@@ -29,7 +29,7 @@ sent via **Resend** on a daily **Vercel Cron** schedule.
 | 🎓 Colleges | Where/when to apply, what each values, **total price + avg aid + avg net price + Net Price Calculator link**, affordability + **Family Rules** |
 | 📬 Decisions | Per-school status (planning → applied → accepted/waitlist/denied → committed), award + net price log, and a **May 1 Decision Day** countdown |
 | 🐖 Savings | Log deposits/scholarship wins toward the $8k–$12k goal |
-| 🛠️ Admin | App version, **release notes**, a **Send test email** button, and a **Bug / Feature submitter** (log items and clear them when handled) |
+| 🛠️ Admin | App version, **release notes**, a **Send test email** button, a **Backup export**, and a **Bug / Feature submitter** (log items and clear them when handled) |
 
 **Front page** is a **public welcome** about Xanderr plus a **529 gifting splash** —
 family & friends get a short pitch and a direct link to contribute to Violet's
@@ -107,7 +107,38 @@ to adjust how far ahead it warns.
 
 ---
 
-## 4) Make it yours
+## 4) Turn on cross-device sync (Supabase)
+
+By default the app saves everything **inside the browser you're using** — so a
+phone, a second computer, or a private window won't see the data. Connect a free
+**Supabase** database and the same data syncs to every device you log in on.
+(Skip this and the app still works — just locally in each browser.)
+
+1. Create a free project at **https://supabase.com**.
+2. In the project, open **SQL Editor → New query**, paste in
+   [`supabase-setup.sql`](supabase-setup.sql), and click **Run**. This makes the
+   two tables the app uses.
+3. In Supabase **Settings → API**, copy:
+   - **Project URL**
+   - the **`service_role`** key (the **secret** one — *not* the public/anon key)
+4. In **Vercel → Project → Settings → Environment Variables**, add:
+   - `NEXT_PUBLIC_SUPABASE_URL` = your Project URL
+   - `SUPABASE_SERVICE_ROLE_KEY` = the service_role secret
+   - `APP_API_TOKEN` = the **same value** as `VITE_APP_PASSWORD` (this is the
+     password gate the signed-in app uses to reach the sync API)
+5. **Redeploy** so the variables take effect.
+
+That's it. The first time you log in after connecting it, whatever is already in
+that browser is uploaded automatically — then it appears on your other devices.
+
+> **Why the service_role key?** The app never exposes it to the browser. Only the
+> server-side functions in `/api` use it, behind the `APP_API_TOKEN` password gate,
+> so the database stays private. The file `supabase-setup.sql` also enables
+> Row-Level Security with no public policies, so the public key can't read it.
+
+---
+
+## 5) Make it yours
 
 - **Add/edit milestones, scholarships, colleges** → `shared/roadmap.js`
 - **Change reminder timing** → the `remind: [30, 14, 7, 1]` array per event

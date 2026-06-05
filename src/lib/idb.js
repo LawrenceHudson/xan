@@ -11,6 +11,7 @@
 // ============================================================================
 
 import { triggerDownload } from './util.js';
+import { uploadFile, getFile, deleteFile } from './api.js';
 
 const DB_NAME = 'viol-files';
 const STORE = 'blobs';
@@ -61,6 +62,9 @@ export async function idbGet(id) {
 
 export async function idbDel(id) {
   if (!id) return;
+  // Propagate the delete to the server too, so it disappears on other devices.
+  // Fire-and-forget: api.js no-ops when the server is unavailable.
+  deleteFile(id);
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE, 'readwrite');
@@ -89,44 +93,69 @@ export async function idbEntries() {
   });
 }
 
-// Store a base64 dataUrl in IndexedDB and return the lightweight metadata
-// record to keep in localStorage (no dataUrl — just a pointer + details).
+// Store a base64 dataUrl and return the lightweight metadata record to keep in
+// localStorage (no dataUrl — just a pointer + details). The bytes go to the
+// SERVER (so the file syncs across devices) and are also cached in IndexedDB for
+// instant local downloads. If the server is unavailable, it falls back to a
+// local-only blobId so uploads still work offline.
 export async function storeFile({ name, type, dataUrl, when }) {
-  const blobId = newBlobId();
-  await idbPut(blobId, dataUrl);
+  let blobId = null;
+  let serverWhen = null;
+  const res = await uploadFile({ name, type, dataUrl });
+  if (res && res.ok && res.meta) {
+    blobId = res.meta.blobId;
+    serverWhen = res.meta.when;
+  }
+  if (!blobId) blobId = newBlobId(); // server offline → local-only id
+  try { await idbPut(blobId, dataUrl); } catch { /* IDB full — server copy still works */ }
   return {
     name,
     type,
-    when: when || new Date().toISOString().slice(0, 10),
+    when: when || serverWhen || new Date().toISOString().slice(0, 10),
     size: dataUrl ? dataUrl.length : 0,
     blobId,
   };
 }
 
-// Download a stored file by its blobId. Falls back to a legacy inline dataUrl
-// if one is still present (e.g. mid-migration), so downloads never break.
+// Download a stored file by its blobId. Tries the local IndexedDB cache first
+// (fast), then the server (this is what lets a file uploaded on ANOTHER device
+// download here), then a legacy inline dataUrl — so downloads never break.
 export async function downloadStoredFile(blobId, filename, fallbackDataUrl) {
+  // 1) Local cache.
   try {
-    const durl = (await idbGet(blobId)) || fallbackDataUrl;
+    const durl = await idbGet(blobId);
     if (durl) { triggerDownload(filename, durl); return true; }
-  } catch {
-    if (fallbackDataUrl) { triggerDownload(filename, fallbackDataUrl); return true; }
-  }
+  } catch { /* fall through to server */ }
+
+  // 2) Server (cross-device).
+  try {
+    const res = await getFile(blobId);
+    if (res && res.ok && res.file && res.file.dataUrl) {
+      try { await idbPut(blobId, res.file.dataUrl); } catch { /* cache best-effort */ }
+      triggerDownload(filename, res.file.dataUrl);
+      return true;
+    }
+  } catch { /* fall through to inline fallback */ }
+
+  // 3) Legacy inline copy.
+  if (fallbackDataUrl) { triggerDownload(filename, fallbackDataUrl); return true; }
   alert('Sorry — that file could not be found in storage. It may need to be re-uploaded.');
   return false;
 }
 
-// Migrate a legacy record that carries an inline base64 dataUrl into IndexedDB.
-// Returns a cleaned record (dataUrl stripped, blobId added). No-op if there is
-// nothing to migrate. Used once on mount by each screen that stores files.
+// Migrate a legacy record that carries an inline base64 dataUrl. Pushes the
+// bytes to the server (and caches them locally), returning a cleaned record
+// (dataUrl stripped, blobId added). No-op if there is nothing to migrate. Used
+// once on mount by each screen that stores files.
 export async function ensureStored(rec) {
   if (!rec || !rec.dataUrl) return rec;
   if (rec.blobId) {
     const { dataUrl, ...rest } = rec; // already migrated; drop the stray copy
     return rest;
   }
-  const blobId = newBlobId();
-  await idbPut(blobId, rec.dataUrl);
+  const res = await uploadFile({ name: rec.name || '', type: rec.type || '', dataUrl: rec.dataUrl });
+  const blobId = (res && res.ok && res.meta) ? res.meta.blobId : newBlobId();
+  try { await idbPut(blobId, rec.dataUrl); } catch { /* server copy still works */ }
   const { dataUrl, ...meta } = rec;
   return { ...meta, blobId, size: dataUrl.length };
 }

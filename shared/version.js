@@ -8,9 +8,19 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.8.0';
+export const APP_VERSION = '1.9.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.9.0',
+    date: '2026-06-05',
+    notes: [
+      'Your data now syncs across browsers and devices. Until now, everything was saved only inside the one browser you typed it in — so opening the site on a phone, a second computer, or a private window showed nothing. Now everything (tasks, writing, achievements, savings, portfolio notes, and uploaded résumés, letters, and documents) is saved to a secure online database and appears everywhere you log in.',
+      'The first time you log in after this update, whatever you already have in this browser is automatically uploaded so nothing is lost — then it shows up on your other devices too.',
+      'It still works offline: if the internet or the database is unavailable, the app keeps saving locally and syncs up the next time it can reach the server.',
+      'Setup (one time): create a free Supabase project, run the included supabase-setup.sql, and add NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, and APP_API_TOKEN to Vercel. See the README for step-by-step instructions.',
+    ],
+  },
   {
     version: '1.8.0',
     date: '2026-06-05',
