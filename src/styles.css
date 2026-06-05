@@ -498,3 +498,14 @@ h3 { margin: 18px 0 8px; }
 [data-theme="dark"] .gift-splash p { color: var(--ink); }
 [data-theme="dark"] .feedback-item { background: var(--card); border-color: var(--line); }
 [data-theme="dark"] .writing-excerpt { background: #1b1530; }
+
+/* --- Storage warning banner --- */
+.storage-banner {
+  display: flex; align-items: center; gap: 10px;
+  margin: 12px 16px 0; padding: 10px 14px;
+  background: #fef3c7; border: 1px solid #f59e0b; border-radius: 10px;
+  color: #7c2d12; font-size: .9rem; line-height: 1.4;
+}
+.storage-banner-icon { font-size: 1.1rem; flex-shrink: 0; }
+.storage-banner-text { flex: 1; }
+[data-theme="dark"] .storage-banner { background: #3a2a10; border-color: #b45309; color: #fde68a; }

@@ -8,9 +8,18 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.7.0';
+export const APP_VERSION = '1.8.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.8.0',
+    date: '2026-06-05',
+    notes: [
+      'Fixed a data-loss bug: uploaded files (résumés, letters, documents) used to share the browser’s small ~5 MB storage with everything else, so a few big files could quietly use it all up and make newly-added items (like Achievements) vanish on reload. Files now live in a separate, much larger store (IndexedDB), and existing uploads move over automatically.',
+      'If a save ever fails, you now get a clear warning banner instead of silent data loss.',
+      'New Backup button on the Admin tab — download a single file with everything saved in this browser, so you always have a recovery copy.',
+    ],
+  },
   {
     version: '1.7.0',
     date: '2026-06-04',

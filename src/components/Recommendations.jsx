@@ -1,6 +1,7 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { RECOMMENDATIONS_GUIDE } from '../../shared/roadmap.js';
-import { useStored, triggerDownload } from '../lib/util.js';
+import { useStored } from '../lib/util.js';
+import { storeFile, downloadStoredFile, idbDel, ensureStored } from '../lib/idb.js';
 
 const MAX_BYTES = RECOMMENDATIONS_GUIDE.maxBytes;
 
@@ -15,6 +16,20 @@ export default function Recommendations() {
   const [recs, setRecs] = useStored('viol_recs', []);
   const [editing, setEditing] = useState(null); // 'new' | id | null
   const [draft, setDraft] = useState(blank());
+
+  // One-time migration: move any legacy inline letter (dataUrl) into IndexedDB.
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const legacy = recs.filter((r) => r.file && r.file.dataUrl && !r.file.blobId);
+      if (legacy.length === 0) return;
+      const map = {};
+      for (const r of legacy) map[r.id] = await ensureStored(r.file);
+      if (active) setRecs((list) => list.map((r) => (map[r.id] ? { ...r, file: map[r.id] } : r)));
+    })();
+    return () => { active = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function startNew() {
     setDraft(blank());
@@ -49,6 +64,8 @@ export default function Recommendations() {
 
   function remove(id) {
     if (!confirm('Remove this recommender and any stored letter?')) return;
+    const rec = recs.find((x) => x.id === id);
+    if (rec?.file?.blobId) idbDel(rec.file.blobId);
     setRecs((list) => list.filter((x) => x.id !== id));
   }
 
@@ -105,6 +122,20 @@ function DocVault() {
   const [docs, setDocs] = useStored('viol_rec_docs', []);
   const inputRef = useRef(null);
 
+  // One-time migration: move any legacy inline documents (dataUrl) into IndexedDB.
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const legacy = docs.filter((d) => d.dataUrl && !d.blobId);
+      if (legacy.length === 0) return;
+      const map = {};
+      for (const d of legacy) map[d.id] = await ensureStored(d);
+      if (active) setDocs((list) => list.map((d) => (map[d.id] ? { ...map[d.id] } : d)));
+    })();
+    return () => { active = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function onPick(e) {
     const files = Array.from(e.target.files || []);
     e.target.value = '';
@@ -114,11 +145,16 @@ function DocVault() {
         return;
       }
       const reader = new FileReader();
-      reader.onload = () => {
-        setDocs((list) => [
-          { id: `doc-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, name: f.name, type: f.type, dataUrl: reader.result, when: new Date().toISOString().slice(0, 10) },
-          ...list,
-        ]);
+      reader.onload = async () => {
+        try {
+          const meta = await storeFile({ name: f.name, type: f.type, dataUrl: reader.result });
+          setDocs((list) => [
+            { id: `doc-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, ...meta },
+            ...list,
+          ]);
+        } catch {
+          alert(`Could not save “${f.name}” — browser storage may be full.`);
+        }
       };
       reader.readAsDataURL(f);
     });
@@ -126,6 +162,8 @@ function DocVault() {
 
   function removeDoc(id) {
     if (!confirm('Remove this document?')) return;
+    const doc = docs.find((d) => d.id === id);
+    if (doc?.blobId) idbDel(doc.blobId);
     setDocs((list) => list.filter((d) => d.id !== id));
   }
 
@@ -148,7 +186,7 @@ function DocVault() {
               <span>📄 {d.name}</span>
               <span className="editor-actions" style={{ margin: 0 }}>
                 <span className="muted small" style={{ marginRight: 8 }}>{d.when}</span>
-                <button className="btn small" onClick={() => triggerDownload(d.name, d.dataUrl)}>⬇ Download</button>
+                <button className="btn small" onClick={() => downloadStoredFile(d.blobId, d.name, d.dataUrl)}>⬇ Download</button>
                 <button className="btn small danger" onClick={() => removeDoc(d.id)}>Remove</button>
               </span>
             </div>
@@ -218,15 +256,21 @@ function RecCard({ rec, onEdit, onRemove, onAttach, maxBytes }) {
       return;
     }
     const reader = new FileReader();
-    reader.onload = () => {
-      onAttach({ name: f.name, type: f.type, dataUrl: reader.result, when: new Date().toISOString().slice(0, 10) });
+    reader.onload = async () => {
+      try {
+        if (rec.file?.blobId) await idbDel(rec.file.blobId);
+        const meta = await storeFile({ name: f.name, type: f.type, dataUrl: reader.result });
+        onAttach(meta);
+      } catch {
+        alert('Could not save that letter to browser storage. It may be too large, or storage is full.');
+      }
     };
     reader.readAsDataURL(f);
     e.target.value = '';
   }
 
   function download() {
-    if (rec.file?.dataUrl) triggerDownload(rec.file.name || `${rec.recommender}-letter`, rec.file.dataUrl);
+    if (rec.file) downloadStoredFile(rec.file.blobId, rec.file.name || `${rec.recommender}-letter`, rec.file.dataUrl);
   }
 
   return (

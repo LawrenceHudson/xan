@@ -1,10 +1,26 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { RESUME_GUIDE } from '../../shared/roadmap.js';
-import { useStored, triggerDownload } from '../lib/util.js';
+import { useStored } from '../lib/util.js';
+import { storeFile, downloadStoredFile, idbDel, ensureStored } from '../lib/idb.js';
 
 export default function Resume() {
-  // files: { art: {name, type, dataUrl, when}, career: {...} }
+  // files: { art: {name, type, when, size, blobId}, career: {...} }
+  // File bytes live in IndexedDB (keyed by blobId); only metadata is here.
   const [files, setFiles] = useStored('viol_resume', {});
+
+  // One-time migration: move any legacy inline base64 (dataUrl) into IndexedDB.
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const legacy = Object.entries(files).filter(([, f]) => f && f.dataUrl && !f.blobId);
+      if (legacy.length === 0) return;
+      const migrated = {};
+      for (const [id, f] of legacy) migrated[id] = await ensureStored(f);
+      if (active) setFiles((prev) => ({ ...prev, ...migrated }));
+    })();
+    return () => { active = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="screen">
@@ -37,21 +53,24 @@ function ResumeSlot({ slot, file, setFiles, maxBytes }) {
       return;
     }
     const reader = new FileReader();
-    reader.onload = () => {
-      setFiles((prev) => ({
-        ...prev,
-        [slot.id]: { name: f.name, type: f.type, dataUrl: reader.result, when: new Date().toISOString().slice(0, 10) },
-      }));
+    reader.onload = async () => {
+      try {
+        const meta = await storeFile({ name: f.name, type: f.type, dataUrl: reader.result });
+        setFiles((prev) => ({ ...prev, [slot.id]: meta }));
+      } catch {
+        alert('Could not save that file to browser storage. It may be too large, or storage is full.');
+      }
     };
     reader.readAsDataURL(f);
     e.target.value = '';
   }
 
   function download() {
-    if (file?.dataUrl) triggerDownload(file.name || `${slot.id}-resume`, file.dataUrl);
+    if (file) downloadStoredFile(file.blobId, file.name || `${slot.id}-resume`, file.dataUrl);
   }
 
   function clear() {
+    if (file?.blobId) idbDel(file.blobId);
     setFiles((prev) => {
       const next = { ...prev };
       delete next[slot.id];

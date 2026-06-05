@@ -17,6 +17,7 @@ import Volunteer from './components/Volunteer.jsx';
 import Admin from './components/Admin.jsx';
 import Note from './components/Note.jsx';
 import Motivation from './components/Motivation.jsx';
+import StorageBanner from './components/StorageBanner.jsx';
 import { useProgress, useTheme } from './lib/util.js';
 import { STUDENT } from '../shared/roadmap.js';
 import { APP_VERSION } from '../shared/version.js';
@@ -67,6 +68,8 @@ export default function App() {
           </button>
         </div>
       </header>
+
+      <StorageBanner />
 
       <Motivation />
 

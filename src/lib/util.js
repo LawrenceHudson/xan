@@ -48,9 +48,43 @@ export function useStored(key, initial) {
     }
   });
   useEffect(() => {
-    try { localStorage.setItem(key, JSON.stringify(val)); } catch { /* ignore */ }
+    try {
+      localStorage.setItem(key, JSON.stringify(val));
+    } catch (err) {
+      // Surface the failure instead of swallowing it — a silent QuotaExceededError
+      // here is what lets newly-added data "disappear" on the next reload.
+      reportStorageError(key, err);
+    }
   }, [key, val]);
   return [val, setVal];
+}
+
+// Broadcast a storage write failure so a banner can warn the user. The most
+// common cause is QuotaExceededError (localStorage's ~5 MB bucket is full).
+export function reportStorageError(key, err) {
+  const quota = !!err && (
+    err.name === 'QuotaExceededError' ||
+    err.name === 'NS_ERROR_DOM_QUOTA_REACHED' ||
+    err.code === 22 || err.code === 1014
+  );
+  // eslint-disable-next-line no-console
+  console.error(`[storage] could not save “${key}”`, err);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('viol-storage-error', {
+      detail: { key, quota, message: err && err.message ? err.message : String(err) },
+    }));
+  }
+}
+
+// Listen for storage write failures broadcast by reportStorageError.
+export function useStorageError() {
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    const onErr = (e) => setError(e.detail || { quota: false });
+    window.addEventListener('viol-storage-error', onErr);
+    return () => window.removeEventListener('viol-storage-error', onErr);
+  }, []);
+  return [error, useCallback(() => setError(null), [])];
 }
 
 // Convenience: track which event ids are completed.
