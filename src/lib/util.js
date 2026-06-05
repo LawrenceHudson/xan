@@ -62,7 +62,7 @@ export function useProgress() {
   return { done, toggle };
 }
 
-// ---- Custom items (user-added milestones shown on Calendar + Checklist) -----
+// ---- Custom items (user-added milestones shown on Calendar + Roadmap) -------
 // Shape matches EVENTS so the existing screens render them with no changes:
 //   { id, date, category, title, detail, link, remind, custom:true }
 export function useCustomItems() {
@@ -140,7 +140,7 @@ export function wordCount(text) {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
-// Map a volunteer record to the event shape used by Checklist + Calendar.
+// Map a volunteer record to the event shape used by the Roadmap + Calendar.
 export function volunteerToEvent(v) {
   const bits = [];
   if (v.hours) bits.push(`${v.hours} hr${Number(v.hours) === 1 ? '' : 's'}`);

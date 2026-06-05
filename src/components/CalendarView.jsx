@@ -80,7 +80,7 @@ export default function CalendarView({ done, toggle }) {
             <button className="btn" onClick={saveCustom}>Add to calendar</button>
             <button className="btn ghost" onClick={() => setAdding(false)}>Cancel</button>
           </div>
-          <p className="small muted">Custom events show on the Calendar and Checklist. (Email reminders only fire for the built-in milestones.)</p>
+          <p className="small muted">Custom events show on the Calendar and Roadmap. (Email reminders only fire for the built-in milestones.)</p>
         </div>
       )}
 

@@ -42,7 +42,7 @@ export default function Dashboard({ done, toggle, goTo }) {
             {overdue.length}
           </div>
           <div className="stat-label">Overdue</div>
-          <button className="link" onClick={() => goTo('checklist')}>Open checklist →</button>
+          <button className="link" onClick={() => goTo('timeline')}>Open roadmap →</button>
         </div>
         <div className="card stat">
           <div className="stat-num">{next30.length}</div>

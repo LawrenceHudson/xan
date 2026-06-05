@@ -3,7 +3,6 @@ import Login from './components/Login.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import Timeline from './components/Timeline.jsx';
 import CalendarView from './components/CalendarView.jsx';
-import Checklist from './components/Checklist.jsx';
 import Scholarships from './components/Scholarships.jsx';
 import Colleges from './components/Colleges.jsx';
 import PortfolioTracker from './components/PortfolioTracker.jsx';
@@ -27,7 +26,6 @@ const TABS = [
   { id: 'note',      label: 'From Dad',     emoji: '💌' },
   { id: 'timeline',  label: 'Roadmap',      emoji: '🛣️' },
   { id: 'calendar',  label: 'Calendar',     emoji: '📅' },
-  { id: 'checklist', label: 'Checklist',    emoji: '✅' },
   { id: 'portfolio', label: 'Portfolio',    emoji: '🎨' },
   { id: 'gallery',   label: 'Gallery',      emoji: '🖼️' },
   { id: 'writing',   label: 'Writing',      emoji: '✍️' },
@@ -89,7 +87,6 @@ export default function App() {
         {tab === 'note'      && <Note />}
         {tab === 'timeline'  && <Timeline {...progress} />}
         {tab === 'calendar'  && <CalendarView {...progress} />}
-        {tab === 'checklist' && <Checklist {...progress} />}
         {tab === 'portfolio' && <PortfolioTracker />}
         {tab === 'gallery'   && <Gallery />}
         {tab === 'writing'   && <Writing />}

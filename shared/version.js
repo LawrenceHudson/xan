@@ -8,9 +8,16 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.6.0';
+export const APP_VERSION = '1.7.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.7.0',
+    date: '2026-06-04',
+    notes: [
+      'Removed the Checklist tab — it duplicated the Roadmap. The Roadmap now does everything the Checklist did: it shows your custom calendar items and volunteer hours alongside the milestones, has the % done progress bar, and a “Hide done” toggle.',
+    ],
+  },
   {
     version: '1.6.0',
     date: '2026-06-04',

@@ -47,7 +47,7 @@ export default function Volunteer() {
 
       <div className="filters">
         <button className="btn primary" onClick={startNew}>+ Log volunteer work</button>
-        <span className="hidedone">These also show on your Checklist ✅</span>
+        <span className="hidedone">These also show on your Roadmap ✅</span>
       </div>
 
       {editing && (
