@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import { RECOMMENDATIONS_GUIDE } from '../../shared/roadmap.js';
 import { useStored, triggerDownload } from '../lib/util.js';
 
+const MAX_BYTES = RECOMMENDATIONS_GUIDE.maxBytes;
+
 const STATUS = RECOMMENDATIONS_GUIDE.statuses;
 const STATUS_BY_ID = Object.fromEntries(STATUS.map((s) => [s.id, s]));
 
@@ -64,6 +66,9 @@ export default function Recommendations() {
         <ul>{RECOMMENDATIONS_GUIDE.tips.map((t, i) => <li key={i}>{t}</li>)}</ul>
       </div>
 
+      <DocVault />
+
+      <h3 style={{ marginBottom: 4 }}>Recommenders</h3>
       <div className="editor-actions" style={{ marginBottom: 14 }}>
         {editing !== 'new' && <button className="btn small" onClick={startNew}>＋ Add recommender</button>}
       </div>
@@ -92,6 +97,66 @@ export default function Recommendations() {
           )
         ))}
       </div>
+    </div>
+  );
+}
+
+function DocVault() {
+  const [docs, setDocs] = useStored('viol_rec_docs', []);
+  const inputRef = useRef(null);
+
+  function onPick(e) {
+    const files = Array.from(e.target.files || []);
+    e.target.value = '';
+    files.forEach((f) => {
+      if (f.size > MAX_BYTES) {
+        alert(`“${f.name}” is too big to store in the browser (max ~${Math.round(MAX_BYTES / (1024 * 1024) * 10) / 10} MB). Try saving it as a compact PDF.`);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        setDocs((list) => [
+          { id: `doc-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, name: f.name, type: f.type, dataUrl: reader.result, when: new Date().toISOString().slice(0, 10) },
+          ...list,
+        ]);
+      };
+      reader.readAsDataURL(f);
+    });
+  }
+
+  function removeDoc(id) {
+    if (!confirm('Remove this document?')) return;
+    setDocs((list) => list.filter((d) => d.id !== id));
+  }
+
+  return (
+    <div className="card editor" style={{ marginBottom: 18 }}>
+      <div className="card-head">
+        <h3 style={{ margin: 0 }}>📎 Letters &amp; documents</h3>
+        <button className="btn small" onClick={() => inputRef.current?.click()}>⬆ Upload document</button>
+      </div>
+      <p className="muted small" style={{ margin: '4px 0 10px' }}>
+        Store any Word or PDF here — a general recommendation letter, a brag sheet, a résumé copy — and download it whenever you need to attach it. Not tied to a single recommender. Saved in this browser.
+      </p>
+
+      {docs.length === 0 ? (
+        <p className="muted small" style={{ margin: 0 }}>No documents yet. Upload a Word or PDF file to keep it ready.</p>
+      ) : (
+        <div className="cost-box">
+          {docs.map((d) => (
+            <div key={d.id} className="kv" style={{ alignItems: 'center' }}>
+              <span>📄 {d.name}</span>
+              <span className="editor-actions" style={{ margin: 0 }}>
+                <span className="muted small" style={{ marginRight: 8 }}>{d.when}</span>
+                <button className="btn small" onClick={() => triggerDownload(d.name, d.dataUrl)}>⬇ Download</button>
+                <button className="btn small danger" onClick={() => removeDoc(d.id)}>Remove</button>
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <input ref={inputRef} type="file" multiple accept=".pdf,.doc,.docx,application/pdf" style={{ display: 'none' }} onChange={onPick} />
     </div>
   );
 }

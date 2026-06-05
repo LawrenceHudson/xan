@@ -421,6 +421,40 @@ h3 { margin: 18px 0 8px; }
 .gift-bullets li { margin: 5px 0; font-size: .88rem; }
 .gift-cta { display: inline-block; width: 100%; box-sizing: border-box; }
 
+/* --- Public landing page (default, pre-login) --- */
+.public-wrap {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #7c3aed, #ec4899);
+  padding: 18px 16px 40px; position: relative;
+}
+.public-top {
+  display: flex; align-items: center; justify-content: space-between;
+  width: min(760px, 96vw); margin: 0 auto 8px; color: #fff;
+}
+.public-top .brand { display: flex; align-items: center; gap: 8px; font-size: 1.05rem; }
+.public-top .brand-emoji { font-size: 1.4rem; }
+.login-link {
+  background: rgba(255,255,255,.16); color: #fff; border: 1px solid rgba(255,255,255,.4);
+  padding: 8px 16px; border-radius: 999px; font-weight: 700; cursor: pointer;
+}
+.login-link:hover { background: rgba(255,255,255,.28); }
+.login-pop {
+  position: fixed; inset: 0; z-index: 50; display: grid; place-items: center;
+  padding: 20px; background: rgba(20,10,30,.55);
+}
+.login-pop .login-card { max-width: 360px; }
+.login-pop .login-card button { width: 100%; }
+.hero {
+  width: min(680px, 94vw); margin: 18px auto 22px; text-align: center; color: #fff;
+}
+.hero-emoji { font-size: 3rem; }
+.hero h1 { font-size: 2rem; margin: 8px 0 10px; }
+.hero-sub { font-size: 1.1rem; line-height: 1.5; margin: 0 auto 12px; max-width: 560px; opacity: .96; }
+.hero-body { font-size: .98rem; line-height: 1.6; margin: 0 auto; max-width: 560px; opacity: .9; }
+.public-gift { width: min(560px, 94vw); margin: 0 auto; }
+.public-foot { text-align: center; margin-top: 22px; }
+.public-foot .muted { color: rgba(255,255,255,.85); }
+
 /* --- Admin: bug/feature feedback list --- */
 .feedback-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .feedback-item {

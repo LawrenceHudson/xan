@@ -8,9 +8,18 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.5.0';
+export const APP_VERSION = '1.6.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.6.0',
+    date: '2026-06-04',
+    notes: [
+      'Recommendations tab now has a “Letters & documents” vault — upload any Word or PDF (a general letter, brag sheet, résumé copy), keep it in the browser, and download it anytime to attach to an application. Not tied to a single recommender.',
+      'Campus-visit milestones now link straight to each school’s official tour-registration page (MassArt, MECA&D, RISD, CalArts) and are reframed as “Schedule + take the tour” — they already show on the Checklist and Calendar.',
+      'Redesigned the front page: visitors now see a public welcome about Xanderr and her 529 gift page by default, with a “Log in” link that pops up the password field only when clicked.',
+    ],
+  },
   {
     version: '1.5.0',
     date: '2026-06-04',

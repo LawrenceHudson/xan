@@ -25,16 +25,18 @@ sent via **Resend** on a daily **Vercel Cron** schedule.
 | 🏅 Achievements | Log awards, exhibitions, sales, publications & more; **link an image** and click the thumbnail to view it full-size; add/edit/delete and **export the whole list as a TXT file** |
 | 🤝 Volunteer | Track service hours (org, role, hours, ongoing); entries also surface on the **Checklist** |
 | 📄 Résumé | Friendly writing tips + two upload/download slots (an **art-focused** and a **young-career** résumé), stored in the browser |
-| 📜 Recommendations | Track each recommender (role, which schools, status, asked/needed-by dates, notes) and **store the finished letter file** so it's ready to attach to any application |
+| 📜 Recommendations | Track each recommender (role, which schools, status, asked/needed-by dates, notes) and **store the finished letter file** so it's ready to attach; plus a **Letters & documents vault** to upload any Word/PDF (general letter, brag sheet, résumé copy) and download it later |
 | 🏆 Scholarships | When to start, the deliverable, the deadline, the link |
 | 🎓 Colleges | Where/when to apply, what each values, **total price + avg aid + avg net price + Net Price Calculator link**, affordability + **Family Rules** |
 | 📬 Decisions | Per-school status (planning → applied → accepted/waitlist/denied → committed), award + net price log, and a **May 1 Decision Day** countdown |
 | 🐖 Savings | Log deposits/scholarship wins toward the $8k–$12k goal |
 | 🛠️ Admin | App version, **release notes**, a **Send test email** button, and a **Bug / Feature submitter** (log items and clear them when handled) |
 
-**Login screen** doubles as a **529 gifting splash** — family & friends get a short
-pitch and a direct link to contribute to Violet's college-savings account (edit
-the copy in `GIFTING` in `shared/roadmap.js`).
+**Front page** is a **public welcome** about Xanderr plus a **529 gifting splash** —
+family & friends get a short pitch and a direct link to contribute to Violet's
+college-savings account (edit the copy in `GIFTING` in `shared/roadmap.js`). The
+password field stays hidden until you click **Log in**, so the default view is the
+public face only.
 
 **Custom items:** on the **Calendar** she can add her own events (and remove them);
 these flow into the Checklist too. **Light/dark mode** toggles from the ☀️/🌙
