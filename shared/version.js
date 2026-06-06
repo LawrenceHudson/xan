@@ -8,9 +8,16 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.13.1';
+export const APP_VERSION = '1.13.2';
 
 export const CHANGELOG = [
+  {
+    version: '1.13.2',
+    date: '2026-06-06',
+    notes: [
+      'Fixed the “Affordability” box on each Colleges card being unreadable in dark mode. The text turned white but the green background stayed light, so it was white-on-white. The box now uses a dark green background in dark mode so the text is legible.',
+    ],
+  },
   {
     version: '1.13.1',
     date: '2026-06-05',
