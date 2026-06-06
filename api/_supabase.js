@@ -60,3 +60,48 @@ export async function sbFetch(path, { method = 'GET', body, prefer } = {}) {
 export function notConfigured(res) {
   return res.status(200).json({ ok: false, reason: 'supabase-not-configured' });
 }
+
+// ---- Reading the synced app state from the server side ----------------------
+// The browser mirrors every `viol_` key into the Supabase `app_state` table
+// (see src/lib/store.js). These helpers let the server-only routes (the live
+// calendar feed and the daily reminder email) read what Violet typed into the
+// app, so her custom events and portfolio deadlines flow into both.
+
+import { customEvents, volunteerEvents, portfolioEvents, recommendationEvents } from '../shared/userEvents.js';
+
+// Fetch specific keys (or all `viol_` keys if none given) → { key: value }.
+// Returns {} when Supabase isn't configured, so callers degrade gracefully to
+// "built-in milestones only" exactly as before sync existed.
+export async function readStateKeys(keys) {
+  if (!supaEnv().configured) return {};
+  const path = keys && keys.length
+    ? `app_state?select=key,value&key=in.(${keys.join(',')})`
+    : 'app_state?select=key,value';
+  const rows = await sbFetch(path);
+  const out = {};
+  for (const r of rows || []) out[r.key] = r.value;
+  return out;
+}
+
+// The user-entered dated items, in EVENT shape:
+//   • custom calendar events     (viol_custom)
+//   • portfolio piece deadlines  (viol_portfolio, target date, not yet final)
+//   • volunteer dates            (viol_volunteer) — only when includeVolunteer
+// Never throws; on any Supabase error it resolves to [] so the feed/email still
+// send the built-in milestones.
+export async function loadUserEvents({ includeVolunteer = false } = {}) {
+  try {
+    const keys = ['viol_custom', 'viol_portfolio', 'viol_recs'];
+    if (includeVolunteer) keys.push('viol_volunteer');
+    const state = await readStateKeys(keys);
+    const out = [
+      ...customEvents(state.viol_custom || []),
+      ...portfolioEvents(state.viol_portfolio || []),
+      ...recommendationEvents(state.viol_recs || []),
+    ];
+    if (includeVolunteer) out.push(...volunteerEvents(state.viol_volunteer || []));
+    return out;
+  } catch {
+    return [];
+  }
+}

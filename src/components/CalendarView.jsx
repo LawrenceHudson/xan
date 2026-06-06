@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { EVENTS, CATEGORIES } from '../../shared/roadmap.js';
-import { parseDate, fmt, statusOf, useCustomItems, useVolunteer, volunteerToEvent } from '../lib/util.js';
+import { parseDate, fmt, statusOf, useCustomItems, useVolunteer, volunteerToEvent, usePortfolioEvents, useRecommendationEvents } from '../lib/util.js';
 import CalendarSync from './CalendarSync.jsx';
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -9,11 +9,15 @@ const DOW = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 export default function CalendarView({ done, toggle }) {
   const { items: custom, add, remove } = useCustomItems();
   const { items: volunteer } = useVolunteer();
+  const { items: portfolioEv } = usePortfolioEvents();
+  const { items: recEv } = useRecommendationEvents();
 
   const allEvents = [
     ...EVENTS,
     ...custom,
     ...volunteer.map(volunteerToEvent).filter((v) => v.date),
+    ...portfolioEv,
+    ...recEv,
   ];
 
   const first = allEvents.map((e) => parseDate(e.date)).sort((a, b) => a - b)[0] || new Date();
@@ -52,8 +56,6 @@ export default function CalendarView({ done, toggle }) {
     <div className="screen">
       <h2>Calendar</h2>
       <p className="muted">🔔 Built-in events auto-email a reminder <strong>1 week before</strong> (and 1 day before deadlines). Add your own events too. 📌</p>
-
-      <CalendarSync />
 
       <div className="filters">
         <button className="btn primary" onClick={() => setAdding((a) => !a)}>{adding ? 'Close' : '+ Add custom event'}</button>
@@ -119,6 +121,8 @@ export default function CalendarView({ done, toggle }) {
         ))}
       </div>
 
+      <CalendarSync />
+
       {picked && (
         <div className="modal" onClick={() => setPicked(null)}>
           <div className="modal-card" onClick={(e) => e.stopPropagation()}>
@@ -129,11 +133,15 @@ export default function CalendarView({ done, toggle }) {
             <p className="muted">{fmt(picked.date)}</p>
             {picked.detail && <p>{picked.detail}</p>}
             {picked.remind && <p className="small muted">🔔 Email reminders: {picked.remind.map((r) => `${r}d`).join(', ')} before</p>}
+            {picked.readonly && picked.portfolio && <p className="small muted">🎨 This is a portfolio goal date. Manage it on the <strong>Portfolio</strong> tab — mark the piece “final” there to clear the reminder.</p>}
+            {picked.readonly && picked.recommendation && <p className="small muted">✉️ This is a recommendation-letter date. Manage it on the <strong>Recommendations</strong> tab — mark the letter “received” there to clear the reminder.</p>}
             <div className="modal-actions">
               {picked.link && <a className="btn" href={picked.link} target="_blank" rel="noreferrer">Open link ↗</a>}
-              <button className="btn alt" onClick={() => { toggle(picked.id); setPicked(null); }}>
-                {done[picked.id] ? 'Mark not done' : 'Mark done ✓'}
-              </button>
+              {!picked.readonly && (
+                <button className="btn alt" onClick={() => { toggle(picked.id); setPicked(null); }}>
+                  {done[picked.id] ? 'Mark not done' : 'Mark done ✓'}
+                </button>
+              )}
               {picked.custom && (
                 <button className="btn danger" onClick={() => { remove(picked.id); setPicked(null); }}>Remove</button>
               )}

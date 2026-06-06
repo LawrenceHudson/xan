@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { storeGet, storeSet, storeSubscribe } from './store.js';
+import { volunteerToEvent, portfolioToEvent, portfolioEvents, recommendationEvents } from '../../shared/userEvents.js';
+
+// Re-export the shared (no-React) event mappers so every screen keeps importing
+// them from util.js as before — the definitions now live in shared/userEvents.js
+// so the server (feed + email cron) can use the exact same logic.
+export { volunteerToEvent, portfolioToEvent };
 
 // ---- Dates (local, no external libs) ----------------------------------------
 export function parseDate(iso) {
@@ -180,21 +186,12 @@ export function wordCount(text) {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
-// Map a volunteer record to the event shape used by the Roadmap + Calendar.
-export function volunteerToEvent(v) {
-  const bits = [];
-  if (v.hours) bits.push(`${v.hours} hr${Number(v.hours) === 1 ? '' : 's'}`);
-  if (v.ongoing) bits.push('ongoing');
-  if (v.description) bits.push(v.description);
-  return {
-    id: v.id,
-    date: v.date || '',
-    category: 'volunteer',
-    title: v.role ? `${v.role} — ${v.org}` : (v.org || 'Volunteer work'),
-    detail: bits.join(' · '),
-    link: v.link || '',
-    volunteer: true,
-  };
+// Portfolio pieces that have a target date, mapped to dated reminder events for
+// the Roadmap + Calendar. These are read-only reminders — they never count in
+// any progress %. Pieces marked "final" drop off automatically.
+export function usePortfolioEvents() {
+  const [pieces] = useStored('viol_portfolio', []);
+  return { items: portfolioEvents(pieces) };
 }
 
 // ---- Light / dark theme -----------------------------------------------------

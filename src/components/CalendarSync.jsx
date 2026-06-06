@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { EVENTS } from '../../shared/roadmap.js';
 import { buildCalendar } from '../../shared/ics.js';
-import { useCustomItems, useVolunteer, volunteerToEvent } from '../lib/util.js';
+import { useCustomItems, useVolunteer, volunteerToEvent, usePortfolioEvents, useRecommendationEvents } from '../lib/util.js';
 
 // ============================================================================
 // "Add these dates to your calendar" — two ways to get the roadmap milestones
@@ -16,6 +16,8 @@ const FEED_PATH = '/api/calendar.ics';
 export default function CalendarSync() {
   const { items: custom } = useCustomItems();
   const { items: volunteer } = useVolunteer();
+  const { items: portfolioEv } = usePortfolioEvents();
+  const { items: recEv } = useRecommendationEvents();
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -29,6 +31,8 @@ export default function CalendarSync() {
       ...EVENTS,
       ...custom,
       ...volunteer.map(volunteerToEvent).filter((v) => v.date),
+      ...portfolioEv,
+      ...recEv,
     ];
     const ics = buildCalendar(all, { domain: 'violet-roadmap' });
     const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
@@ -77,8 +81,8 @@ export default function CalendarSync() {
           <p>
             <strong>1) One-time import (simplest).</strong> Tap <em>Download .ics</em>, then open the
             file — your phone or computer offers to add the dates to your calendar. This version
-            includes your custom calendar items too. It’s a snapshot, so if the roadmap changes
-            later, just download again.
+            includes your custom calendar items, portfolio goal dates, and recommendation-letter
+            dates too. It’s a snapshot, so if the roadmap changes later, just download again.
           </p>
           <p>
             <strong>2) Subscribe so it stays current (set up once).</strong> Use the feed link below
@@ -98,9 +102,10 @@ export default function CalendarSync() {
           <code className="sync-url">{feedUrl}</code>
           <p className="muted" style={{ marginTop: 8 }}>
             Heads-up: a subscribed calendar is <strong>read-only</strong> on your side, and Google
-            refreshes it slowly (usually every few hours, sometimes up to a day). The live feed
-            carries the built-in milestones; your own custom items travel only in the downloaded
-            file. Anyone with the feed link can see the dates, so keep it within the family.
+            refreshes it slowly (usually every few hours, sometimes up to a day). The live feed now
+            carries everything — the built-in milestones plus your own custom events, portfolio goal
+            dates, and recommendation-letter dates. Anyone with the feed link can see the dates, so
+            keep it within the family.
           </p>
         </div>
       )}

@@ -14,6 +14,7 @@
 
 import { EVENTS, CATEGORIES, STUDENT } from '../shared/roadmap.js';
 import { APP_VERSION } from '../shared/version.js';
+import { loadUserEvents } from './_supabase.js';
 
 function todayLocal() {
   const n = new Date();
@@ -30,16 +31,28 @@ function fmt(iso) {
   return parseDate(iso).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 }
 
-// Which events should fire a reminder today?
-export function dueToday() {
+// Pick out the events whose reminder window (e.g. 7 or 1 days before) lands on
+// today, from any list of events.
+function remindersFrom(events) {
   const out = [];
-  for (const e of EVENTS) {
+  for (const e of events) {
+    if (!e || !e.date) continue;
     const d = daysUntil(e.date);
     const remind = e.remind || [7];
     if (remind.includes(d)) out.push({ ...e, days: d });
   }
+  return out;
+}
+
+// Which events should fire a reminder today? Built-in milestones PLUS the items
+// Violet adds herself — custom calendar events and portfolio piece deadlines —
+// read from the synced store. If sync isn't configured, this still emails the
+// built-in milestones exactly as before.
+export async function dueToday() {
+  const userEvents = await loadUserEvents();
+  const all = [...EVENTS, ...userEvents];
   // Soonest first.
-  return out.sort((a, b) => a.days - b.days);
+  return remindersFrom(all).sort((a, b) => a.days - b.days);
 }
 
 function buildHtml(items) {
@@ -143,7 +156,7 @@ export default async function handler(req, res) {
     }
   }
 
-  const items = dueToday();
+  const items = await dueToday();
   if (items.length === 0) {
     return res.status(200).json({ ok: true, sent: false, message: 'Nothing due today.' });
   }
@@ -153,12 +166,15 @@ export default async function handler(req, res) {
 
 // Allow `npm run reminders:test` from the CLI.
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const items = dueToday();
-  console.log(`\nMilestones that would email today: ${items.length}`);
-  for (const i of items) console.log(`  • [${i.days}d] ${i.title} (${i.date})`);
-  if (items.length) {
-    sendEmail(items).then((r) => console.log('\nSend result:', r));
-  } else {
-    console.log('  (none — try editing a date in shared/roadmap.js to test)');
-  }
+  (async () => {
+    const items = await dueToday();
+    console.log(`\nMilestones that would email today: ${items.length}`);
+    for (const i of items) console.log(`  • [${i.days}d] ${i.title} (${i.date})`);
+    if (items.length) {
+      const r = await sendEmail(items);
+      console.log('\nSend result:', r);
+    } else {
+      console.log('  (none — try editing a date in shared/roadmap.js to test)');
+    }
+  })();
 }

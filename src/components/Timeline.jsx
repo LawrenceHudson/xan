@@ -1,20 +1,27 @@
 import { useState } from 'react';
 import { EVENTS, CATEGORIES } from '../../shared/roadmap.js';
-import { fmt, statusOf, daysUntil, useCustomItems, useVolunteer, volunteerToEvent } from '../lib/util.js';
+import { fmt, statusOf, daysUntil, useCustomItems, useVolunteer, volunteerToEvent, usePortfolioEvents, useRecommendationEvents } from '../lib/util.js';
 
 export default function Timeline({ done, toggle }) {
   const [hideDone, setHideDone] = useState(false);
   const { items: custom } = useCustomItems();
   const { items: volunteer } = useVolunteer();
+  const { items: portfolioEv } = usePortfolioEvents();
+  const { items: recEv } = useRecommendationEvents();
 
-  const all = [...EVENTS, ...custom, ...volunteer.map(volunteerToEvent)];
+  // Progress % counts only the trackable items (milestones + custom + volunteer).
+  // Portfolio goal dates and recommendation-letter dates are read-only reminders —
+  // they show in the list for context but never move the bar, so the
+  // mountain/dashboard metrics stay put.
+  const tracked = [...EVENTS, ...custom, ...volunteer.map(volunteerToEvent)];
+  const all = [...tracked, ...portfolioEv, ...recEv];
   const sortKey = (e) => (e.date ? daysUntil(e.date) : 99999);
 
   let rows = [...all].sort((a, b) => sortKey(a) - sortKey(b));
   if (hideDone) rows = rows.filter((e) => !done[e.id]);
 
-  const completed = all.filter((e) => done[e.id]).length;
-  const pct = all.length ? Math.round((completed / all.length) * 100) : 0;
+  const completed = tracked.filter((e) => done[e.id]).length;
+  const pct = tracked.length ? Math.round((completed / tracked.length) * 100) : 0;
 
   return (
     <div className="screen">
@@ -42,12 +49,17 @@ export default function Timeline({ done, toggle }) {
               <div className="tl-body">
                 <div className="tl-date">{e.date ? fmt(e.date) : 'No date'}</div>
                 <div className="tl-title">
-                  <label className="cbx">
-                    <input type="checkbox" checked={!!done[e.id]} onChange={() => toggle(e.id)} />
-                    <span className={done[e.id] ? 'struck' : ''}>{e.title}</span>
-                  </label>
+                  {e.readonly ? (
+                    <span className="tl-readonly">{e.title}</span>
+                  ) : (
+                    <label className="cbx">
+                      <input type="checkbox" checked={!!done[e.id]} onChange={() => toggle(e.id)} />
+                      <span className={done[e.id] ? 'struck' : ''}>{e.title}</span>
+                    </label>
+                  )}
                 </div>
                 <span className="pill" style={{ background: c.color }}>{c.label}</span>
+                {e.readonly && <span className="pill" style={{ background: '#9ca3af' }}>{e.recommendation ? 'Reminder' : 'Goal date'}</span>}
                 {st === 'overdue' && !done[e.id] && <span className="pill danger-pill">Overdue</span>}
                 {st === 'urgent' && !done[e.id] && <span className="pill warn-pill">Due this week</span>}
                 {e.detail && <p className="tl-detail">{e.detail}</p>}

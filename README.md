@@ -16,15 +16,15 @@ sent via **Resend** on a daily **Vercel Cron** schedule.
 |-----|--------------|
 | 🏠 Dashboard | % complete, overdue items, next 30 days, current best-fit school, plus a **Creative momentum** row (portfolio finals, achievements, writing pieces, volunteer hours, savings) |
 | 💌 From Dad | A personal letter to Violet about why this is a many-options plan; text lives in `DAD_NOTE` in `shared/roadmap.js` |
-| 🛣️ Roadmap | Full chronological timeline — milestones plus your **custom calendar items** and **volunteer hours**; check things off live, with a **% done progress bar** and a **hide-done** toggle |
-| 📅 Calendar | Month grid; tap any event for details + links. **Add to your calendar:** download a `.ics` snapshot (includes custom items) or subscribe to the live feed at `/api/calendar.ics` so Google/Apple/Outlook auto-update one-way when the roadmap changes (read-only; built-in milestones only) |
-| 🎨 Portfolio | Piece-by-piece tracker: idea → in-progress → revise → final, tagged by school + scholarship, with notes and target dates |
+| 🛣️ Roadmap | Full chronological timeline — milestones plus your **custom calendar items**, **volunteer hours**, **portfolio goal dates**, and **recommendation-letter dates** (read-only reminders that don't count toward %); check things off live, with a **% done progress bar** and a **hide-done** toggle |
+| 📅 Calendar | Month grid; tap any event for details + links. **Add to your calendar:** download a `.ics` snapshot or subscribe to the live feed at `/api/calendar.ics` so Google/Apple/Outlook auto-update one-way when the roadmap changes (read-only on their side). Both the snapshot **and the live feed** now carry built-in milestones **plus your custom events, portfolio goal dates, and recommendation-letter dates** |
+| 🎨 Portfolio | Piece-by-piece tracker: idea → in-progress → revise → final, tagged by school + scholarship, with notes and target dates. **Set a target date and it becomes a reminder** — shown on the Calendar/Roadmap, synced to your calendar feed, and emailed 7 days + 1 day before. Marking a piece **final** clears its reminder |
 | 🖼️ Gallery | A SlideRoom-style wall to review finished pieces (with image links) before uploading |
 | ✍️ Writing | Collect stories, poems, plays, D&D campaigns, and **college essays**; live word counter, per-school essay prompts + word limits, ⭐ favorites, and per-piece TXT export |
 | 🏅 Achievements | Log awards, exhibitions, sales, publications & more; **link an image** and click the thumbnail to view it full-size; add/edit/delete and **export the whole list as a TXT file** |
 | 🤝 Volunteer | Track service hours (org, role, hours, ongoing); entries also surface on the **Checklist** |
 | 📄 Résumé | Friendly writing tips + two upload/download slots (an **art-focused** and a **young-career** résumé), stored in the browser |
-| 📜 Recommendations | Track each recommender (role, which schools, status, asked/needed-by dates, notes) and **store the finished letter file** so it's ready to attach; plus a **Letters & documents vault** to upload any Word/PDF (general letter, brag sheet, résumé copy) and download it later |
+| 📜 Recommendations | Track each recommender (role, which schools, status, asked/needed-by dates, notes) and **store the finished letter file** so it's ready to attach; plus a **Letters & documents vault** to upload any Word/PDF (general letter, brag sheet, résumé copy) and download it later. **The asked-on and needed-by dates become read-only reminders** on the Calendar/Roadmap, sync to your calendar feed, and email 7 days + 1 day before; marking a letter **received/submitted** clears them |
 | 🏆 Scholarships | When to start, the deliverable, the deadline, the link |
 | 🎓 Colleges | Where/when to apply, what each values, **total price + avg aid + avg net price + Net Price Calculator link**, affordability + **Family Rules** |
 | 📬 Decisions | Per-school status (planning → applied → accepted/waitlist/denied → committed), award + net price log, and a **May 1 Decision Day** countdown |
@@ -100,7 +100,11 @@ npm run reminders:test
 ```
 Each day it emails any milestone whose reminder window (e.g. 7 days before) lands
 on that date. Change the `remind: [...]` array on any event in `shared/roadmap.js`
-to adjust how far ahead it warns.
+to adjust how far ahead it warns. **Custom events and portfolio goal dates are
+included too** — the cron reads them from the synced store (Supabase), so anything
+Violet adds in the app fires reminders just like the built-in milestones (default
+7 days + 1 day before). If Supabase isn't configured, it falls back to emailing the
+built-in milestones only.
 
 > Vercel's Hobby (free) plan runs Cron **once per day**, which is exactly what
 > this needs.

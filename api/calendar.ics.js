@@ -12,19 +12,24 @@
 // obscure deployment domain — fine for a private family tool, but treat the link
 // as effectively public and keep it within the family.
 //
-// Custom calendar items live in each browser (localStorage), which the server
-// can't see, so the feed carries only the built-in milestones. The in-app
-// "Download .ics" button bundles custom items too.
+// The feed now also carries the items Violet adds herself — custom calendar
+// events, portfolio piece deadlines, and volunteer dates — by reading them from
+// the synced Supabase store (see api/_supabase.js → loadUserEvents). If sync
+// isn't configured, it gracefully falls back to the built-in milestones only.
 // ============================================================================
 
 import { EVENTS } from '../shared/roadmap.js';
 import { buildCalendar } from '../shared/ics.js';
+import { loadUserEvents } from './_supabase.js';
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
+  // Pull her own dated items from the synced store; never throws.
+  const userEvents = await loadUserEvents({ includeVolunteer: true });
+
   // Fixed domain in the UID keeps each event's identity stable no matter which
   // deployment URL (production vs. preview) the calendar app fetched it from —
   // so subscribers update events in place instead of duplicating them.
-  const ics = buildCalendar(EVENTS, { domain: 'violet-roadmap' });
+  const ics = buildCalendar([...EVENTS, ...userEvents], { domain: 'violet-roadmap' });
 
   res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
   res.setHeader('Content-Disposition', 'inline; filename="violet-roadmap.ics"');

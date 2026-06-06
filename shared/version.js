@@ -8,9 +8,27 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.11.0';
+export const APP_VERSION = '1.13.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.13.0',
+    date: '2026-06-05',
+    notes: [
+      'Recommendation letters now turn into reminders. When you set an “asked on” or “needed by” date on a recommender, each date shows on the Calendar and in the Roadmap timeline (in date order), syncs to your subscribed Google/Apple calendar through the live feed, and emails you 7 days and 1 day before — exactly like everything else.',
+      'These are read-only reminders, just like portfolio goal dates: they nudge you but never count toward your % complete, so the mountain and dashboard metrics stay exactly the same.',
+      'Once a letter is marked “received” or “submitted” on the Recommendations tab, its reminders drop off everywhere automatically — no more nudges for a letter you already have.',
+    ],
+  },
+  {
+    version: '1.12.0',
+    date: '2026-06-05',
+    notes: [
+      'Custom events you add now travel everywhere: they sync to your subscribed Google/Apple calendar through the live feed, and they trigger the same email reminders as the built-in milestones (7 days and 1 day before, by default). Before, custom events only showed inside the app — now the feed and the daily reminder email read them straight from your synced data.',
+      'New: set a target date on a Portfolio piece and it automatically becomes a reminder — it shows on the Calendar, appears in the Roadmap timeline in date order, syncs to your calendar feed, and emails you 7 days and 1 day before. These are read-only “goal date” reminders: they nudge you but never count toward your % complete, so the mountain and the dashboard metrics stay exactly as they were.',
+      'Mark a portfolio piece “final” and its reminder drops off everywhere automatically — finished work stops nagging you.',
+    ],
+  },
   {
     version: '1.11.0',
     date: '2026-06-05',
