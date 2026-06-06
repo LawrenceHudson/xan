@@ -194,6 +194,14 @@ export function usePortfolioEvents() {
   return { items: portfolioEvents(pieces) };
 }
 
+// Recommendation letters' "asked on" + "needed by" dates, mapped to dated
+// reminder events for the Roadmap + Calendar. Read-only — they never count in
+// any progress %. Letters marked "received"/"submitted" drop off automatically.
+export function useRecommendationEvents() {
+  const [recs] = useStored('viol_recs', []);
+  return { items: recommendationEvents(recs) };
+}
+
 // ---- Light / dark theme -----------------------------------------------------
 export function useTheme() {
   const [theme, setTheme] = useStored('viol_theme', 'light');

@@ -8,9 +8,16 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.13.0';
+export const APP_VERSION = '1.13.1';
 
 export const CHANGELOG = [
+  {
+    version: '1.13.1',
+    date: '2026-06-05',
+    notes: [
+      'Fixed the Vercel build failing on deploy. The recommendation-letter reminders added in 1.13.0 referenced a piece of shared code that wasn’t exported yet, so the build couldn’t finish. That export is now in place and the app builds and deploys cleanly. No change to how anything looks or works.',
+    ],
+  },
   {
     version: '1.13.0',
     date: '2026-06-05',
