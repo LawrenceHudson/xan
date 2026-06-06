@@ -3,6 +3,7 @@ import Login from './components/Login.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import Timeline from './components/Timeline.jsx';
 import CalendarView from './components/CalendarView.jsx';
+import Climb from './components/Climb.jsx';
 import Scholarships from './components/Scholarships.jsx';
 import Colleges from './components/Colleges.jsx';
 import PortfolioTracker from './components/PortfolioTracker.jsx';
@@ -27,6 +28,7 @@ const TABS = [
   { id: 'dash',      label: 'Dashboard',    emoji: '🏠' },
   { id: 'note',      label: 'From Dad',     emoji: '💌' },
   { id: 'timeline',  label: 'Roadmap',      emoji: '🛣️' },
+  { id: 'climb',     label: 'The Climb',    emoji: '🏔️' },
   { id: 'calendar',  label: 'Calendar',     emoji: '📅' },
   { id: 'portfolio', label: 'Portfolio',    emoji: '🎨' },
   { id: 'gallery',   label: 'Gallery',      emoji: '🖼️' },
@@ -97,6 +99,7 @@ export default function App() {
         {tab === 'dash'      && <Dashboard {...progress} goTo={setTab} />}
         {tab === 'note'      && <Note />}
         {tab === 'timeline'  && <Timeline {...progress} />}
+        {tab === 'climb'     && <Climb {...progress} />}
         {tab === 'calendar'  && <CalendarView {...progress} />}
         {tab === 'portfolio' && <PortfolioTracker />}
         {tab === 'gallery'   && <Gallery />}

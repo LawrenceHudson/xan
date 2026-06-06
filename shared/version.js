@@ -8,9 +8,25 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.9.0';
+export const APP_VERSION = '1.10.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.10.0',
+    date: '2026-06-05',
+    notes: [
+      'New “The Climb” tab — your whole roadmap drawn as a mountain. Every milestone is a waypoint on a switchback trail from Base Camp (Summer 2026) up to the Decision Day summit (May 1, 2027). A little art-student climber stands at your real % complete and moves higher each time you check something off.',
+      'Tap any waypoint to read that milestone and mark it reached; the next step to tackle pulses on the trail. Done waypoints fill in with a checkmark and the trail behind you turns solid.',
+      'All hand-drawn artwork (mountain, trail, climber) is vector art, so it stays crisp on any screen and recolors automatically in light/dark mode. This is a first version on its own tab — if you like it, it can move onto the Dashboard.',
+    ],
+  },
+  {
+    version: '1.9.1',
+    date: '2026-06-05',
+    notes: [
+      'Removed the “Export a backup” button from the Admin tab. It’s no longer needed: with cross-device sync turned on, everything is saved to the secure online database (Supabase), which is now the canonical copy of your data. The app still keeps a local copy in each browser as an offline fallback.',
+    ],
+  },
   {
     version: '1.9.0',
     date: '2026-06-05',

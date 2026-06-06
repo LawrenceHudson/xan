@@ -29,7 +29,7 @@ sent via **Resend** on a daily **Vercel Cron** schedule.
 | 🎓 Colleges | Where/when to apply, what each values, **total price + avg aid + avg net price + Net Price Calculator link**, affordability + **Family Rules** |
 | 📬 Decisions | Per-school status (planning → applied → accepted/waitlist/denied → committed), award + net price log, and a **May 1 Decision Day** countdown |
 | 🐖 Savings | Log deposits/scholarship wins toward the $8k–$12k goal |
-| 🛠️ Admin | App version, **release notes**, a **Send test email** button, a **Backup export**, and a **Bug / Feature submitter** (log items and clear them when handled) |
+| 🛠️ Admin | App version, **release notes**, a **Send test email** button, and a **Bug / Feature submitter** (log items and clear them when handled) |
 
 **Front page** is a **public welcome** about Xanderr plus a **529 gifting splash** —
 family & friends get a short pitch and a direct link to contribute to Violet's

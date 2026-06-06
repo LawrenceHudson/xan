@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { APP_VERSION, CHANGELOG } from '../../shared/version.js';
 import { fmt, useFeedback } from '../lib/util.js';
-import { exportBackup } from '../lib/idb.js';
 
 function whenLabel(iso) {
   try {
@@ -14,17 +13,6 @@ export default function Admin() {
   const { items: feedback, add: addFeedback, remove: removeFeedback, clearAll: clearFeedback } = useFeedback();
   const [fbType, setFbType] = useState('bug');
   const [fbText, setFbText] = useState('');
-  const [backup, setBackup] = useState(null); // null | 'working' | {ok, msg}
-
-  async function doExport() {
-    setBackup('working');
-    try {
-      await exportBackup();
-      setBackup({ ok: true, msg: 'Backup downloaded ✓ — keep it somewhere safe.' });
-    } catch {
-      setBackup({ ok: false, msg: 'Could not build the backup file. Try again in a moment.' });
-    }
-  }
 
   function submitFeedback() {
     if (!fbText.trim()) return;
@@ -73,19 +61,6 @@ export default function Admin() {
         </div>
         {status && status !== 'sending' && (
           <p className={status.ok ? 'celebrate' : 'danger'} style={{ marginTop: 8 }}>{status.msg}</p>
-        )}
-      </section>
-
-      <section>
-        <h3>💾 Backup &amp; restore</h3>
-        <p className="muted small">Everything in this app is saved inside this browser — achievements, writing, portfolio notes, and any uploaded résumés, letters, and documents. Download a single backup file and keep it somewhere safe. If the browser ever clears its data or you switch computers, this is your recovery copy.</p>
-        <div className="editor-actions">
-          <button className="btn primary" onClick={doExport} disabled={backup === 'working'}>
-            {backup === 'working' ? 'Preparing…' : '⬇ Export a backup'}
-          </button>
-        </div>
-        {backup && backup !== 'working' && (
-          <p className={backup.ok ? 'celebrate' : 'danger'} style={{ marginTop: 8 }}>{backup.msg}</p>
         )}
       </section>
 
