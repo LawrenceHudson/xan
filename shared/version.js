@@ -8,9 +8,18 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.10.0';
+export const APP_VERSION = '1.11.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.11.0',
+    date: '2026-06-05',
+    notes: [
+      'New “Add these dates to your calendar” card on the Calendar tab — get every roadmap milestone into Google, Apple, or Outlook Calendar. Two ways: a one-time “Download .ics” (a snapshot that also includes your own custom calendar items), or a subscribe link that keeps the calendar updated automatically.',
+      'The subscribe link is a live feed (/api/calendar.ics) the calendar app re-checks on its own — edit a date in the roadmap and it flows out to subscribed calendars within a few hours, one-way and read-only on their side. A one-tap “Add to Google Calendar” button and a copyable feed link are included, with step-by-step setup for Google and iPhone.',
+      'Each milestone carries its built-in reminders (e.g. 7 days and 1 day before) as calendar alerts, so the dates nudge you even outside email. Note: the live feed carries the built-in milestones; your own custom items travel in the downloaded file. The feed has no password (calendar apps can’t send one), so treat the link as family-only.',
+    ],
+  },
   {
     version: '1.10.0',
     date: '2026-06-05',

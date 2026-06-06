@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { EVENTS, CATEGORIES } from '../../shared/roadmap.js';
 import { parseDate, fmt, statusOf, useCustomItems, useVolunteer, volunteerToEvent } from '../lib/util.js';
+import CalendarSync from './CalendarSync.jsx';
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DOW = ['Su','Mo','Tu','We','Th','Fr','Sa'];
@@ -51,6 +52,8 @@ export default function CalendarView({ done, toggle }) {
     <div className="screen">
       <h2>Calendar</h2>
       <p className="muted">🔔 Built-in events auto-email a reminder <strong>1 week before</strong> (and 1 day before deadlines). Add your own events too. 📌</p>
+
+      <CalendarSync />
 
       <div className="filters">
         <button className="btn primary" onClick={() => setAdding((a) => !a)}>{adding ? 'Close' : '+ Add custom event'}</button>

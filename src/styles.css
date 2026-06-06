@@ -551,3 +551,20 @@ h3 { margin: 18px 0 8px; }
 .climb-detail.done    { border-left-color: var(--green); }
 .climb-detail-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .climb-next { background: var(--violet) !important; }
+
+/* ── "Add to your calendar" sync card (Calendar tab) ───────────────────────── */
+.sync-card { margin: 12px 0 16px; }
+.sync-head { display: flex; align-items: center; gap: 10px; }
+.sync-emoji { font-size: 1.5rem; line-height: 1; }
+.sync-title { flex: 1 1 auto; }
+.sync-toggle { flex: 0 0 auto; }
+.sync-actions { margin-top: 12px; flex-wrap: wrap; }
+.sync-help { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+.sync-help p { margin: 6px 0; }
+.sync-help ul { margin: 6px 0 6px 1.1em; padding: 0; }
+.sync-help li { margin: 4px 0; }
+.sync-url {
+  display: block; word-break: break-all; margin-top: 8px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 10px; font-size: .82rem; color: var(--ink);
+}

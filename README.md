@@ -17,7 +17,7 @@ sent via **Resend** on a daily **Vercel Cron** schedule.
 | 🏠 Dashboard | % complete, overdue items, next 30 days, current best-fit school, plus a **Creative momentum** row (portfolio finals, achievements, writing pieces, volunteer hours, savings) |
 | 💌 From Dad | A personal letter to Violet about why this is a many-options plan; text lives in `DAD_NOTE` in `shared/roadmap.js` |
 | 🛣️ Roadmap | Full chronological timeline — milestones plus your **custom calendar items** and **volunteer hours**; check things off live, with a **% done progress bar** and a **hide-done** toggle |
-| 📅 Calendar | Month grid; tap any event for details + links |
+| 📅 Calendar | Month grid; tap any event for details + links. **Add to your calendar:** download a `.ics` snapshot (includes custom items) or subscribe to the live feed at `/api/calendar.ics` so Google/Apple/Outlook auto-update one-way when the roadmap changes (read-only; built-in milestones only) |
 | 🎨 Portfolio | Piece-by-piece tracker: idea → in-progress → revise → final, tagged by school + scholarship, with notes and target dates |
 | 🖼️ Gallery | A SlideRoom-style wall to review finished pieces (with image links) before uploading |
 | ✍️ Writing | Collect stories, poems, plays, D&D campaigns, and **college essays**; live word counter, per-school essay prompts + word limits, ⭐ favorites, and per-piece TXT export |
