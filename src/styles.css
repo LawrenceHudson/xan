@@ -805,3 +805,53 @@ h3 { margin: 18px 0 8px; }
   .g-piece:nth-child(even) .g-piece-no { flex-direction: row; }
   .g-piece:nth-child(even) .g-piece-rule { background: linear-gradient(90deg, var(--gp-violet), transparent); }
 }
+
+/* ============================================================================
+   MIXED-MEDIA SKIN — warm canvas, pastel smudges, paper grain, crayon strokes.
+   Pure CSS + inline SVG (no external assets). Cards stay solid for legibility.
+   ============================================================================ */
+.gallery-public {
+  --gp-card: #fffdf7; --gp-line: #e9dfcb; --gp-ink: #221d16; --gp-muted: #6f6655;
+  background-color: #f4ecdc;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E"),
+    radial-gradient(46rem 26rem at 6% -8%, rgba(232,150,170,.42), transparent 60%),
+    radial-gradient(42rem 24rem at 100% 2%, rgba(150,200,224,.40), transparent 60%),
+    radial-gradient(40rem 26rem at -6% 58%, rgba(186,214,168,.34), transparent 62%),
+    radial-gradient(46rem 28rem at 104% 92%, rgba(206,184,230,.42), transparent 62%),
+    radial-gradient(34rem 22rem at 50% 108%, rgba(244,222,150,.38), transparent 60%);
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+  background-size: 160px 160px, auto, auto, auto, auto, auto;
+  background-attachment: fixed;
+}
+
+/* Warm, papery header + cards */
+.g-top { background: rgba(247,240,228,.84); border-bottom-color: #e7dcc6; }
+.g-bio-btn, .g-login-link { background: #fffdf7; border-color: #e7dcc6; }
+.g-trophy, .g-ink { background: rgba(255,253,247,.92); border-color: #e9dfcb; }
+
+/* Hero: a soft watercolor wash behind the title */
+.g-hero { position: relative; }
+.g-hero::before {
+  content: ''; position: absolute; z-index: -1; left: 50%; top: 42%;
+  width: min(640px, 88vw); height: 300px; transform: translate(-50%, -50%);
+  background:
+    radial-gradient(120px 90px at 34% 40%, rgba(232,116,59,.28), transparent 70%),
+    radial-gradient(150px 100px at 62% 44%, rgba(214,69,127,.24), transparent 70%),
+    radial-gradient(140px 110px at 50% 70%, rgba(59,127,232,.20), transparent 72%),
+    radial-gradient(120px 90px at 72% 60%, rgba(201,139,192,.24), transparent 70%);
+  filter: blur(20px); pointer-events: none;
+}
+.g-hero h1 { color: #2a2118; }
+
+/* Mixed-media signature line under the hero */
+.g-media { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; margin: 20px auto 0; max-width: 640px; }
+.g-media span { display: inline-flex; align-items: center; gap: 6px; font-size: .76rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: #5b5346; }
+.g-media i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+
+/* Section titles get a hand-drawn crayon underline */
+.g-h::after {
+  content: ''; display: block; width: 132px; height: 16px; margin: 12px auto 0;
+  background: center/contain no-repeat
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='132' height='16'%3E%3Cpath d='M3 9 C 30 3 56 14 82 7 S 118 6 129 9' fill='none' stroke='%23ec4899' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M6 11 C 35 6 62 15 88 9 S 114 9 126 11' fill='none' stroke='%237c3aed' stroke-width='3' stroke-linecap='round' opacity='0.7'/%3E%3C/svg%3E");
+}

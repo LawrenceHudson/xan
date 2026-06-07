@@ -8,9 +8,18 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.15.2';
+export const APP_VERSION = '1.16.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.16.0',
+    date: '2026-06-06',
+    notes: [
+      'Gave the public page a mixed-media makeover to match Xanderr’s style. The flat white background is now a warm canvas/paper tone with soft pastel smudges washing the corners (peach, sky, sage, lilac, butter) and a subtle paper grain.',
+      'Section titles now sit over a hand-drawn crayon underline, the hero title has a soft watercolor wash behind it, and the cards are a warm paper white so text stays crisp.',
+      'Added a “mixed-media” signature line under the hero naming her materials — oil crayon, pen, pencil, pastel, paint, pottery — each with its own little color dab.',
+    ],
+  },
   {
     version: '1.15.2',
     date: '2026-06-06',

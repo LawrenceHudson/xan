@@ -132,7 +132,15 @@ export default function PublicGallery({ onUnlock }) {
 
       <section className="g-hero">
         <h1>The art of {STUDENT.nickname}</h1>
-        <p className="g-hero-sub">A young artist&rsquo;s portfolio, achievements, and writing — all in one place.</p>
+        <p className="g-hero-sub">A young mixed-media artist&rsquo;s portfolio, achievements, and writing — all in one place.</p>
+        <div className="g-media" aria-label="Mixed media: oil crayon, pen, pencil, pastel, paint, pottery">
+          <span><i style={{ background: '#e8743b' }} />Oil crayon</span>
+          <span><i style={{ background: '#3b7fe8' }} />Pen</span>
+          <span><i style={{ background: '#6b7280' }} />Pencil</span>
+          <span><i style={{ background: '#c98bc0' }} />Pastel</span>
+          <span><i style={{ background: '#d6457f' }} />Paint</span>
+          <span><i style={{ background: '#9c6b4a' }} />Pottery</span>
+        </div>
       </section>
 
       {loading && <p className="g-loading">Loading the gallery…</p>}
