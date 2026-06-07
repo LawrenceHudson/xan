@@ -182,6 +182,18 @@ export default function Writing() {
               )}
               {it.category === 'essay' && it.prompt && <p className="deliverable"><em>{it.prompt}</em></p>}
               {it.body && <p className="writing-excerpt">{it.body.slice(0, 220)}{it.body.length > 220 ? '…' : ''}</p>}
+              <div className="publish-row">
+                <label className={`publish-toggle ${it.public ? 'on' : ''}`} title="Show this in your public 'The Ink & Page'">
+                  <input type="checkbox" checked={!!it.public} onChange={() => update(it.id, { public: !it.public })} />
+                  {it.public ? '📖 Published to Ink & Page' : 'Publish to Ink & Page'}
+                </label>
+                {it.public && (
+                  <label className="publish-sub" title="Show the whole piece publicly (otherwise just a short excerpt)">
+                    <input type="checkbox" checked={!!it.publicFull} onChange={() => update(it.id, { publicFull: !it.publicFull })} />
+                    Show full text
+                  </label>
+                )}
+              </div>
               <div className="editor-actions">
                 <button className="btn small ghost" onClick={() => startEdit(it)}>Open / Edit</button>
                 <button className="btn small ghost" onClick={() => exportOne(it)} disabled={!it.body}>⬇ .txt</button>

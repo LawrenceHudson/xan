@@ -31,11 +31,26 @@ sent via **Resend** on a daily **Vercel Cron** schedule.
 | 🐖 Savings | Log deposits/scholarship wins toward the $8k–$12k goal |
 | 🛠️ Admin | App version, **release notes**, a **Send test email** button, and a **Bug / Feature submitter** (log items and clear them when handled) |
 
-**Front page** is a **public welcome** about Xanderr plus a **529 gifting splash** —
-family & friends get a short pitch and a direct link to contribute to Violet's
-college-savings account (edit the copy in `GIFTING` in `shared/roadmap.js`). The
-password field stays hidden until you click **Log in**, so the default view is the
-public face only.
+**Front page** is the **public "Xanderr Art Gallery"** — a clean, marketing-ready
+showcase visitors see before logging in, with three areas: **The Gallery** (her
+artwork), the **Achievement Trophy Box**, and **The Ink & Page** (her writing). A
+compact **"Support her education ♥"** button in the header links to the 529 gifting
+page (edit the copy in `GIFTING` in `shared/roadmap.js`), and an optional **Bio**
+button appears when she publishes a bio from the Admin tab. The password field stays
+hidden until you click **Log in**.
+
+**She controls what's public.** Every achievement, writing piece, and portfolio
+piece has a **Publish** switch (off by default) — nothing shows publicly until she
+turns it on. Writing shows a short **excerpt** unless she also flips **Show full
+text**. The public page is served by a separate **read-only feed** (`/api/public`)
+that can *only* see published achievements, writing, portfolio pieces, and the bio —
+savings, colleges, decisions, recommendations, the calendar, and family rules are
+never exposed.
+
+**Discoverable + AI-ready:** the public page carries search/social meta tags and
+**schema.org** structured data, and the `/api/public` feed returns clean JSON (open
+CORS) so search engines and AI assistants get accurate data about her work. It's set
+to be indexed, and `public/robots.txt` welcomes crawlers.
 
 **Custom items:** on the **Calendar** she can add her own events (and remove them);
 these flow into the Checklist too. **Light/dark mode** toggles from the ☀️/🌙

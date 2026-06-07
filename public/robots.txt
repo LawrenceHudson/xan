@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# Xanderr Art Gallery is meant to be discovered.
+# Clean, structured JSON for search engines and AI assistants:
+#   /api/public

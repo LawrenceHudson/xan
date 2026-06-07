@@ -4,8 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#7c3aed" />
+    <meta name="robots" content="index, follow" />
+    <meta name="description" content="The art and writing of Xanderr — a young artist building an art-school portfolio. Browse the gallery, achievements, and writing." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Violet's Art School Roadmap</title>
+
+    <!-- Social / Open Graph (enriched at runtime with real artwork + bio) -->
+    <meta property="og:site_name" content="Xanderr Art Gallery" />
+    <meta property="og:title" content="Xanderr — Art Gallery" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="Portfolio, achievements, and writing by Xanderr." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Xanderr — Art Gallery" />
+
+    <!-- Baseline structured data for AI/search; the app enriches this with the
+         live works once it loads (same id is reused, not duplicated). -->
+    <script type="application/ld+json" id="xanderr-jsonld">
+{"@context":"https://schema.org","@type":"Person","name":"Xanderr","description":"Young visual artist and writer building an art-school portfolio.","knowsAbout":["Visual Art","Creative Writing","Illustration"]}
+    </script>
+
+    <title>Xanderr — Art Gallery</title>
   </head>
   <body>
     <div id="root"></div>

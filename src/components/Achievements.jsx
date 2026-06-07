@@ -24,6 +24,7 @@ export default function Achievements() {
     cancel();
   }
   function remove(id) { setItems((l) => l.filter((x) => x.id !== id)); }
+  function togglePublic(id) { setItems((l) => l.map((x) => (x.id === id ? { ...x, public: !x.public } : x))); }
 
   function exportTxt() {
     const lines = [
@@ -134,6 +135,10 @@ export default function Achievements() {
               {it.date && <div className="kv"><span>Date</span><strong>{fmt(it.date)}</strong></div>}
               {it.description && <p className="deliverable">{it.description}</p>}
               {it.link && <a className="btn small" href={it.link} target="_blank" rel="noreferrer">Open ↗</a>}
+              <label className={`publish-toggle ${it.public ? 'on' : ''}`} title="Show this in your public Trophy Box">
+                <input type="checkbox" checked={!!it.public} onChange={() => togglePublic(it.id)} />
+                {it.public ? '🏆 Published to Trophy Box' : 'Publish to Trophy Box'}
+              </label>
               <div className="editor-actions">
                 <button className="btn small ghost" onClick={() => startEdit(it)}>Edit</button>
                 <button className="btn small danger" onClick={() => remove(it.id)}>Delete</button>

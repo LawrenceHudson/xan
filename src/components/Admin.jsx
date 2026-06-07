@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { APP_VERSION, CHANGELOG } from '../../shared/version.js';
-import { fmt, useFeedback } from '../lib/util.js';
+import { fmt, useFeedback, useStored } from '../lib/util.js';
 
 function whenLabel(iso) {
   try {
@@ -13,6 +13,16 @@ export default function Admin() {
   const { items: feedback, add: addFeedback, remove: removeFeedback, clearAll: clearFeedback } = useFeedback();
   const [fbType, setFbType] = useState('bug');
   const [fbText, setFbText] = useState('');
+
+  const [bio, setBio] = useStored('viol_bio', { text: '', public: false });
+  const [bioDraft, setBioDraft] = useState(bio.text || '');
+  const [bioSaved, setBioSaved] = useState(false);
+
+  function saveBio() {
+    setBio({ ...bio, text: bioDraft });
+    setBioSaved(true);
+    setTimeout(() => setBioSaved(false), 1500);
+  }
 
   function submitFeedback() {
     if (!fbText.trim()) return;
@@ -62,6 +72,36 @@ export default function Admin() {
         {status && status !== 'sending' && (
           <p className={status.ok ? 'celebrate' : 'danger'} style={{ marginTop: 8 }}>{status.msg}</p>
         )}
+      </section>
+
+      <section>
+        <h3>🎨 Public artist bio</h3>
+        <p className="muted small">Write a short bio for Xanderr’s public Art Gallery. When you publish it, a <strong>Bio</strong> button appears on the public page; leave it unpublished (or empty) and the button stays hidden. No email or contact info is ever shown.</p>
+        <div className="card editor">
+          <div className="form-row">
+            <label className="full">Bio
+              <textarea
+                rows="5"
+                value={bioDraft}
+                onChange={(e) => setBioDraft(e.target.value)}
+                placeholder="Xanderr is a young artist working in charcoal, ink, and digital illustration, building a portfolio for art school…"
+              />
+            </label>
+          </div>
+          <label className="check-inline">
+            <input type="checkbox" checked={!!bio.public} onChange={(e) => setBio({ ...bio, public: e.target.checked })} />
+            Publish this bio on the public gallery
+          </label>
+          <div className="editor-actions">
+            <button className="btn primary" onClick={saveBio}>Save bio</button>
+            {bioSaved && <span className="celebrate">Saved ✓</span>}
+          </div>
+          {bio.public && bio.text && bio.text.trim()
+            ? <p className="muted small">✅ The <strong>Bio</strong> button is live on the public gallery.</p>
+            : bio.public
+              ? <p className="muted small">Add some text and click <strong>Save bio</strong> — an empty bio keeps the button hidden.</p>
+              : null}
+        </div>
       </section>
 
       <section>

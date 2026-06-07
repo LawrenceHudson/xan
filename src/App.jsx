@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Login from './components/Login.jsx';
+import PublicGallery from './components/PublicGallery.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import Timeline from './components/Timeline.jsx';
 import CalendarView from './components/CalendarView.jsx';
@@ -57,7 +57,7 @@ export default function App() {
     if (authed) hydrate();
   }, [authed]);
 
-  if (!authed) return <Login onUnlock={() => setAuthed(true)} />;
+  if (!authed) return <PublicGallery onUnlock={() => setAuthed(true)} />;
 
   return (
     <div className="app">

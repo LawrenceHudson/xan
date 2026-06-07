@@ -8,9 +8,21 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.13.2';
+export const APP_VERSION = '1.14.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.14.0',
+    date: '2026-06-06',
+    notes: [
+      'New public “Xanderr Art Gallery” — the page visitors see before logging in is now a clean, marketing-ready showcase instead of a sign-in screen. It has three areas: The Gallery (her artwork), the Achievement Trophy Box (her wins), and The Ink & Page (her writing).',
+      'Xanderr chooses exactly what’s public. Each achievement, writing piece, and portfolio piece now has a “Publish” switch (off by default) — nothing appears publicly until she turns it on. Writing shows a short excerpt by default, with an optional “Show full text” switch per piece.',
+      'A new “Public artist bio” box on the Admin tab lets her write and publish a short bio. When published, a “Bio” button appears on the public page; if there’s no bio, the button stays hidden. No email or contact info is ever shown.',
+      'The 529 gift invite is now a compact “Support her education ♥” button in the header (and footer) rather than a big block, linking straight to the Fidelity gifting page.',
+      'Privacy by design: the public page is served by a separate read-only feed that can only ever see published achievements, writing, portfolio pieces, and the bio. Savings, colleges, decisions, recommendations, the calendar, and family rules are never exposed.',
+      'Discoverable and AI-ready: the public page now carries proper search/social tags and schema.org structured data, and offers a clean data feed at /api/public so search engines and AI assistants get accurate information about her work.',
+    ],
+  },
   {
     version: '1.13.2',
     date: '2026-06-06',

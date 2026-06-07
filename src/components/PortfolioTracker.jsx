@@ -45,6 +45,9 @@ export default function PortfolioTracker() {
   function remove(id) {
     setPieces((list) => list.filter((p) => p.id !== id));
   }
+  function togglePublic(id) {
+    setPieces((list) => list.map((p) => (p.id === id ? { ...p, public: !p.public } : p)));
+  }
   function toggleTag(field, val) {
     setDraft((d) => {
       const has = d[field].includes(val);
@@ -128,6 +131,14 @@ export default function PortfolioTracker() {
               {p.schools.length > 0 && <div className="tags"><span className="micro">Schools:</span>{p.schools.map((id) => <span key={id} className="tag purple">{SCHOOL_OPTS.find((o) => o.id === id)?.label}</span>)}</div>}
               {p.scholarships.length > 0 && <div className="tags"><span className="micro">Scholarships:</span>{p.scholarships.map((id) => <span key={id} className="tag amber">{SCH_OPTS.find((o) => o.id === id)?.label}</span>)}</div>}
               {p.notes && <p className="deliverable">{p.notes}</p>}
+              {p.image ? (
+                <label className={`publish-toggle ${p.public ? 'on' : ''}`} title="Show this piece on your public Art Gallery wall">
+                  <input type="checkbox" checked={!!p.public} onChange={() => togglePublic(p.id)} />
+                  {p.public ? '🖼️ Published to Gallery' : 'Publish to Gallery'}
+                </label>
+              ) : (
+                <span className="publish-hint muted small">Add an image URL to publish this to the public Gallery.</span>
+              )}
               <div className="editor-actions">
                 <button className="btn ghost" onClick={() => setDraft(p)}>Edit</button>
                 <button className="btn danger" onClick={() => remove(p.id)}>Delete</button>
