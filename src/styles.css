@@ -733,3 +733,75 @@ h3 { margin: 18px 0 8px; }
   .g-gift-btn { padding: 8px 12px; font-size: .85rem; }
   .g-hero { padding: 36px 16px 16px; }
 }
+
+/* ============================================================================
+   GALLERY — sleeker, editorial alternating layout (overrides earlier wall)
+   ============================================================================ */
+.gallery-public { --gp-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif; }
+
+/* Refined hero */
+.g-hero { padding: 72px 20px 28px; }
+.g-hero h1 { font-family: var(--gp-serif); font-weight: 600; letter-spacing: -.5px; }
+.g-hero-sub { font-size: 1.15rem; }
+
+.g-section-wide { max-width: 1160px; }
+.g-h { font-family: var(--gp-serif); font-weight: 600; font-size: 1.7rem; letter-spacing: .2px; }
+
+/* Alternating showcase rows */
+.g-showcase { display: flex; flex-direction: column; gap: 88px; margin-top: 12px; }
+.g-piece {
+  display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center;
+}
+.g-piece:nth-child(even) .g-piece-img { order: 2; }
+.g-piece:nth-child(even) .g-piece-info { order: 1; text-align: right; }
+
+.g-piece-img {
+  display: block; padding: 0; border: none; background: none; cursor: zoom-in;
+  border-radius: 16px; overflow: hidden; line-height: 0;
+  box-shadow: 0 24px 60px rgba(31,36,48,.16); transition: transform .5s ease, box-shadow .5s ease;
+}
+.g-piece-img:hover { transform: translateY(-4px); box-shadow: 0 30px 70px rgba(31,36,48,.22); }
+.g-piece-img img { width: 100%; height: auto; display: block; }
+
+.g-piece-info { padding: 4px 6px; }
+.g-piece-medium {
+  display: inline-block; text-transform: uppercase; letter-spacing: 2.5px;
+  font-size: .72rem; font-weight: 700; color: var(--gp-violet); margin-bottom: 8px;
+}
+.g-piece-info h3 {
+  font-family: var(--gp-serif); font-weight: 600; font-size: clamp(1.5rem, 3vw, 2.1rem);
+  line-height: 1.15; margin: 2px 0 14px; color: #181c26;
+}
+.g-piece-cap { color: #4b5563; line-height: 1.75; font-size: 1.02rem; margin: 0 0 16px; }
+.g-piece-view { font-size: .92rem; }
+
+/* Scroll reveal — only active when JS adds .reveal-on (otherwise fully visible) */
+.g-showcase.reveal-on .g-piece.reveal { opacity: 0; transform: translateY(26px); }
+.g-showcase.reveal-on .g-piece.reveal.in {
+  opacity: 1; transform: none; transition: opacity .7s ease, transform .7s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .g-showcase.reveal-on .g-piece.reveal { opacity: 1; transform: none; }
+}
+
+@media (max-width: 760px) {
+  .g-showcase { gap: 56px; }
+  .g-piece { grid-template-columns: 1fr; gap: 18px; }
+  .g-piece:nth-child(even) .g-piece-img { order: 0; }
+  .g-piece:nth-child(even) .g-piece-info { order: 0; text-align: left; }
+}
+
+/* Catalog-style index number beside each gallery piece (01 — 12) */
+.g-piece-no {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+  font-family: var(--gp-serif); color: var(--gp-muted);
+}
+.g-piece-no em { font-style: normal; font-size: 1.15rem; font-weight: 600; color: #181c26; letter-spacing: 1px; }
+.g-piece-no i { font-style: normal; font-size: .82rem; letter-spacing: 1px; opacity: .7; }
+.g-piece-rule { flex: 1; height: 1px; background: linear-gradient(90deg, var(--gp-violet), transparent); max-width: 90px; }
+.g-piece:nth-child(even) .g-piece-no { flex-direction: row-reverse; }
+.g-piece:nth-child(even) .g-piece-rule { background: linear-gradient(270deg, var(--gp-violet), transparent); }
+@media (max-width: 760px) {
+  .g-piece:nth-child(even) .g-piece-no { flex-direction: row; }
+  .g-piece:nth-child(even) .g-piece-rule { background: linear-gradient(90deg, var(--gp-violet), transparent); }
+}

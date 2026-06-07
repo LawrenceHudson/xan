@@ -69,6 +69,7 @@ function publicGallery(items = []) {
       id: p.id,
       title: p.title || '',
       medium: p.medium || '',
+      caption: p.caption || '',
       status: p.status || '',
       image: p.image,
     }));
@@ -82,6 +83,7 @@ function buildJsonLd({ origin, bio, gallery, writing, trophies }) {
       '@type': 'VisualArtwork',
       name: g.title || 'Untitled',
       artMedium: g.medium || undefined,
+      abstract: g.caption || undefined,
       image: g.image,
       creator: { '@type': 'Person', name: 'Xanderr' },
     });

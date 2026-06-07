@@ -74,6 +74,23 @@ export default function PublicGallery({ onUnlock }) {
     s.textContent = JSON.stringify(data.jsonld || {});
   }, [data]);
 
+  // Gentle fade-up as each artwork scrolls into view. Pure enhancement: if the
+  // browser lacks IntersectionObserver we never hide anything (the 'reveal-on'
+  // class — which applies the hidden start state — is only added when supported).
+  useEffect(() => {
+    if (!data || typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+    const wrap = document.querySelector('.g-showcase');
+    if (!wrap) return;
+    wrap.classList.add('reveal-on');
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      }
+    }, { threshold: 0.12 });
+    wrap.querySelectorAll('.g-piece.reveal').forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [data]);
+
   function submitLogin(e) {
     e.preventDefault();
     if (pw === expected) {
@@ -106,8 +123,8 @@ export default function PublicGallery({ onUnlock }) {
             <button className="btn ghost g-bio-btn" onClick={() => setShowBio(true)}>Bio</button>
           )}
           <a className="btn g-gift-btn" href={GIFTING.url} target="_blank" rel="noreferrer"
-             title="Contribute to Xanderr's 529 college-savings account">
-            Support her education ♥
+             title="Chip into my 529 — every bit helps me get to art school!">
+            Send me to art school ♥
           </a>
           <button className="btn ghost g-login-link" onClick={() => setShowLogin(true)}>Log in</button>
         </div>
@@ -131,18 +148,27 @@ export default function PublicGallery({ onUnlock }) {
       )}
 
       {gallery.length > 0 && (
-        <section className="g-section">
+        <section className="g-section g-section-wide">
           <h2 className="g-h">The Gallery</h2>
-          <div className="g-wall">
-            {gallery.map((p) => (
-              <button key={p.id} type="button" className="g-art" onClick={() => setLightbox(p)} title={p.title}>
-                <img src={p.image} alt={p.title || 'Artwork'} loading="lazy"
-                     onError={(e) => { e.target.closest('.g-art').style.display = 'none'; }} />
-                <span className="g-art-cap">
-                  <strong>{p.title || 'Untitled'}</strong>
-                  {p.medium && <em>{p.medium}</em>}
-                </span>
-              </button>
+          <div className="g-showcase">
+            {gallery.map((p, i) => (
+              <article key={p.id} className="g-piece reveal">
+                <button type="button" className="g-piece-img" onClick={() => setLightbox(p)} title="View larger">
+                  <img src={p.image} alt={p.title || 'Artwork'} loading="lazy"
+                       onError={(e) => { e.target.closest('.g-piece').style.display = 'none'; }} />
+                </button>
+                <div className="g-piece-info">
+                  <span className="g-piece-no" aria-hidden>
+                    <em>{String(i + 1).padStart(2, '0')}</em>
+                    <span className="g-piece-rule" />
+                    <i>{String(gallery.length).padStart(2, '0')}</i>
+                  </span>
+                  {p.medium && <span className="g-piece-medium">{p.medium}</span>}
+                  <h3>{p.title || 'Untitled'}</h3>
+                  {p.caption && <p className="g-piece-cap">{p.caption}</p>}
+                  <button className="g-link g-piece-view" onClick={() => setLightbox(p)}>View piece →</button>
+                </div>
+              </article>
             ))}
           </div>
         </section>
@@ -203,7 +229,7 @@ export default function PublicGallery({ onUnlock }) {
 
       <footer className="g-foot">
         <span className="muted small">{STUDENT.nickname}&rsquo;s Art Gallery</span>
-        <a className="g-foot-gift" href={GIFTING.url} target="_blank" rel="noreferrer">Support her education ♥</a>
+        <a className="g-foot-gift" href={GIFTING.url} target="_blank" rel="noreferrer">Send me to art school ♥</a>
       </footer>
 
       {/* Lightbox for artwork */}

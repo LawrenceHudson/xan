@@ -8,9 +8,32 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.14.0';
+export const APP_VERSION = '1.15.2';
 
 export const CHANGELOG = [
+  {
+    version: '1.15.2',
+    date: '2026-06-06',
+    notes: [
+      'Added a catalog-style index number beside each Gallery piece (01, 02, …) with a thin divider line and the total, for a more gallery-catalog feel. The number flips to the correct side on the alternating rows.',
+    ],
+  },
+  {
+    version: '1.15.1',
+    date: '2026-06-06',
+    notes: [
+      'Gave the 529 gift button a voice — it now reads “Send me to art school ♥” (in Xanderr’s own words) instead of “Support her education,” in the header and footer of the public page.',
+    ],
+  },
+  {
+    version: '1.15.0',
+    date: '2026-06-06',
+    notes: [
+      'Redesigned the public Gallery into a sleek, editorial layout: each artwork is shown large with its title, medium, and description beside it, alternating left and right as you scroll, with a gentle fade-in. Tapping a piece still opens it full-size.',
+      'New “Gallery description” box on each Portfolio piece — write a sentence or two about the work and it appears next to the image on the public Gallery (and is included in the data search engines and AI read). Leave it blank and the piece just shows its title and medium.',
+      'Refined the public page overall — serif display headings, more whitespace, and full, uncropped artwork for a gallery feel.',
+    ],
+  },
   {
     version: '1.14.0',
     date: '2026-06-06',

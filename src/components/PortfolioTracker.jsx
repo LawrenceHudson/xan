@@ -20,6 +20,7 @@ const blank = () => ({
   schools: [],
   scholarships: [],
   notes: '',
+  caption: '',
   target: '',
   image: '',
 });
@@ -90,6 +91,7 @@ export default function PortfolioTracker() {
             <label>Target date<input type="date" value={draft.target} onChange={(e) => setDraft({ ...draft, target: e.target.value })} /></label>
           </div>
           <label className="full">Image URL (optional)<input value={draft.image} onChange={(e) => setDraft({ ...draft, image: e.target.value })} placeholder="paste a link to a photo of the piece" /></label>
+          <label className="full">Gallery description (public)<textarea value={draft.caption} onChange={(e) => setDraft({ ...draft, caption: e.target.value })} rows={3} placeholder="A sentence or two about this piece — shown beside it on your public Art Gallery. Leave blank to show just the title and medium." /></label>
 
           <div className="tag-picker">
             <span className="picker-label">For schools:</span>
