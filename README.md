@@ -25,10 +25,10 @@ sent via **Resend** on a daily **Vercel Cron** schedule.
 | 🤝 Volunteer | Track service hours (org, role, hours, ongoing); entries also surface on the **Checklist** |
 | 📄 Résumé | Friendly writing tips + two upload/download slots (an **art-focused** and a **young-career** résumé), stored in the browser |
 | 📜 Recommendations | Track each recommender (role, which schools, status, asked/needed-by dates, notes) and **store the finished letter file** so it's ready to attach; plus a **Letters & documents vault** to upload any Word/PDF (general letter, brag sheet, résumé copy) and download it later. **The asked-on and needed-by dates become read-only reminders** on the Calendar/Roadmap, sync to your calendar feed, and email 7 days + 1 day before; marking a letter **received/submitted** clears them |
-| 🏆 Scholarships | When to start, the deliverable, the deadline, the link |
-| 🎓 Colleges | Where/when to apply, what each values, **total price + avg aid + avg net price + Net Price Calculator link**, affordability + **Family Rules** |
+| 🏆 Scholarships | When to start, the deliverable, the deadline, the link — plus **Applied / Awarded / Denied / Missed** status per scholarship, an **Awarded $** field, and an optional "applies to" school tag. Awarded amounts feed the Colleges funding plan; a running **Awarded so far** total shows at the top |
+| 🎓 Colleges | Where/when to apply, what each values, **total price + avg aid + avg net price + Net Price Calculator link**, affordability + **Family Rules**, and a **per-year Funding Plan**: full sticker − aid (your actual offer or the average) − awarded scholarships − 529/cash/brokerage (each ÷4) − student loan (≤$6,750/yr) − parent loan (≤$25,000/yr) = a color-coded bottom line (red "needs $X more" → green $0 while loans shrink → **Debt-free win 🎉**) |
 | 📬 Decisions | Per-school status (planning → applied → accepted/waitlist/denied → committed), award + net price log, and a **May 1 Decision Day** countdown |
-| 🐖 Savings | Log deposits/scholarship wins toward the $8k–$12k goal |
+| 🐖 Savings | Log deposits/scholarship wins toward the $8k–$12k goal, **plus 529 and brokerage balances** — the combined college assets feed the Colleges funding plan |
 | 🛠️ Admin | App version, **release notes**, a **Send test email** button, and a **Bug / Feature submitter** (log items and clear them when handled) |
 
 **Front page** is the **public "Xanderr Art Gallery"** — a clean, marketing-ready

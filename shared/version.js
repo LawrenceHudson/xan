@@ -8,9 +8,27 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.16.0';
+export const APP_VERSION = '1.18.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.18.0',
+    date: '2026-06-06',
+    notes: [
+      'Scholarships can now be one-time or renewable. When a scholarship is marked Awarded, a new “Award type” dropdown lets you choose One-time or Every year (4 yrs). One-time awards are spread across four years (÷4 per year); renewable awards count in full every year. The Colleges funding plan uses the right per-year figure automatically.',
+      'The “Awarded so far” total now reflects the full 4-year value — a renewable award is counted at its yearly amount times four.',
+    ],
+  },
+  {
+    version: '1.17.0',
+    date: '2026-06-06',
+    notes: [
+      'Scholarships now track status. Each one has Applied / Awarded / Denied / Missed buttons, and marking it Awarded reveals a dollar field (and an optional “applies to” school tag — leave it blank and it counts everywhere). A running “Awarded so far” total shows at the top.',
+      'Savings now holds her college accounts: enter the current 529 balance and brokerage balance alongside the cash savings total. The page shows the combined college assets.',
+      'New per-year Funding Plan on every Colleges card. Starting from the full annual sticker price, it subtracts financial aid (your actual offer if entered, otherwise the school’s average), awarded scholarships, and her 529, cash, and brokerage — each spread across four years — then student loans (capped at $6,750/yr) and parent loans (capped at $25,000/yr).',
+      'The bottom line is color-coded: red “needs $X more” if even both maxed loans fall short; as money grows it holds at $0 (green) while the parent loan shrinks first, then the student loan; and once no loans are needed it becomes a “Debt-free win 🎉.” Awarded scholarships flow straight from the Scholarships page into each school’s plan.',
+    ],
+  },
   {
     version: '1.16.0',
     date: '2026-06-06',

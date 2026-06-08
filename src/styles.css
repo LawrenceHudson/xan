@@ -855,3 +855,42 @@ h3 { margin: 18px 0 8px; }
   background: center/contain no-repeat
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='132' height='16'%3E%3Cpath d='M3 9 C 30 3 56 14 82 7 S 118 6 129 9' fill='none' stroke='%23ec4899' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M6 11 C 35 6 62 15 88 9 S 114 9 126 11' fill='none' stroke='%237c3aed' stroke-width='3' stroke-linecap='round' opacity='0.7'/%3E%3C/svg%3E");
 }
+
+/* ============================================================================
+   SCHOLARSHIP STATUS + COLLEGE FUNDING PLAN
+   ============================================================================ */
+.dollar { display: inline-flex; align-items: baseline; gap: 2px; font-weight: 700; }
+.dollar input { width: 130px; padding: 7px 8px; border: 1px solid var(--line); border-radius: 8px; font-size: .95rem; font-weight: 700; }
+
+.sch-status { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
+.status-btn { border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px; padding: 6px 12px; font-size: .82rem; font-weight: 600; cursor: pointer; }
+.status-btn:hover { border-color: var(--violet); }
+[data-theme="dark"] .status-btn { background: #1b1530; }
+
+.sch-award { background: #f6fdf8; border: 1px solid #cdeed6; border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
+[data-theme="dark"] .sch-award { background: #15241b; border-color: #1f5132; }
+.award-amt { display: flex; flex-direction: column; gap: 4px; font-size: .82rem; font-weight: 600; }
+.award-applies { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.award-applies .picker-label { width: 100%; font-size: .78rem; color: var(--muted); }
+
+.fund-box { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 10px 0; }
+[data-theme="dark"] .fund-box { background: #181327; }
+.fund-title { font-weight: 700; margin-bottom: 10px; }
+.fund-actual { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; font-weight: 600; color: var(--muted); margin-bottom: 12px; }
+.fund-row { display: flex; justify-content: space-between; gap: 10px; font-size: .87rem; padding: 5px 0; border-bottom: 1px dashed var(--line); }
+.fund-row em { font-style: normal; color: var(--muted); font-size: .76rem; font-weight: 400; }
+.fund-row.top { font-weight: 800; border-bottom: 2px solid var(--line); font-size: .95rem; }
+.fund-row.loan span { color: #b45309; }
+[data-theme="dark"] .fund-row.loan span { color: #fcd34d; }
+.fund-result { margin-top: 12px; text-align: center; }
+.fund-win { display: inline-block; background: #dcfce7; color: #15803d; font-weight: 800; padding: 9px 18px; border-radius: 999px; }
+.fund-ok { display: inline-block; color: #15803d; font-weight: 700; padding: 6px 0; }
+.fund-short { display: inline-block; background: #fee2e2; color: #b91c1c; font-weight: 800; padding: 9px 18px; border-radius: 999px; }
+[data-theme="dark"] .fund-win { background: #14321f; color: #86efac; }
+[data-theme="dark"] .fund-short { background: #3a1620; color: #fca5a5; }
+
+/* Scholarship award type + amount row */
+.award-line { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.award-type, .award-amt { display: flex; flex-direction: column; gap: 4px; font-size: .82rem; font-weight: 600; }
+.award-type select { padding: 7px 8px; border: 1px solid var(--line); border-radius: 8px; font-size: .9rem; }
+[data-theme="dark"] .award-type select { background: #14101f; color: var(--ink); }
