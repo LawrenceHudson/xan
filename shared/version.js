@@ -8,9 +8,17 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.18.0';
+export const APP_VERSION = '1.19.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.19.0',
+    date: '2026-06-25',
+    notes: [
+      'Added UC DAAP School of Art (University of Cincinnati) as a new college option in the roadmap. The card includes the school-specific admissions page, UC net price calculator link, 2026-27 tuition/cost-of-attendance data, and DAAP scholarship deadlines pulled from the official UC pages.',
+      'Added a UC DAAP application milestone to the timeline and re-ranked the college list so the new option slots in alongside the existing art-school choices and shows up throughout the Colleges, Decisions, Scholarship tags, and Portfolio school selectors.',
+    ],
+  },
   {
     version: '1.18.0',
     date: '2026-06-06',
