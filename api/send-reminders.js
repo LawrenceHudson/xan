@@ -13,35 +13,13 @@
 // ============================================================================
 
 import { EVENTS, CATEGORIES, STUDENT } from '../shared/roadmap.js';
+import { remindersFrom as sharedRemindersFrom } from '../shared/planning.js';
 import { APP_VERSION } from '../shared/version.js';
 import { loadUserEvents } from './_supabase.js';
 
-function todayLocal() {
-  const n = new Date();
-  return new Date(n.getFullYear(), n.getMonth(), n.getDate());
-}
 function parseDate(iso) {
   const [y, m, d] = iso.split('-').map(Number);
   return new Date(y, m - 1, d);
-}
-function daysUntil(iso) {
-  return Math.round((parseDate(iso) - todayLocal()) / 86400000);
-}
-function fmt(iso) {
-  return parseDate(iso).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-}
-
-// Pick out the events whose reminder window (e.g. 7 or 1 days before) lands on
-// today, from any list of events.
-function remindersFrom(events) {
-  const out = [];
-  for (const e of events) {
-    if (!e || !e.date) continue;
-    const d = daysUntil(e.date);
-    const remind = e.remind || [7];
-    if (remind.includes(d)) out.push({ ...e, days: d });
-  }
-  return out;
 }
 
 // Which events should fire a reminder today? Built-in milestones PLUS the items
@@ -52,7 +30,7 @@ export async function dueToday() {
   const userEvents = await loadUserEvents();
   const all = [...EVENTS, ...userEvents];
   // Soonest first.
-  return remindersFrom(all).sort((a, b) => a.days - b.days);
+  return sharedRemindersFrom(all).sort((a, b) => a.days - b.days);
 }
 
 function buildHtml(items) {
@@ -67,7 +45,7 @@ function buildHtml(items) {
         <td style="padding:14px;border-bottom:1px solid #ece8f5;vertical-align:top">
           <span style="display:inline-block;background:${c.color};color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px">${c.emoji} ${c.label}</span>
           <div style="font-size:16px;font-weight:700;margin:6px 0 2px">${e.title}</div>
-          <div style="color:#6b7280;font-size:13px">${fmt(e.date)} · <strong style="color:#ef4444">${when}</strong></div>
+          <div style="color:#6b7280;font-size:13px">${parseDate(e.date).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })} · <strong style="color:#ef4444">${when}</strong></div>
           ${e.detail ? `<div style="color:#374151;font-size:13px;margin-top:6px">${e.detail}</div>` : ''}
           ${link ? `<div style="margin-top:6px">${link}</div>` : ''}
         </td>

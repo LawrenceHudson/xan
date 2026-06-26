@@ -55,7 +55,7 @@ export default function CalendarView({ done, toggle }) {
   return (
     <div className="screen">
       <h2>Calendar</h2>
-      <p className="muted">🔔 Built-in events auto-email a reminder <strong>1 week before</strong> (and 1 day before deadlines). Add your own events too. 📌</p>
+      <p className="muted">🔔 Built-in events auto-email a reminder <strong>1 week before</strong> (and 1 day before deadlines). Your own custom events, portfolio goal dates, and recommendation-letter dates also flow into the calendar feed and reminder email when sync is on. 📌</p>
 
       <div className="filters">
         <button className="btn primary" onClick={() => setAdding((a) => !a)}>{adding ? 'Close' : '+ Add custom event'}</button>
@@ -85,7 +85,7 @@ export default function CalendarView({ done, toggle }) {
             <button className="btn" onClick={saveCustom}>Add to calendar</button>
             <button className="btn ghost" onClick={() => setAdding(false)}>Cancel</button>
           </div>
-          <p className="small muted">Custom events show on the Calendar and Roadmap. (Email reminders only fire for the built-in milestones.)</p>
+          <p className="small muted">Custom events show on the Calendar and Roadmap. Synced custom events, portfolio goal dates, and recommendation-letter dates also participate in the calendar feed and reminder email.</p>
         </div>
       )}
 

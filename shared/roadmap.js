@@ -11,6 +11,7 @@
 // ============================================================================
 
 export const STUDENT = { name: 'Violet', nickname: 'Xanderr', enrollTerm: 'Fall 2027' };
+export const COLLEGE_LAST_VERIFIED = '2026-06-25';
 
 // ---------------------------------------------------------------------------
 // Category styling/labels used across the app.
@@ -51,6 +52,8 @@ export const COLLEGES = [
     avgAid: 'Avg need grant ~$10,433/yr · avg merit ~$3,933/yr',
     netPrice: '~$24,159/yr (overall avg net price)',
     visitDate: '2026-09-26',
+    source: 'MassArt admissions + MassArt net price calculator',
+    lastVerified: COLLEGE_LAST_VERIFIED,
     verify: true,
   },
   {
@@ -72,6 +75,8 @@ export const COLLEGES = [
     avgAid: 'Avg aid package ~$20,277–$21,026/yr',
     netPrice: '~$35,395–$39,639/yr (avg net price)',
     visitDate: '2026-10-17',
+    source: 'MECA&D admissions + MECA&D tuition/net price calculator',
+    lastVerified: COLLEGE_LAST_VERIFIED,
     verify: true,
   },
   {
@@ -93,6 +98,8 @@ export const COLLEGES = [
     avgAid: 'Avg aid package ~$41,993/yr',
     netPrice: '~$42,106/yr (avg net price)',
     visitDate: '2026-11-07',
+    source: 'RISD admissions + RISD clear cost calculator',
+    lastVerified: COLLEGE_LAST_VERIFIED,
     verify: true,
   },
   {
@@ -114,6 +121,8 @@ export const COLLEGES = [
     avgAid: 'Avg aid package ~$28,420/yr',
     netPrice: '~$47,183–$55,225/yr (avg net price)',
     visitDate: '2026-10-10',
+    source: 'CalArts admissions + CalArts net price calculator',
+    lastVerified: COLLEGE_LAST_VERIFIED,
     verify: true,
   },
   {
@@ -133,6 +142,8 @@ export const COLLEGES = [
     avgAidYear: 1500,
     avgAid: 'DAAP scholarships are need/merit-based; UC cost example uses $1,500/yr in scholarship earnings',
     netPrice: '~$58,110/yr (sample estimate after $1,500 scholarship earnings)',
+    source: 'UC DAAP admissions + UC cost page + UC net price calculator',
+    lastVerified: COLLEGE_LAST_VERIFIED,
     verify: true,
   },
 ];
