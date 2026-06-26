@@ -77,7 +77,7 @@ npm run dev                    # open http://localhost:5173
 Login password is `xandoesart` (change it with `VITE_APP_PASSWORD` in `.env`).
 > Heads-up: a front-end password is a friendly gate, not real security — anyone
 > with the link/code can see it. Fine for a private family tool; don't store
-> secrets behind it.
+> secrets behind it. 1
 
 Test which reminders would fire today (and actually send if a Resend key is set):
 
