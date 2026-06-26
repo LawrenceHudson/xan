@@ -8,9 +8,18 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.19.0';
+export const APP_VERSION = '1.20.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.20.0',
+    date: '2026-06-25',
+    notes: [
+      'Added source and last-verified metadata to college entries so the roadmap can distinguish official data from estimates and show where each school card came from.',
+      'Added a shared planning helper for reminder windows and funding math, then backed it with tests so reminder timing, portfolio/recommendation event mapping, and college funding calculations stay stable as the roadmap grows.',
+      'Improved the visual hierarchy and mobile behavior with serif display headings, a scrollable phone tab bar, and a clearer provenance block on college cards.',
+    ],
+  },
   {
     version: '1.19.0',
     date: '2026-06-25',
