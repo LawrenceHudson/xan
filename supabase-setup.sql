@@ -31,8 +31,30 @@ create table if not exists app_files (
   created_at timestamptz default now()
 );
 
+create table if not exists app_media (
+  id          text primary key,
+  slug        text not null,
+  name        text not null,
+  type        text not null,
+  kind        text default 'file',
+  size        integer not null default 0,
+  state       text not null default 'draft',
+  version     integer not null default 1,
+  bucket      text not null,
+  storage_path text not null,
+  delete_after timestamptz,
+  published_at timestamptz,
+  created_at  timestamptz default now(),
+  updated_at  timestamptz default now()
+);
+
+create index if not exists app_media_state_idx on app_media(state);
+create index if not exists app_media_created_idx on app_media(created_at desc);
+create index if not exists app_media_name_idx on app_media(name);
+
 -- These tables are reached ONLY through the server-side service-role key, which
 -- bypasses Row-Level Security, so no RLS policies are required. We still enable
 -- RLS with no public policies so the public/anon key can never read them.
 alter table app_state enable row level security;
 alter table app_files enable row level security;
+alter table app_media enable row level security;

@@ -18,6 +18,12 @@ export function supaEnv() {
   return { url: url.replace(/\/+$/, ''), key, configured: !!(url && key) };
 }
 
+export function mediaEnv() {
+  const { configured } = supaEnv();
+  const bucket = (process.env.SUPABASE_MEDIA_BUCKET || 'app-media').trim();
+  return { bucket, configured: configured && !!bucket };
+}
+
 // Gate every request with the app token, when one is configured. If APP_API_TOKEN
 // is not set on the server we allow the request through (degraded/open mode) so a
 // half-configured deploy still works — but setting it is recommended.
@@ -103,5 +109,121 @@ export async function loadUserEvents({ includeVolunteer = false } = {}) {
     return out;
   } catch {
     return [];
+  }
+}
+
+export const MEDIA_STATES = {
+  DRAFT: 'draft',
+  PUBLISHED: 'published',
+  SOFT_DELETED: 'soft_deleted',
+};
+
+export const MEDIA_MAX_BYTES = 25 * 1024 * 1024;
+
+const MEDIA_ALLOWLIST = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'image/svg+xml',
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'text/plain',
+  'application/zip',
+]);
+
+export function isAllowedMediaType(type = '') {
+  return MEDIA_ALLOWLIST.has(String(type).toLowerCase());
+}
+
+export function makeMediaId() {
+  return `med-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+export function slugifyName(name = '') {
+  const base = String(name || 'file')
+    .toLowerCase()
+    .replace(/\.[a-z0-9]{1,8}$/i, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
+  return base || 'file';
+}
+
+export function safeFileName(name = '', fallbackExt = '') {
+  const src = String(name || '').trim();
+  const clean = src.replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/-+/g, '-').slice(0, 120);
+  if (!clean) return `file${fallbackExt || ''}`;
+  return clean;
+}
+
+export function decodeDataUrl(dataUrl) {
+  const m = /^data:([^;]+);base64,([a-zA-Z0-9+/=\s]+)$/.exec(String(dataUrl || ''));
+  if (!m) return { ok: false, reason: 'invalid-data-url' };
+  const type = m[1].toLowerCase();
+  try {
+    const bytes = Buffer.from(m[2].replace(/\s+/g, ''), 'base64');
+    return { ok: true, type, bytes };
+  } catch {
+    return { ok: false, reason: 'invalid-base64' };
+  }
+}
+
+function storageBase() {
+  const { url } = supaEnv();
+  return `${url}/storage/v1`;
+}
+
+export async function sbUploadObject({ bucket, objectPath, bytes, contentType, upsert = true }) {
+  const { key } = supaEnv();
+  const qs = upsert ? '?upsert=true' : '';
+  const resp = await fetch(`${storageBase()}/object/${encodeURIComponent(bucket)}/${objectPath}${qs}`, {
+    method: 'POST',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': contentType || 'application/octet-stream',
+      'x-upsert': upsert ? 'true' : 'false',
+    },
+    body: bytes,
+  });
+  const text = await resp.text();
+  if (!resp.ok) throw new Error(`Storage upload ${resp.status}: ${text}`);
+  return text ? JSON.parse(text) : { ok: true };
+}
+
+export async function sbDownloadObject({ bucket, objectPath }) {
+  const { key } = supaEnv();
+  const resp = await fetch(`${storageBase()}/object/${encodeURIComponent(bucket)}/${objectPath}`, {
+    method: 'GET',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+    },
+  });
+  if (!resp.ok) {
+    const text = await resp.text();
+    const err = new Error(`Storage download ${resp.status}: ${text}`);
+    err.status = resp.status;
+    throw err;
+  }
+  const contentType = resp.headers.get('content-type') || 'application/octet-stream';
+  const arr = await resp.arrayBuffer();
+  return { contentType, bytes: Buffer.from(arr) };
+}
+
+export async function sbDeleteObject({ bucket, objectPath }) {
+  const { key } = supaEnv();
+  const resp = await fetch(`${storageBase()}/object/${encodeURIComponent(bucket)}/${objectPath}`, {
+    method: 'DELETE',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+    },
+  });
+  if (!resp.ok) {
+    const text = await resp.text();
+    throw new Error(`Storage delete ${resp.status}: ${text}`);
   }
 }

@@ -136,7 +136,7 @@ phone, a second computer, or a private window won't see the data. Connect a free
 1. Create a free project at **https://supabase.com**.
 2. In the project, open **SQL Editor → New query**, paste in
    [`supabase-setup.sql`](supabase-setup.sql), and click **Run**. This makes the
-   two tables the app uses.
+   app tables the site uses (including `app_media` for first-party media URLs).
 3. In Supabase **Settings → API**, copy:
    - **Project URL**
    - the **`service_role`** key (the **secret** one — *not* the public/anon key)
@@ -145,6 +145,7 @@ phone, a second computer, or a private window won't see the data. Connect a free
    - `SUPABASE_SERVICE_ROLE_KEY` = the service_role secret
    - `APP_API_TOKEN` = the **same value** as `VITE_APP_PASSWORD` (this is the
      password gate the signed-in app uses to reach the sync API)
+   - `SUPABASE_MEDIA_BUCKET` = `app-media` (or your preferred bucket name)
 5. **Redeploy** so the variables take effect.
 
 That's it. The first time you log in after connecting it, whatever is already in
@@ -157,7 +158,32 @@ that browser is uploaded automatically — then it appears on your other devices
 
 ---
 
-## 5) Make it yours
+## 5) First-party media URLs (in rollout)
+
+The backend foundation for a **self-hosted media library** is now in place.
+This is additive and does **not** replace existing image/link fields.
+
+- Authenticated management API: `/api/media`
+- Public serve route for published assets: `/api/media/public/:id/:slug`
+- Cleanup cron for expired soft-deleted assets: `/api/media-cleanup`
+
+Supported upload types (server-validated):
+
+- Images: JPG, PNG, WEBP, GIF, SVG
+- Docs: PDF, DOC, DOCX, TXT
+- Extras: ZIP
+
+Current max size per upload is **25 MB**.
+
+Rollout safety:
+
+- Existing external URLs keep working unchanged.
+- Existing production pages continue rendering from current `image`/`link` values.
+- New media routes are additive and can be enabled in UI progressively.
+
+---
+
+## 6) Make it yours
 
 - **Add/edit milestones, scholarships, colleges** → `shared/roadmap.js`
 - **Change reminder timing** → the `remind: [30, 14, 7, 1]` array per event

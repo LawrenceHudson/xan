@@ -71,3 +71,38 @@ export async function getFile(blobId) {
 export async function deleteFile(blobId) {
   return call(`/api/files?id=${encodeURIComponent(blobId)}`, { method: 'DELETE', headers: headers() });
 }
+
+// ---- Media library ----------------------------------------------------------
+
+export async function listMedia({ state, kind, q, limit } = {}) {
+  const params = new URLSearchParams();
+  if (state) params.set('state', state);
+  if (kind) params.set('kind', kind);
+  if (q) params.set('q', q);
+  if (limit) params.set('limit', String(limit));
+  const qs = params.toString();
+  return call(`/api/media${qs ? `?${qs}` : ''}`, { method: 'GET', headers: headers() });
+}
+
+export async function uploadMedia({ name, type, dataUrl, publish = false, kind = 'file' }) {
+  return call('/api/media', {
+    method: 'POST',
+    headers: headers(),
+    body: JSON.stringify({ name, type, dataUrl, publish, kind }),
+  });
+}
+
+export async function patchMedia({ id, action, name, type, dataUrl }) {
+  return call('/api/media', {
+    method: 'PATCH',
+    headers: headers(),
+    body: JSON.stringify({ id, action, name, type, dataUrl }),
+  });
+}
+
+export async function deleteMedia(id) {
+  return call(`/api/media?id=${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+    headers: headers(),
+  });
+}
