@@ -8,9 +8,19 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.20.0';
+export const APP_VERSION = '1.21.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.21.0',
+    date: '2026-07-31',
+    notes: [
+      'Added first-party media hosting foundations on Supabase: new media metadata table, authenticated media APIs, published-asset public route, and a scheduled cleanup route for expired soft-deleted media.',
+      'Added a new Media Library section on the Admin tab where you can upload files, choose publish-on-upload, filter by state, publish/unpublish, restore soft-deleted items, and copy public URLs.',
+      'Added Media Library URL insertion helpers in Achievements and Portfolio editors so published image URLs can be selected and inserted without relying on third-party hosts.',
+      'Updated setup docs for SUPABASE_MEDIA_BUCKET and rollout notes so production can adopt media features without breaking existing content links.',
+    ],
+  },
   {
     version: '1.20.0',
     date: '2026-06-25',

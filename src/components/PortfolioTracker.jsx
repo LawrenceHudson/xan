@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { COLLEGES, SCHOLARSHIPS, PORTFOLIO } from '../../shared/roadmap.js';
 import { useStored, fmt, daysUntil } from '../lib/util.js';
+import { listMedia } from '../lib/api.js';
 
 const STATUS = {
   idea:          { label: 'Idea',        color: '#94a3b8', emoji: '💡' },
@@ -28,6 +29,17 @@ const blank = () => ({
 export default function PortfolioTracker() {
   const [pieces, setPieces] = useStored('viol_portfolio', []);
   const [draft, setDraft] = useState(null);
+  const [pubMedia, setPubMedia] = useState([]);
+  const [pickUrl, setPickUrl] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      const res = await listMedia({ state: 'published', kind: 'image', limit: 200 });
+      if (!res || !res.ok) return;
+      const imgs = (res.items || []).filter((m) => m.publicUrl && String(m.type || '').startsWith('image/'));
+      setPubMedia(imgs);
+    })();
+  }, []);
 
   const finals = pieces.filter((p) => p.status === 'final').length;
   const pct = Math.min(100, Math.round((finals / PORTFOLIO.targetPieces) * 100));
@@ -42,6 +54,7 @@ export default function PortfolioTracker() {
       return copy;
     });
     setDraft(null);
+    setPickUrl('');
   }
   function remove(id) {
     setPieces((list) => list.filter((p) => p.id !== id));
@@ -91,6 +104,19 @@ export default function PortfolioTracker() {
             <label>Target date<input type="date" value={draft.target} onChange={(e) => setDraft({ ...draft, target: e.target.value })} /></label>
           </div>
           <label className="full">Image URL (optional)<input value={draft.image} onChange={(e) => setDraft({ ...draft, image: e.target.value })} placeholder="paste a link to a photo of the piece" /></label>
+          {pubMedia.length > 0 && (
+            <div className="form-row">
+              <label className="full">Or insert from your Media Library
+                <select value={pickUrl} onChange={(e) => setPickUrl(e.target.value)}>
+                  <option value="">Select a published image…</option>
+                  {pubMedia.map((m) => <option key={m.id} value={m.publicUrl}>{m.name}</option>)}
+                </select>
+              </label>
+              <div className="editor-actions" style={{ marginTop: 0 }}>
+                <button type="button" className="btn small ghost" onClick={() => pickUrl && setDraft({ ...draft, image: pickUrl })} disabled={!pickUrl}>Use selected image URL</button>
+              </div>
+            </div>
+          )}
           <label className="full">Gallery description (public)<textarea value={draft.caption} onChange={(e) => setDraft({ ...draft, caption: e.target.value })} rows={3} placeholder="A sentence or two about this piece — shown beside it on your public Art Gallery. Leave blank to show just the title and medium." /></label>
 
           <div className="tag-picker">
@@ -110,7 +136,7 @@ export default function PortfolioTracker() {
 
           <div className="editor-actions">
             <button className="btn primary" onClick={save}>Save piece</button>
-            <button className="btn ghost" onClick={() => setDraft(null)}>Cancel</button>
+            <button className="btn ghost" onClick={() => { setDraft(null); setPickUrl(''); }}>Cancel</button>
           </div>
         </div>
       )}
@@ -142,7 +168,7 @@ export default function PortfolioTracker() {
                 <span className="publish-hint muted small">Add an image URL to publish this to the public Gallery.</span>
               )}
               <div className="editor-actions">
-                <button className="btn ghost" onClick={() => setDraft(p)}>Edit</button>
+                <button className="btn ghost" onClick={() => { setPickUrl(''); setDraft(p); }}>Edit</button>
                 <button className="btn danger" onClick={() => remove(p.id)}>Delete</button>
               </div>
             </div>

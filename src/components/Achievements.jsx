@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ACHIEVEMENT_CATEGORIES, ACHIEVEMENT_SEEDS, STUDENT } from '../../shared/roadmap.js';
 import { useStored, fmt, downloadText } from '../lib/util.js';
+import { listMedia } from '../lib/api.js';
 
 const BLANK = { category: 'award', title: '', venue: '', date: '', description: '', link: '', image: '' };
 
@@ -9,10 +10,21 @@ export default function Achievements() {
   const [draft, setDraft] = useState(BLANK);
   const [editing, setEditing] = useState(null); // id being edited, or 'new'
   const [lightbox, setLightbox] = useState(null); // achievement being viewed full-size
+  const [pubMedia, setPubMedia] = useState([]);
+  const [pickUrl, setPickUrl] = useState('');
 
-  function startNew() { setDraft(BLANK); setEditing('new'); }
-  function startEdit(it) { setDraft({ ...BLANK, ...it }); setEditing(it.id); }
-  function cancel() { setEditing(null); setDraft(BLANK); }
+  useEffect(() => {
+    (async () => {
+      const res = await listMedia({ state: 'published', kind: 'image', limit: 200 });
+      if (!res || !res.ok) return;
+      const imgs = (res.items || []).filter((m) => m.publicUrl && String(m.type || '').startsWith('image/'));
+      setPubMedia(imgs);
+    })();
+  }, []);
+
+  function startNew() { setDraft(BLANK); setPickUrl(''); setEditing('new'); }
+  function startEdit(it) { setDraft({ ...BLANK, ...it }); setPickUrl(''); setEditing(it.id); }
+  function cancel() { setEditing(null); setDraft(BLANK); setPickUrl(''); }
 
   function save() {
     if (!draft.title.trim()) return;
@@ -94,6 +106,19 @@ export default function Achievements() {
               <span className="muted small">Paste a link to a photo of the piece — it shows on the card and opens full-size when clicked.</span>
             </label>
           </div>
+          {pubMedia.length > 0 && (
+            <div className="form-row">
+              <label className="full">Or insert from your Media Library
+                <select value={pickUrl} onChange={(e) => setPickUrl(e.target.value)}>
+                  <option value="">Select a published image…</option>
+                  {pubMedia.map((m) => <option key={m.id} value={m.publicUrl}>{m.name}</option>)}
+                </select>
+              </label>
+              <div className="editor-actions" style={{ marginTop: 0 }}>
+                <button type="button" className="btn small ghost" onClick={() => pickUrl && setDraft({ ...draft, image: pickUrl })} disabled={!pickUrl}>Use selected image URL</button>
+              </div>
+            </div>
+          )}
           {draft.image && (
             <div className="form-row">
               <div className="ach-preview">
