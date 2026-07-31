@@ -114,7 +114,8 @@ export default async function handler(req, res) {
   // Open, read-only, cacheable. AI tools can fetch this cross-origin.
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
+  // Theme/gallery edits should reflect immediately on the public page.
+  res.setHeader('Cache-Control', 'no-store');
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');

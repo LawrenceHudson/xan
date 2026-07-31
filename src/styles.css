@@ -881,6 +881,80 @@ h3 { margin: 18px 0 8px; letter-spacing: -.01em; }
 /* Classic theme: cleaner editorial surface + hide media chips for a minimal revert. */
 .gallery-public.theme-classic .g-media { display: none; }
 
+/* Theme overrides to make switching obvious and keep controls high-contrast. */
+.gallery-public.theme-classic {
+  --gp-card: #ffffff;
+  --gp-line: #ece8f5;
+  --gp-ink: #1f2430;
+  --gp-muted: #6b7280;
+  background:
+    radial-gradient(1200px 500px at 80% -10%, #f3e8ff 0%, transparent 60%),
+    radial-gradient(1000px 500px at -10% 10%, #ffe4f1 0%, transparent 55%),
+    #faf9fc;
+}
+.gallery-public.theme-classic .g-top { background: rgba(255,255,255,.84); border-bottom-color: #ece8f5; }
+.gallery-public.theme-classic .g-hero h1 {
+  background: linear-gradient(135deg, var(--gp-violet), var(--gp-pink));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.gallery-public.theme-classic .g-login-link,
+.gallery-public.theme-classic .g-bio-btn {
+  background: #fff;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+}
+
+.gallery-public.theme-chaos {
+  --gp-card: #181319;
+  --gp-line: #3a3340;
+  --gp-ink: #f3edf7;
+  --gp-muted: #c8bfd3;
+  background-color: #0a0a0c;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E"),
+    radial-gradient(44rem 22rem at 8% -10%, rgba(255,59,130,.28), transparent 58%),
+    radial-gradient(40rem 22rem at 95% 6%, rgba(31,189,255,.22), transparent 58%),
+    radial-gradient(36rem 20rem at 50% 100%, rgba(255,220,20,.18), transparent 56%);
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+  background-size: 160px 160px, auto, auto, auto;
+}
+.gallery-public.theme-chaos .g-top {
+  background: rgba(10,10,14,.74);
+  border-bottom-color: #352f3e;
+}
+.gallery-public.theme-chaos .g-brand-sub { color: #b3a8c1; }
+.gallery-public.theme-chaos .g-hero h1 {
+  color: #ffe7f4;
+  background: none;
+}
+.gallery-public.theme-chaos .g-hero-sub { color: #cfc4db; }
+.gallery-public.theme-chaos .g-h,
+.gallery-public.theme-chaos .g-piece-info h3,
+.gallery-public.theme-chaos .g-ink h3,
+.gallery-public.theme-chaos .g-trophy h3 { color: #f7f1fb; }
+.gallery-public.theme-chaos .g-piece-cap,
+.gallery-public.theme-chaos .g-ink-excerpt,
+.gallery-public.theme-chaos .g-trophy-desc { color: #d7cde3; }
+.gallery-public.theme-chaos .g-trophy,
+.gallery-public.theme-chaos .g-ink,
+.gallery-public.theme-chaos .g-reader,
+.gallery-public.theme-chaos .g-lightbox {
+  background: rgba(24,19,29,.92);
+  border-color: #3a3340;
+  color: #f3edf7;
+}
+.gallery-public.theme-chaos .g-link { color: #7dd3fc; }
+.gallery-public.theme-chaos .g-login-link,
+.gallery-public.theme-chaos .g-bio-btn {
+  background: rgba(255,255,255,.08);
+  color: #f7f1fb;
+  border: 1px solid rgba(255,255,255,.26);
+}
+.gallery-public.theme-chaos .g-login-link:hover,
+.gallery-public.theme-chaos .g-bio-btn:hover {
+  background: rgba(255,255,255,.16);
+}
+
 /* ============================================================================
    SCHOLARSHIP STATUS + COLLEGE FUNDING PLAN
    ============================================================================ */

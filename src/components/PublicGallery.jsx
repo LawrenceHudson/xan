@@ -39,7 +39,7 @@ export default function PublicGallery({ onUnlock }) {
 
   useEffect(() => {
     let alive = true;
-    fetch('/api/public')
+    fetch(`/api/public?_=${Date.now()}`, { cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (alive) { setData(d && d.ok ? d : emptyData()); setLoading(false); } })
       .catch(() => { if (alive) { setData(emptyData()); setLoading(false); } });

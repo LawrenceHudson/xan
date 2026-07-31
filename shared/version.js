@@ -8,9 +8,17 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.22.0';
+export const APP_VERSION = '1.22.1';
 
 export const CHANGELOG = [
+  {
+    version: '1.22.1',
+    date: '2026-07-31',
+    notes: [
+      'Fixed public theme switching reliability by disabling caching on /api/public and fetching the public feed with no-store cache mode, so Admin theme changes show up immediately.',
+      'Improved visual separation between Classic and Chaos public themes with stronger scoped overrides and higher-contrast top action buttons (Bio / Log in).',
+    ],
+  },
   {
     version: '1.22.0',
     date: '2026-07-31',
