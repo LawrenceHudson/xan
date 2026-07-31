@@ -81,13 +81,17 @@ export default function PublicGallery({ onUnlock }) {
     if (!data || typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
     const wrap = document.querySelector('.g-showcase');
     if (!wrap) return;
+    const nodes = Array.from(wrap.querySelectorAll('.g-piece.reveal'));
+    // Safety-first: keep all cards visible even if observer callbacks are delayed
+    // or skipped by the browser. This prevents "flash then disappear" behavior.
+    nodes.forEach((el) => el.classList.add('in'));
     wrap.classList.add('reveal-on');
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) {
         if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
       }
     }, { threshold: 0.12 });
-    wrap.querySelectorAll('.g-piece.reveal').forEach((el) => io.observe(el));
+    nodes.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, [data]);
 

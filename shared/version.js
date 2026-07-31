@@ -8,9 +8,16 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.21.0';
+export const APP_VERSION = '1.21.1';
 
 export const CHANGELOG = [
+  {
+    version: '1.21.1',
+    date: '2026-07-31',
+    notes: [
+      'Fixed a public Gallery rendering bug where artwork cards could briefly appear and then disappear on the front page. The scroll-reveal behavior now defaults cards to visible so image sections stay stable while loading.',
+    ],
+  },
   {
     version: '1.21.0',
     date: '2026-07-31',
