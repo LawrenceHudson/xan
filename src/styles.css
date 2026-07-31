@@ -832,7 +832,7 @@ h3 { margin: 18px 0 8px; letter-spacing: -.01em; }
    MIXED-MEDIA SKIN — warm canvas, pastel smudges, paper grain, crayon strokes.
    Pure CSS + inline SVG (no external assets). Cards stay solid for legibility.
    ============================================================================ */
-.gallery-public {
+.gallery-public.theme-chaos {
   --gp-card: #fffdf7; --gp-line: #e9dfcb; --gp-ink: #221d16; --gp-muted: #6f6655;
   background-color: #f4ecdc;
   background-image:
@@ -848,13 +848,13 @@ h3 { margin: 18px 0 8px; letter-spacing: -.01em; }
 }
 
 /* Warm, papery header + cards */
-.g-top { background: rgba(247,240,228,.84); border-bottom-color: #e7dcc6; }
-.g-bio-btn, .g-login-link { background: #fffdf7; border-color: #e7dcc6; }
-.g-trophy, .g-ink { background: rgba(255,253,247,.92); border-color: #e9dfcb; }
+.gallery-public.theme-chaos .g-top { background: rgba(247,240,228,.84); border-bottom-color: #e7dcc6; }
+.gallery-public.theme-chaos .g-bio-btn, .gallery-public.theme-chaos .g-login-link { background: #fffdf7; border-color: #e7dcc6; }
+.gallery-public.theme-chaos .g-trophy, .gallery-public.theme-chaos .g-ink { background: rgba(255,253,247,.92); border-color: #e9dfcb; }
 
 /* Hero: a soft watercolor wash behind the title */
-.g-hero { position: relative; }
-.g-hero::before {
+.gallery-public.theme-chaos .g-hero { position: relative; }
+.gallery-public.theme-chaos .g-hero::before {
   content: ''; position: absolute; z-index: -1; left: 50%; top: 42%;
   width: min(640px, 88vw); height: 300px; transform: translate(-50%, -50%);
   background:
@@ -864,19 +864,22 @@ h3 { margin: 18px 0 8px; letter-spacing: -.01em; }
     radial-gradient(120px 90px at 72% 60%, rgba(201,139,192,.24), transparent 70%);
   filter: blur(20px); pointer-events: none;
 }
-.g-hero h1 { color: #2a2118; }
+.gallery-public.theme-chaos .g-hero h1 { color: #2a2118; }
 
 /* Mixed-media signature line under the hero */
-.g-media { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; margin: 20px auto 0; max-width: 640px; }
-.g-media span { display: inline-flex; align-items: center; gap: 6px; font-size: .76rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: #5b5346; }
-.g-media i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.gallery-public.theme-chaos .g-media { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; margin: 20px auto 0; max-width: 640px; }
+.gallery-public.theme-chaos .g-media span { display: inline-flex; align-items: center; gap: 6px; font-size: .76rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: #5b5346; }
+.gallery-public.theme-chaos .g-media i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
 
 /* Section titles get a hand-drawn crayon underline */
-.g-h::after {
+.gallery-public.theme-chaos .g-h::after {
   content: ''; display: block; width: 132px; height: 16px; margin: 12px auto 0;
   background: center/contain no-repeat
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='132' height='16'%3E%3Cpath d='M3 9 C 30 3 56 14 82 7 S 118 6 129 9' fill='none' stroke='%23ec4899' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M6 11 C 35 6 62 15 88 9 S 114 9 126 11' fill='none' stroke='%237c3aed' stroke-width='3' stroke-linecap='round' opacity='0.7'/%3E%3C/svg%3E");
 }
+
+/* Classic theme: cleaner editorial surface + hide media chips for a minimal revert. */
+.gallery-public.theme-classic .g-media { display: none; }
 
 /* ============================================================================
    SCHOLARSHIP STATUS + COLLEGE FUNDING PLAN

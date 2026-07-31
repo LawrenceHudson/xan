@@ -2,7 +2,7 @@
 // /api/public — the READ-ONLY, NO-PASSWORD data source for Xanderr's public
 // Art Gallery (the pre-login page) AND for AI crawlers wanting clean data.
 //
-//   GET /api/public  →  { ok, student, bio, gallery, trophies, writing, jsonld }
+//   GET /api/public  →  { ok, student, bio, theme, gallery, trophies, writing, jsonld }
 //
 // SAFETY: this route can only ever read four whitelisted keys and returns a
 // hand-sanitized subset of each. It NEVER touches savings, colleges, decisions,
@@ -125,7 +125,7 @@ export default async function handler(req, res) {
   // we serve an empty-but-valid gallery rather than erroring.
   let state = {};
   try {
-    state = await readStateKeys(['viol_achievements', 'viol_writing', 'viol_portfolio', 'viol_bio']);
+    state = await readStateKeys(['viol_achievements', 'viol_writing', 'viol_portfolio', 'viol_bio', 'viol_public_theme']);
   } catch {
     state = {};
   }
@@ -135,6 +135,8 @@ export default async function handler(req, res) {
   const gallery = publicGallery(state.viol_portfolio);
   const bioRaw = state.viol_bio || {};
   const bio = bioRaw && bioRaw.public && bioRaw.text ? String(bioRaw.text) : '';
+  const rawTheme = String(state.viol_public_theme || '').trim().toLowerCase();
+  const theme = rawTheme === 'classic' ? 'classic' : 'chaos';
 
   const host = (req.headers['x-forwarded-host'] || req.headers.host || '').split(',')[0];
   const proto = (req.headers['x-forwarded-proto'] || 'https').split(',')[0];
@@ -146,6 +148,7 @@ export default async function handler(req, res) {
     ok: true,
     student: { name: 'Xanderr' },
     bio,
+    theme,
     gallery,
     trophies,
     writing,

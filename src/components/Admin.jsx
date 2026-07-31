@@ -18,6 +18,7 @@ export default function Admin() {
   const [bio, setBio] = useStored('viol_bio', { text: '', public: false });
   const [bioDraft, setBioDraft] = useState(bio.text || '');
   const [bioSaved, setBioSaved] = useState(false);
+  const [publicTheme, setPublicTheme] = useStored('viol_public_theme', 'chaos');
   const [media, setMedia] = useState([]);
   const [mediaState, setMediaState] = useState('all');
   const [mediaMsg, setMediaMsg] = useState('');
@@ -187,6 +188,30 @@ export default function Admin() {
             : bio.public
               ? <p className="muted small">Add some text and click <strong>Save bio</strong> — an empty bio keeps the button hidden.</p>
               : null}
+        </div>
+      </section>
+
+      <section>
+        <h3>🖼️ Public page theme</h3>
+        <p className="muted small">Choose the look for the public gallery page. This setting syncs and can be switched anytime for an instant revert.</p>
+        <div className="card editor">
+          <div className="filters">
+            <button
+              className={`chip ${publicTheme === 'chaos' ? 'on' : ''}`}
+              onClick={() => setPublicTheme('chaos')}
+            >
+              Chaos collage (current)
+            </button>
+            <button
+              className={`chip ${publicTheme === 'classic' ? 'on' : ''}`}
+              onClick={() => setPublicTheme('classic')}
+            >
+              Classic editorial (revert)
+            </button>
+          </div>
+          <p className="muted small" style={{ margin: 0 }}>
+            Active theme: <strong>{publicTheme === 'classic' ? 'Classic editorial' : 'Chaos collage'}</strong>
+          </p>
         </div>
       </section>
 

@@ -8,9 +8,18 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.21.1';
+export const APP_VERSION = '1.22.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.22.0',
+    date: '2026-07-31',
+    notes: [
+      'Added a new Admin-controlled public theme switcher so the front page can be toggled between Chaos collage and Classic editorial without code changes.',
+      'Wired the public API feed to include the selected theme and made the public page apply it at render time, so theme changes propagate through the existing synced state flow.',
+      'Scoped mixed-media CSS to the Chaos theme class and added a clean Classic fallback for an instant visual revert.',
+    ],
+  },
   {
     version: '1.21.1',
     date: '2026-07-31',

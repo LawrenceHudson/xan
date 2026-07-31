@@ -110,10 +110,11 @@ export default function PublicGallery({ onUnlock }) {
   const trophies = (data && data.trophies) || [];
   const writing = (data && data.writing) || [];
   const bio = (data && data.bio) || '';
+  const theme = (data && data.theme) === 'classic' ? 'classic' : 'chaos';
   const isEmpty = !loading && gallery.length === 0 && trophies.length === 0 && writing.length === 0;
 
   return (
-    <div className="gallery-public" data-theme="light">
+    <div className={`gallery-public theme-${theme}`} data-theme="light">
       <header className="g-top">
         <div className="g-brand">
           <span className="g-brand-emoji" aria-hidden>🎨</span>
@@ -301,5 +302,5 @@ export default function PublicGallery({ onUnlock }) {
 }
 
 function emptyData() {
-  return { ok: true, bio: '', gallery: [], trophies: [], writing: [], jsonld: {} };
+  return { ok: true, bio: '', theme: 'chaos', gallery: [], trophies: [], writing: [], jsonld: {} };
 }
