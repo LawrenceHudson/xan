@@ -728,7 +728,7 @@ h3 { margin: 18px 0 8px; letter-spacing: -.01em; }
 .g-lightbox { max-width: 900px; padding: 12px; }
 .g-lightbox img { width: 100%; max-height: 76vh; object-fit: contain; border-radius: 10px; display: block; }
 .g-lightbox-cap { padding: 10px 6px 4px; }
-.g-reader-body { white-space: pre-wrap; font-family: inherit; font-size: .98rem; line-height: 1.6; color: #1f2430; margin: 8px 0 0; }
+.g-reader-body { white-space: pre-wrap; font-family: inherit; font-size: .98rem; line-height: 1.6; color: inherit; margin: 8px 0 0; }
 .g-bio-text { font-size: 1.02rem; line-height: 1.6; }
 .g-login { max-width: 380px; text-align: center; display: flex; flex-direction: column; gap: 10px; }
 .g-login input { padding: 11px 12px; border: 1px solid var(--gp-line); border-radius: 10px; font-size: 1rem; }
