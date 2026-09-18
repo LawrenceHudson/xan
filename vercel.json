@@ -9,5 +9,13 @@
       "path": "/api/media-cleanup",
       "schedule": "0 14 * * *"
     }
+  ],
+  "rewrites": [
+    { "source": "/oeuvre", "destination": "/index.html" },
+    { "source": "/illustrations", "destination": "/index.html" },
+    { "source": "/ceramics", "destination": "/index.html" },
+    { "source": "/paintings", "destination": "/index.html" },
+    { "source": "/about", "destination": "/index.html" },
+    { "source": "/contact", "destination": "/index.html" }
   ]
 }

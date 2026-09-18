@@ -31,13 +31,14 @@ sent via **Resend** on a daily **Vercel Cron** schedule.
 | 🐖 Savings | Log deposits/scholarship wins toward the $8k–$12k goal, **plus 529 and brokerage balances** — the combined college assets feed the Colleges funding plan |
 | 🛠️ Admin | App version, **release notes**, a **Send test email** button, and a **Bug / Feature submitter** (log items and clear them when handled) |
 
-**Front page** is the **public "Xanderr Art Gallery"** — a clean, marketing-ready
-showcase visitors see before logging in, with three areas: **The Gallery** (her
-artwork), the **Achievement Trophy Box**, and **The Ink & Page** (her writing). A
-compact **"Support her education ♥"** button in the header links to the 529 gifting
-page (edit the copy in `GIFTING` in `shared/roadmap.js`), and an optional **Bio**
-button appears when she publishes a bio from the Admin tab. The password field stays
-hidden until you click **Log in**.
+**Front page** is the public **Xanderr Portfolio**: a black, image-led entrance built
+from Xanderr's artwork, with separate **Oeuvre, Illustrations, Ceramics, Paintings,
+About, and Contact** views. Oeuvre contains every published work; a piece can also be
+tagged for any combination of the three focused galleries. Each gallery has its own
+drag-and-drop salon arrangement in the private Portfolio tab. The About page holds
+the artist bio, achievements, writing, and an expandable Fidelity 529 invitation.
+The illustrated skeleton is the intentionally unlabelled entrance to the private
+roadmap login.
 
 **She controls what's public.** Every achievement, writing piece, and portfolio
 piece has a **Publish** switch (off by default) — nothing shows publicly until she
@@ -105,6 +106,8 @@ npm run reminders:test
    - `RESEND_API_KEY` = your Resend key
    - `REMINDER_FROM` = `Violet's Roadmap <onboarding@resend.dev>` (or your domain)
    - `REMINDER_TO` = `violet@…, loren@…, bri@…` (comma-separated)
+   - `CONTACT_TO` = recipient for public contact-form messages (optional; falls back to `REMINDER_TO`)
+   - `CONTACT_FROM` = verified sender for contact-form messages (optional; falls back to `REMINDER_FROM`)
    - `CRON_SECRET` = any long random string (optional but recommended)
    - `VITE_APP_PASSWORD` = `xandoesart` (or your own)
 4. **Redeploy** so the variables take effect.

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { COLLEGES, SCHOLARSHIPS, PORTFOLIO } from '../../shared/roadmap.js';
-import { useStored, fmt, daysUntil } from '../lib/util.js';
+import { useStored, fmt, daysUntil, youtubeEmbedUrl } from '../lib/util.js';
 import { listMedia } from '../lib/api.js';
+import GalleryArranger, { PUBLIC_GALLERIES } from './GalleryArranger.jsx';
 
 const STATUS = {
   idea:          { label: 'Idea',        color: '#94a3b8', emoji: '💡' },
@@ -24,6 +25,10 @@ const blank = () => ({
   caption: '',
   target: '',
   image: '',
+  images: [],
+  video: '',
+  imagesText: '',
+  publicCategories: [],
 });
 
 export default function PortfolioTracker() {
@@ -46,11 +51,14 @@ export default function PortfolioTracker() {
 
   function save() {
     if (!draft.title.trim()) return;
+    const { imagesText, ...rest } = draft;
+    const images = (imagesText || '').split('\n').map((s) => s.trim()).filter(Boolean);
+    const entry = { ...rest, images };
     setPieces((list) => {
-      const i = list.findIndex((p) => p.id === draft.id);
-      if (i === -1) return [...list, draft];
+      const i = list.findIndex((p) => p.id === entry.id);
+      if (i === -1) return [...list, entry];
       const copy = [...list];
-      copy[i] = draft;
+      copy[i] = entry;
       return copy;
     });
     setDraft(null);
@@ -64,8 +72,9 @@ export default function PortfolioTracker() {
   }
   function toggleTag(field, val) {
     setDraft((d) => {
-      const has = d[field].includes(val);
-      return { ...d, [field]: has ? d[field].filter((x) => x !== val) : [...d[field], val] };
+      const values = d[field] || [];
+      const has = values.includes(val);
+      return { ...d, [field]: has ? values.filter((x) => x !== val) : [...values, val] };
     });
   }
 
@@ -103,7 +112,7 @@ export default function PortfolioTracker() {
             </label>
             <label>Target date<input type="date" value={draft.target} onChange={(e) => setDraft({ ...draft, target: e.target.value })} /></label>
           </div>
-          <label className="full">Image URL (optional)<input value={draft.image} onChange={(e) => setDraft({ ...draft, image: e.target.value })} placeholder="paste a link to a photo of the piece" /></label>
+          <label className="full">Cover image / GIF URL (optional)<input value={draft.image} onChange={(e) => setDraft({ ...draft, image: e.target.value })} placeholder="paste a link to a photo (or a .gif — it'll animate)" /></label>
           {pubMedia.length > 0 && (
             <div className="form-row">
               <label className="full">Or insert from your Media Library
@@ -113,11 +122,22 @@ export default function PortfolioTracker() {
                 </select>
               </label>
               <div className="editor-actions" style={{ marginTop: 0 }}>
-                <button type="button" className="btn small ghost" onClick={() => pickUrl && setDraft({ ...draft, image: pickUrl })} disabled={!pickUrl}>Use selected image URL</button>
+                <button type="button" className="btn small ghost" onClick={() => pickUrl && setDraft({ ...draft, image: pickUrl })} disabled={!pickUrl}>Use as cover image</button>
+                <button type="button" className="btn small ghost" onClick={() => pickUrl && setDraft((d) => ({ ...d, imagesText: d.imagesText ? `${d.imagesText}\n${pickUrl}` : pickUrl }))} disabled={!pickUrl}>Add to additional photos</button>
               </div>
             </div>
           )}
+          <label className="full">Additional photos (optional)<textarea value={draft.imagesText} onChange={(e) => setDraft({ ...draft, imagesText: e.target.value })} rows={3} placeholder={'One photo URL per line — e.g. more angles of the same piece, or pages exported from a PDF'} /></label>
+          <label className="full">Video — YouTube link (optional)<input value={draft.video} onChange={(e) => setDraft({ ...draft, video: e.target.value })} placeholder="paste a YouTube link — it plays inline, no upload needed" /></label>
           <label className="full">Gallery description (public)<textarea value={draft.caption} onChange={(e) => setDraft({ ...draft, caption: e.target.value })} rows={3} placeholder="A sentence or two about this piece — shown beside it on your public Art Gallery. Leave blank to show just the title and medium." /></label>
+
+          <div className="tag-picker public-category-picker">
+            <span className="picker-label">Public gallery sections:</span>
+            {PUBLIC_GALLERIES.filter((g) => g.id !== 'oeuvre').map((g) => (
+              <button key={g.id} type="button" className={`chip ${(draft.publicCategories || []).includes(g.id) ? 'on' : ''}`} onClick={() => toggleTag('publicCategories', g.id)}>{g.label}</button>
+            ))}
+            <span className="muted small full-width-hint">Every published piece appears in Oeuvre automatically. Leave all three unselected for an Oeuvre-only piece.</span>
+          </div>
 
           <div className="tag-picker">
             <span className="picker-label">For schools:</span>
@@ -149,7 +169,17 @@ export default function PortfolioTracker() {
           const d = p.target ? daysUntil(p.target) : null;
           return (
             <div key={p.id} className="card piece">
-              {p.image && <img className="piece-img" src={p.image} alt={p.title} onError={(e) => { e.target.style.display = 'none'; }} />}
+              {p.image && (
+                <div className="piece-img-wrap">
+                  <img className="piece-img" src={p.image} alt={p.title} onError={(e) => { e.target.style.display = 'none'; }} />
+                  {(p.images || []).length > 0 && <span className="tag piece-more-badge">+{p.images.length} more photo{p.images.length > 1 ? 's' : ''}</span>}
+                </div>
+              )}
+              {p.video && (
+                youtubeEmbedUrl(p.video)
+                  ? <div className="video-embed"><iframe src={youtubeEmbedUrl(p.video)} title={p.title} loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen /></div>
+                  : <p className="muted small">Video link didn&rsquo;t look like a YouTube URL — double check it.</p>
+              )}
               <div className="card-head">
                 <h3>{p.title}</h3>
                 <span className="tag" style={{ background: st.color, color: '#fff' }}>{st.emoji} {st.label}</span>
@@ -159,22 +189,26 @@ export default function PortfolioTracker() {
               {p.schools.length > 0 && <div className="tags"><span className="micro">Schools:</span>{p.schools.map((id) => <span key={id} className="tag purple">{SCHOOL_OPTS.find((o) => o.id === id)?.label}</span>)}</div>}
               {p.scholarships.length > 0 && <div className="tags"><span className="micro">Scholarships:</span>{p.scholarships.map((id) => <span key={id} className="tag amber">{SCH_OPTS.find((o) => o.id === id)?.label}</span>)}</div>}
               {p.notes && <p className="deliverable">{p.notes}</p>}
-              {p.image ? (
+              {(p.publicCategories || []).length > 0 && (
+                <div className="tags"><span className="micro">Public sections:</span>{p.publicCategories.map((id) => <span key={id} className="tag purple">{PUBLIC_GALLERIES.find((g) => g.id === id)?.label || id}</span>)}</div>
+              )}
+              {(p.image || p.video) ? (
                 <label className={`publish-toggle ${p.public ? 'on' : ''}`} title="Show this piece on your public Art Gallery wall">
                   <input type="checkbox" checked={!!p.public} onChange={() => togglePublic(p.id)} />
                   {p.public ? '🖼️ Published to Gallery' : 'Publish to Gallery'}
                 </label>
               ) : (
-                <span className="publish-hint muted small">Add an image URL to publish this to the public Gallery.</span>
+                <span className="publish-hint muted small">Add an image URL or a YouTube link to publish this to the public Gallery.</span>
               )}
               <div className="editor-actions">
-                <button className="btn ghost" onClick={() => { setPickUrl(''); setDraft(p); }}>Edit</button>
+                <button className="btn ghost" onClick={() => { setPickUrl(''); setDraft({ ...blank(), ...p, imagesText: (p.images || []).join('\n') }); }}>Edit</button>
                 <button className="btn danger" onClick={() => remove(p.id)}>Delete</button>
               </div>
             </div>
           );
         })}
       </div>
+      <GalleryArranger pieces={pieces} />
     </div>
   );
 }

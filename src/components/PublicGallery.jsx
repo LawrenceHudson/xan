@@ -1,16 +1,24 @@
-import { useState, useEffect } from 'react';
-import { GIFTING, STUDENT, ACHIEVEMENT_CATEGORIES, WRITING_CATEGORIES } from '../../shared/roadmap.js';
+import { useEffect, useMemo, useState } from 'react';
+import { ACHIEVEMENT_CATEGORIES, GIFTING, STUDENT, WRITING_CATEGORIES } from '../../shared/roadmap.js';
+import { youtubeEmbedUrl, youtubeThumbUrl } from '../lib/util.js';
 
-// ============================================================================
-// Xanderr Art Gallery — the PUBLIC, pre-login landing page.
-//
-// Pulls only the sanitized, opt-in-published content from /api/public (no
-// password). Shows three showcases: the art Gallery wall, the Achievement
-// Trophy Box, and "The Ink & Page" writing. A compact 529 gift button and an
-// optional Bio button live in the header, with a quiet Log in link that opens
-// the existing password gate. Also injects schema.org JSON-LD + social meta so
-// the page is discoverable by Google and clean for AI crawlers.
-// ============================================================================
+const VIEWS = [
+  { id: 'oeuvre', label: 'Oeuvre', path: '/oeuvre' },
+  { id: 'illustrations', label: 'Illustrations', path: '/illustrations' },
+  { id: 'ceramics', label: 'Ceramics', path: '/ceramics' },
+  { id: 'paintings', label: 'Paintings', path: '/paintings' },
+  { id: 'about', label: 'About', path: '/about' },
+  { id: 'contact', label: 'Contact', path: '/contact' },
+];
+
+function viewFromPath(pathname) {
+  const clean = String(pathname || '/').replace(/\/+$/, '') || '/';
+  return VIEWS.find((view) => view.path === clean)?.id || 'home';
+}
+
+function emptyData() {
+  return { ok: true, bio: '', gallery: [], layouts: {}, trophies: [], writing: [], jsonld: {} };
+}
 
 function setMeta(key, value, isProperty = false) {
   if (!value) return;
@@ -24,283 +32,129 @@ function setMeta(key, value, isProperty = false) {
   el.setAttribute('content', value);
 }
 
+function slidesFor(piece) {
+  return [piece?.image, ...(piece?.images || [])].filter(Boolean);
+}
+
 export default function PublicGallery({ onUnlock }) {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [lightbox, setLightbox] = useState(null);     // gallery image {image,title,medium}
-  const [reading, setReading] = useState(null);       // writing piece being read in full
-  const [showBio, setShowBio] = useState(false);
+  const [view, setView] = useState(() => viewFromPath(window.location.pathname));
+  const [lightbox, setLightbox] = useState(null);
+  const [slide, setSlide] = useState(0);
+  const [reading, setReading] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
-
-  // Login state (mirrors the old Login.jsx gate).
-  const [pw, setPw] = useState('');
-  const [err, setErr] = useState(false);
-  const expected = import.meta.env.VITE_APP_PASSWORD || 'xandoesart';
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState(false);
 
   useEffect(() => {
     let alive = true;
     fetch(`/api/public?_=${Date.now()}`, { cache: 'no-store' })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (alive) { setData(d && d.ok ? d : emptyData()); setLoading(false); } })
-      .catch(() => { if (alive) { setData(emptyData()); setLoading(false); } });
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => { if (alive) setData(payload?.ok ? payload : emptyData()); })
+      .catch(() => { if (alive) setData(emptyData()); });
     return () => { alive = false; };
   }, []);
 
-  // SEO / AI: set social meta, canonical, and JSON-LD once data is in.
+  useEffect(() => {
+    const onPop = () => setView(viewFromPath(window.location.pathname));
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
   useEffect(() => {
     if (!data) return;
-    const origin = window.location.origin;
-    document.title = `Xanderr — Art Gallery`;
-    setMeta('description', data.bio
-      ? data.bio.slice(0, 300)
-      : 'The art and writing of Xanderr, a young artist building an art-school portfolio.');
-    setMeta('og:title', 'Xanderr — Art Gallery', true);
+    const title = view === 'home' ? 'Xanderr — Portfolio' : `${VIEWS.find((item) => item.id === view)?.label || 'Portfolio'} — Xanderr`;
+    document.title = title;
+    setMeta('description', data.bio ? data.bio.slice(0, 300) : 'The art, writing, and achievements of Xanderr.');
+    setMeta('og:title', title, true);
     setMeta('og:type', 'website', true);
-    setMeta('og:url', origin + '/', true);
-    setMeta('og:description', data.bio
-      ? data.bio.slice(0, 200)
-      : 'Portfolio, achievements, and writing by Xanderr.', true);
-    const ogImg = data.gallery && data.gallery[0] && data.gallery[0].image;
-    if (ogImg) { setMeta('og:image', ogImg, true); setMeta('twitter:image', ogImg); }
-    setMeta('twitter:card', 'summary_large_image');
-    setMeta('twitter:title', 'Xanderr — Art Gallery');
+    setMeta('og:url', window.location.href, true);
+    const firstImage = data.gallery?.find((piece) => piece.image)?.image;
+    if (firstImage) setMeta('og:image', firstImage, true);
+    const schema = document.getElementById('xanderr-jsonld');
+    if (schema) schema.textContent = JSON.stringify(data.jsonld || {});
+  }, [data, view]);
 
-    let link = document.head.querySelector('link[rel="canonical"]');
-    if (!link) { link = document.createElement('link'); link.rel = 'canonical'; document.head.appendChild(link); }
-    link.href = origin + '/';
-
-    let s = document.getElementById('xanderr-jsonld');
-    if (!s) { s = document.createElement('script'); s.type = 'application/ld+json'; s.id = 'xanderr-jsonld'; document.head.appendChild(s); }
-    s.textContent = JSON.stringify(data.jsonld || {});
-  }, [data]);
-
-  // Gentle fade-up as each artwork scrolls into view. Pure enhancement: if the
-  // browser lacks IntersectionObserver we never hide anything (the 'reveal-on'
-  // class — which applies the hidden start state — is only added when supported).
-  useEffect(() => {
-    if (!data || typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
-    const wrap = document.querySelector('.g-showcase');
-    if (!wrap) return;
-    const nodes = Array.from(wrap.querySelectorAll('.g-piece.reveal'));
-    // Safety-first: keep all cards visible even if observer callbacks are delayed
-    // or skipped by the browser. This prevents "flash then disappear" behavior.
-    nodes.forEach((el) => el.classList.add('in'));
-    wrap.classList.add('reveal-on');
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-      }
-    }, { threshold: 0.12 });
-    nodes.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, [data]);
-
-  function submitLogin(e) {
-    e.preventDefault();
-    if (pw === expected) {
-      sessionStorage.setItem('viol_auth', '1');
-      sessionStorage.setItem('viol_pw', pw);
-      onUnlock();
-    } else {
-      setErr(true);
-    }
+  function navigate(event, next) {
+    event.preventDefault();
+    const target = VIEWS.find((item) => item.id === next)?.path || '/';
+    window.history.pushState({}, '', target);
+    setView(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  const gallery = (data && data.gallery) || [];
-  const trophies = (data && data.trophies) || [];
-  const writing = (data && data.writing) || [];
-  const bio = (data && data.bio) || '';
-  const theme = (data && data.theme) === 'classic' ? 'classic' : 'chaos';
-  const isEmpty = !loading && gallery.length === 0 && trophies.length === 0 && writing.length === 0;
+  function openPiece(piece) {
+    if (piece.video && !piece.image) return;
+    setSlide(0);
+    setLightbox(piece);
+  }
 
+  function submitLogin(event) {
+    event.preventDefault();
+    const expected = import.meta.env.VITE_APP_PASSWORD || 'xandoesart';
+    if (password !== expected) {
+      setLoginError(true);
+      return;
+    }
+    sessionStorage.setItem('viol_auth', '1');
+    sessionStorage.setItem('viol_pw', password);
+    onUnlock();
+  }
+
+  const content = data || emptyData();
   return (
-    <div className={`gallery-public theme-${theme}`} data-theme="light">
-      <header className="g-top">
-        <div className="g-brand">
-          <span className="g-brand-emoji" aria-hidden>🎨</span>
-          <div className="g-brand-text">
-            <strong>{STUDENT.nickname}</strong>
-            <span className="g-brand-sub">Art Gallery</span>
-          </div>
-        </div>
-        <div className="g-top-actions">
-          {bio && (
-            <button className="btn ghost g-bio-btn" onClick={() => setShowBio(true)}>Bio</button>
-          )}
-          <a className="btn g-gift-btn" href={GIFTING.url} target="_blank" rel="noreferrer"
-             title="Chip into my 529 — every bit helps me get to art school!">
-            Send me to art school ♥
-          </a>
-          <button className="btn ghost g-login-link" onClick={() => setShowLogin(true)}>Log in</button>
-        </div>
-      </header>
-
-      <section className="g-hero">
-        <h1>The art of {STUDENT.nickname}</h1>
-        <p className="g-hero-sub">A young mixed-media artist&rsquo;s portfolio, achievements, and writing — all in one place.</p>
-        <div className="g-media" aria-label="Mixed media: oil crayon, pen, pencil, pastel, paint, pottery">
-          <span><i style={{ background: '#e8743b' }} />Oil crayon</span>
-          <span><i style={{ background: '#3b7fe8' }} />Pen</span>
-          <span><i style={{ background: '#6b7280' }} />Pencil</span>
-          <span><i style={{ background: '#c98bc0' }} />Pastel</span>
-          <span><i style={{ background: '#d6457f' }} />Paint</span>
-          <span><i style={{ background: '#9c6b4a' }} />Pottery</span>
-        </div>
-      </section>
-
-      {loading && <p className="g-loading">Loading the gallery…</p>}
-
-      {isEmpty && (
-        <section className="g-section">
-          <div className="g-empty">
-            <div className="g-empty-emoji">🖼️</div>
-            <h2>The gallery is being curated</h2>
-            <p className="muted">New work is on the way — check back soon.</p>
-          </div>
-        </section>
-      )}
-
-      {gallery.length > 0 && (
-        <section className="g-section g-section-wide">
-          <h2 className="g-h">The Gallery</h2>
-          <div className="g-showcase">
-            {gallery.map((p, i) => (
-              <article key={p.id} className="g-piece reveal">
-                <button type="button" className="g-piece-img" onClick={() => setLightbox(p)} title="View larger">
-                  <img src={p.image} alt={p.title || 'Artwork'} loading="lazy"
-                       onError={(e) => { e.target.closest('.g-piece').style.display = 'none'; }} />
-                </button>
-                <div className="g-piece-info">
-                  <span className="g-piece-no" aria-hidden>
-                    <em>{String(i + 1).padStart(2, '0')}</em>
-                    <span className="g-piece-rule" />
-                    <i>{String(gallery.length).padStart(2, '0')}</i>
-                  </span>
-                  {p.medium && <span className="g-piece-medium">{p.medium}</span>}
-                  <h3>{p.title || 'Untitled'}</h3>
-                  {p.caption && <p className="g-piece-cap">{p.caption}</p>}
-                  <button className="g-link g-piece-view" onClick={() => setLightbox(p)}>View piece →</button>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {trophies.length > 0 && (
-        <section className="g-section">
-          <h2 className="g-h">Achievement Trophy Box</h2>
-          <div className="g-trophies">
-            {trophies.map((t) => {
-              const c = ACHIEVEMENT_CATEGORIES[t.category] || { label: 'Honor', emoji: '🏆', color: '#f59e0b' };
-              return (
-                <article key={t.id} className="g-trophy">
-                  <div className="g-trophy-badge" style={{ background: c.color }}>{c.emoji}</div>
-                  <h3>{t.title}</h3>
-                  <div className="g-trophy-meta">
-                    {t.venue && <span>{t.venue}</span>}
-                    {t.date && <span className="muted">{t.date}</span>}
-                  </div>
-                  {t.image && (
-                    <button type="button" className="g-trophy-thumb" onClick={() => setLightbox({ image: t.image, title: t.title, medium: t.venue })}>
-                      <img src={t.image} alt={t.title} loading="lazy"
-                           onError={(e) => { e.target.closest('.g-trophy-thumb').style.display = 'none'; }} />
-                    </button>
-                  )}
-                  {t.description && <p className="g-trophy-desc">{t.description}</p>}
-                  {t.link && <a className="g-link" href={t.link} target="_blank" rel="noreferrer">Learn more ↗</a>}
-                </article>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {writing.length > 0 && (
-        <section className="g-section">
-          <h2 className="g-h">The Ink &amp; Page</h2>
-          <div className="g-inkpage">
-            {writing.map((w) => {
-              const c = WRITING_CATEGORIES[w.category] || { label: 'Writing', emoji: '✍️', color: '#6b7280' };
-              return (
-                <article key={w.id} className="g-ink">
-                  <div className="g-ink-head">
-                    <span className="g-ink-kind" style={{ color: c.color }}>{c.emoji} {c.label}</span>
-                    {w.date && <span className="muted small">{w.date}</span>}
-                  </div>
-                  <h3>{w.favorite ? '⭐ ' : ''}{w.title}</h3>
-                  <p className="g-ink-excerpt">{w.excerpt}</p>
-                  {w.full && w.body && (
-                    <button className="g-link" onClick={() => setReading(w)}>Read full piece →</button>
-                  )}
-                </article>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      <footer className="g-foot">
-        <span className="muted small">{STUDENT.nickname}&rsquo;s Art Gallery</span>
-        <a className="g-foot-gift" href={GIFTING.url} target="_blank" rel="noreferrer">Send me to art school ♥</a>
-      </footer>
-
-      {/* Lightbox for artwork */}
-      {lightbox && (
-        <div className="g-modal" onClick={() => setLightbox(null)}>
-          <div className="g-lightbox" onClick={(e) => e.stopPropagation()}>
-            <button className="g-modal-x" onClick={() => setLightbox(null)} aria-label="Close">✕</button>
-            <img src={lightbox.image} alt={lightbox.title || 'Artwork'} />
-            <div className="g-lightbox-cap">
-              <strong>{lightbox.title || 'Untitled'}</strong>
-              {lightbox.medium && <span className="muted"> · {lightbox.medium}</span>}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Full writing reader */}
-      {reading && (
-        <div className="g-modal" onClick={() => setReading(null)}>
-          <div className="g-reader" onClick={(e) => e.stopPropagation()}>
-            <button className="g-modal-x" onClick={() => setReading(null)} aria-label="Close">✕</button>
-            <h3>{reading.title}</h3>
-            <pre className="g-reader-body">{reading.body}</pre>
-          </div>
-        </div>
-      )}
-
-      {/* Bio */}
-      {showBio && bio && (
-        <div className="g-modal" onClick={() => setShowBio(false)}>
-          <div className="g-reader" onClick={(e) => e.stopPropagation()}>
-            <button className="g-modal-x" onClick={() => setShowBio(false)} aria-label="Close">✕</button>
-            <h3>About {STUDENT.nickname}</h3>
-            <p className="g-bio-text">{bio}</p>
-          </div>
-        </div>
-      )}
-
-      {/* Login gate */}
-      {showLogin && (
-        <div className="g-modal" onClick={() => setShowLogin(false)}>
-          <form className="g-login" onClick={(e) => e.stopPropagation()} onSubmit={submitLogin}>
-            <button type="button" className="g-modal-x" onClick={() => setShowLogin(false)} aria-label="Close">✕</button>
-            <div className="login-emoji">🔑</div>
-            <h3 style={{ margin: 0 }}>Welcome back</h3>
-            <p className="muted">Sign in to manage the roadmap.</p>
-            <input type="password" placeholder="Password" value={pw} autoFocus
-                   onChange={(e) => { setPw(e.target.value); setErr(false); }} />
-            {err && <div className="login-err">That&rsquo;s not it — try again.</div>}
-            <button type="submit" className="btn primary">Let&rsquo;s go →</button>
-            <p className="login-note">A friendly gate, not a vault — keep the link private.</p>
-          </form>
-        </div>
-      )}
+    <div className="xp-site">
+      {view === 'home' && <div className="xp-banner" role="img" aria-label="Paintbrushes resting across drawings and paintings" />}
+      <SiteHeader active={view} onNavigate={navigate} />
+      <main id="main-content">
+        {view === 'home' && <Home onLogin={() => setShowLogin(true)} />}
+        {['oeuvre', 'illustrations', 'ceramics', 'paintings'].includes(view) && <GalleryView view={view} data={content} onOpen={openPiece} />}
+        {view === 'about' && <About data={content} onRead={setReading} onOpen={openPiece} />}
+        {view === 'contact' && <Contact />}
+      </main>
+      {view !== 'home' && <footer className="xp-footer"><span>© {new Date().getFullYear()} {STUDENT.nickname}</span><button type="button" className="xp-footer-key" onClick={() => setShowLogin(true)} aria-label="Artist login"><img src="/xanderr-skeleton.png" alt="" /></button></footer>}
+      {lightbox && <ArtworkModal piece={lightbox} slide={slide} setSlide={setSlide} onClose={() => setLightbox(null)} />}
+      {reading && <WritingModal piece={reading} onClose={() => setReading(null)} />}
+      {showLogin && <div className="xp-modal" role="presentation" onMouseDown={() => setShowLogin(false)}><form className="xp-login" onMouseDown={(event) => event.stopPropagation()} onSubmit={submitLogin}><button type="button" className="xp-close" onClick={() => setShowLogin(false)} aria-label="Close">×</button><img src="/xanderr-skeleton.png" alt="" /><h2>Backstage</h2><label>Password<input type="password" value={password} autoFocus onChange={(event) => { setPassword(event.target.value); setLoginError(false); }} /></label>{loginError && <p className="xp-form-error">That password didn’t work.</p>}<button type="submit" className="xp-submit">Enter</button></form></div>}
     </div>
   );
 }
 
-function emptyData() {
-  return { ok: true, bio: '', theme: 'chaos', gallery: [], trophies: [], writing: [], jsonld: {} };
+function SiteHeader({ active, onNavigate }) {
+  return <header className="xp-header"><a href="/" className="xp-logo" onClick={(event) => onNavigate(event, 'home')} aria-label="Xanderr portfolio home"><img src="/xanderr-logo.png" alt="Xanderr Portfolio" /></a><nav className="xp-nav" aria-label="Portfolio">{VIEWS.map((view) => <a key={view.id} href={view.path} className={active === view.id ? 'active' : ''} onClick={(event) => onNavigate(event, view.id)}>{view.label}</a>)}</nav></header>;
+}
+
+function Home({ onLogin }) {
+  return <section className="xp-home" aria-label="Xanderr portfolio entrance"><button type="button" className="xp-skeleton-key" onClick={onLogin} aria-label="Artist login"><img src="/xanderr-skeleton.png" alt="Colorful illustrated skeleton" /></button></section>;
+}
+
+function GalleryView({ view, data, onOpen }) {
+  const pieces = useMemo(() => {
+    const matches = data.gallery.filter((piece) => view === 'oeuvre' || (piece.publicCategories || []).includes(view));
+    const order = data.layouts?.[view]?.order || [];
+    return [...order.map((id) => matches.find((piece) => piece.id === id)).filter(Boolean), ...matches.filter((piece) => !order.includes(piece.id))];
+  }, [data, view]);
+  const sizes = data.layouts?.[view]?.sizes || {};
+  const title = VIEWS.find((item) => item.id === view)?.label;
+  return <section className="xp-page xp-gallery-page"><div className="xp-page-title"><span>Selected works</span><h1>{title}</h1></div>{pieces.length === 0 ? <div className="xp-empty"><p>This wall is being curated.</p><span>Check back for new work.</span></div> : <div className="xp-salon">{pieces.map((piece, index) => { const cover = piece.image || youtubeThumbUrl(piece.video); const size = sizes[piece.id] || ['feature', 'standard', 'tall', 'wide', 'standard'][index % 5]; const embed = youtubeEmbedUrl(piece.video); return <article key={piece.id} className={`xp-work xp-${size}`}><button type="button" className="xp-art" onClick={() => embed && !piece.image ? null : onOpen(piece)} aria-label={`View ${piece.title || 'artwork'}`}>{cover && <img src={cover} alt={piece.title || 'Untitled artwork'} loading="lazy" />}{embed && <span className="xp-play" aria-hidden>▶</span>}</button><div className="xp-caption"><h2>{piece.title || 'Untitled'}</h2>{piece.medium && <p>{piece.medium}</p>}{piece.caption && <p className="xp-caption-note">{piece.caption}</p>}</div>{embed && <a className="xp-video-link" href={piece.video} target="_blank" rel="noreferrer">Watch video ↗</a>}</article>; })}</div>}</section>;
+}
+
+function About({ data, onRead, onOpen }) {
+  return <section className="xp-page xp-about"><div className="xp-page-title"><span>Artist &amp; work</span><h1>About</h1></div><article className="xp-bio"><p className="xp-kicker">Artist bio</p><h2>{STUDENT.nickname}</h2><p>{data.bio || 'Artist bio coming soon.'}</p></article><details className="xp-support"><summary>Send me to art school <span>+</span></summary><div><h2>{GIFTING.headline}</h2><p>{GIFTING.blurb}</p><ul>{GIFTING.bullets.map((item) => <li key={item}>{item}</li>)}</ul><a href={GIFTING.url} target="_blank" rel="noreferrer">{GIFTING.cta}</a></div></details><div className="xp-about-grid"><section><p className="xp-kicker">Recognition</p><h2>Achievements</h2><div className="xp-achievements">{data.trophies.length ? data.trophies.map((item) => { const category = ACHIEVEMENT_CATEGORIES[item.category] || {}; return <article key={item.id}><span>{category.label || 'Achievement'}{item.date ? ` · ${item.date}` : ''}</span><h3>{item.title}</h3>{item.venue && <p>{item.venue}</p>}{item.description && <p>{item.description}</p>}{item.image && <button onClick={() => onOpen({ image: item.image, title: item.title, medium: item.venue })}>View image</button>}</article>; }) : <p className="xp-muted">Achievements will appear here when published.</p>}</div></section><section><p className="xp-kicker">Words</p><h2>Writing</h2><div className="xp-writing">{data.writing.length ? data.writing.map((item) => { const category = WRITING_CATEGORIES[item.category] || {}; return <article key={item.id}><span>{category.label || 'Writing'}{item.date ? ` · ${item.date}` : ''}</span><h3>{item.title}</h3><p>{item.excerpt}</p>{item.full && item.body && <button onClick={() => onRead(item)}>Read piece</button>}</article>; }) : <p className="xp-muted">Writing will appear here when published.</p>}</div></section></div></section>;
+}
+
+function Contact() {
+  const [form, setForm] = useState({ firstName: '', replyEmail: '', message: '', website: '' });
+  const [state, setState] = useState('idle');
+  async function submit(event) { event.preventDefault(); setState('sending'); try { const response = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) }); if (!response.ok) throw new Error('send failed'); setState('sent'); setForm({ firstName: '', replyEmail: '', message: '', website: '' }); } catch { setState('error'); } }
+  return <section className="xp-page xp-contact"><div className="xp-page-title"><span>Say hello</span><h1>Contact</h1></div><div className="xp-contact-grid"><div><h2>Let’s talk.</h2><p>Questions about a piece, an exhibition, or a creative collaboration? Send a note.</p></div><form onSubmit={submit}><label>First name<input required autoComplete="given-name" value={form.firstName} onChange={(event) => setForm({ ...form, firstName: event.target.value })} /></label><label>Reply email<input required type="email" autoComplete="email" value={form.replyEmail} onChange={(event) => setForm({ ...form, replyEmail: event.target.value })} /></label><label>Note<textarea required rows="8" maxLength="5000" value={form.message} onChange={(event) => setForm({ ...form, message: event.target.value })} /></label><label className="xp-honeypot" aria-hidden>Website<input tabIndex="-1" autoComplete="off" value={form.website} onChange={(event) => setForm({ ...form, website: event.target.value })} /></label><button className="xp-submit" type="submit" disabled={state === 'sending'}>{state === 'sending' ? 'Sending…' : 'Send note'}</button>{state === 'sent' && <p className="xp-form-success">Thanks — your note is on its way.</p>}{state === 'error' && <p className="xp-form-error">That didn’t send. Please try again in a moment.</p>}</form></div></section>;
+}
+
+function ArtworkModal({ piece, slide, setSlide, onClose }) {
+  const slides = slidesFor(piece);
+  return <div className="xp-modal" onMouseDown={onClose}><div className="xp-lightbox" onMouseDown={(event) => event.stopPropagation()}><button className="xp-close" onClick={onClose} aria-label="Close">×</button><img src={slides[slide] || piece.image} alt={piece.title || 'Artwork'} />{slides.length > 1 && <div className="xp-stepper"><button onClick={() => setSlide((slide - 1 + slides.length) % slides.length)}>←</button><span>{slide + 1} / {slides.length}</span><button onClick={() => setSlide((slide + 1) % slides.length)}>→</button></div>}<h2>{piece.title || 'Untitled'}</h2>{piece.medium && <p>{piece.medium}</p>}</div></div>;
+}
+
+function WritingModal({ piece, onClose }) {
+  return <div className="xp-modal" onMouseDown={onClose}><article className="xp-reader" onMouseDown={(event) => event.stopPropagation()}><button className="xp-close" onClick={onClose} aria-label="Close">×</button><p className="xp-kicker">Writing</p><h2>{piece.title}</h2><div>{piece.body}</div></article></div>;
 }

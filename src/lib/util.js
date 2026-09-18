@@ -214,6 +214,27 @@ export function useTheme() {
   return { theme, toggle };
 }
 
+// ---- YouTube links -----------------------------------------------------------
+// Accepts watch?v=, youtu.be/, /shorts/, and already-/embed/ URLs; returns null
+// for anything else so callers can fall back to treating it as a plain link.
+function youtubeId(url) {
+  if (!url) return null;
+  const m = String(url).match(
+    /(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/
+  );
+  return m ? m[1] : null;
+}
+
+export function youtubeEmbedUrl(url) {
+  const id = youtubeId(url);
+  return id ? `https://www.youtube.com/embed/${id}` : null;
+}
+
+export function youtubeThumbUrl(url) {
+  const id = youtubeId(url);
+  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
+}
+
 // ---- Browser download helpers ----------------------------------------------
 export function downloadText(filename, text) {
   const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });

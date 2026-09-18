@@ -60,19 +60,39 @@ function publicWriting(items = []) {
     });
 }
 
-// Portfolio → the art wall. Only published pieces that actually have an image.
+// Portfolio → the art wall. Only published pieces that have an image or video.
 // We DROP notes/schools/scholarships/target — those reveal application strategy.
 function publicGallery(items = []) {
   return (items || [])
-    .filter((p) => p && p.public && p.image)
+    .filter((p) => p && p.public && (p.image || p.video))
     .map((p) => ({
       id: p.id,
       title: p.title || '',
       medium: p.medium || '',
       caption: p.caption || '',
       status: p.status || '',
-      image: p.image,
+      image: p.image || '',
+      images: Array.isArray(p.images) ? p.images.filter(Boolean) : [],
+      video: p.video || '',
+      publicCategories: Array.isArray(p.publicCategories)
+        ? p.publicCategories.filter((c) => ['illustrations', 'ceramics', 'paintings'].includes(c))
+        : [],
     }));
+}
+
+function publicLayouts(value) {
+  const out = {};
+  for (const gallery of ['oeuvre', 'illustrations', 'ceramics', 'paintings']) {
+    const layout = value && value[gallery];
+    if (!layout || typeof layout !== 'object') continue;
+    out[gallery] = {
+      order: Array.isArray(layout.order) ? layout.order.map(String).slice(0, 500) : [],
+      sizes: Object.fromEntries(Object.entries(layout.sizes || {})
+        .filter(([, size]) => ['standard', 'wide', 'tall', 'feature'].includes(size))
+        .map(([id, size]) => [String(id), size])),
+    };
+  }
+  return out;
 }
 
 // schema.org JSON-LD so search engines and AI get clean, structured data.
@@ -126,7 +146,7 @@ export default async function handler(req, res) {
   // we serve an empty-but-valid gallery rather than erroring.
   let state = {};
   try {
-    state = await readStateKeys(['viol_achievements', 'viol_writing', 'viol_portfolio', 'viol_bio', 'viol_public_theme']);
+    state = await readStateKeys(['viol_achievements', 'viol_writing', 'viol_portfolio', 'viol_bio', 'viol_public_theme', 'viol_gallery_layouts']);
   } catch {
     state = {};
   }
@@ -134,6 +154,7 @@ export default async function handler(req, res) {
   const trophies = publicTrophies(state.viol_achievements);
   const writing = publicWriting(state.viol_writing);
   const gallery = publicGallery(state.viol_portfolio);
+  const layouts = publicLayouts(state.viol_gallery_layouts);
   const bioRaw = state.viol_bio || {};
   const bio = bioRaw && bioRaw.public && bioRaw.text ? String(bioRaw.text) : '';
   const rawTheme = String(state.viol_public_theme || '').trim().toLowerCase();
@@ -151,6 +172,7 @@ export default async function handler(req, res) {
     bio,
     theme,
     gallery,
+    layouts,
     trophies,
     writing,
     jsonld,

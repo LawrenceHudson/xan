@@ -8,9 +8,21 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.22.1';
+export const APP_VERSION = '1.23.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.23.0',
+    date: '2026-09-17',
+    notes: [
+      'Rebuilt the public portfolio around Xanderr’s supplied banner, logo, skeleton illustration, black palette, Anton titles, and Nunito body copy, with separate Oeuvre, Illustrations, Ceramics, Paintings, About, and Contact views.',
+      'Added multi-category public tags to portfolio pieces. Every published piece appears in Oeuvre, while pieces can also appear in any combination of the three focused galleries.',
+      'Added a private drag-and-drop salon arranger with independently saved order and display size for each public gallery.',
+      'Moved the artist bio, achievements, writing, and expandable Fidelity 529 invitation onto the About page.',
+      'Added a public contact form that sends through the existing Resend setup and uses the visitor’s required email address as the reply-to address.',
+      'Turned the skeleton illustration into the unlabelled artist-login entrance and removed the visible public login link.',
+    ],
+  },
   {
     version: '1.22.1',
     date: '2026-07-31',
