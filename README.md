@@ -31,12 +31,14 @@ sent via **Resend** on a daily **Vercel Cron** schedule.
 | 🐖 Savings | Log deposits/scholarship wins toward the $8k–$12k goal, **plus 529 and brokerage balances** — the combined college assets feed the Colleges funding plan |
 | 🛠️ Admin | App version, **release notes**, a **Send test email** button, and a **Bug / Feature submitter** (log items and clear them when handled) |
 
-**Front page** is the public **Xanderr Portfolio**: a black, image-led entrance built
-from Xanderr's artwork, with separate **Oeuvre, Illustrations, Ceramics, Paintings,
+**Front page** is the public **XANDERR Portfolio**: a black, image-led entrance built
+from XANDERR's artwork, with separate **Oeuvre, Illustrations, Ceramics, Paintings,
 About, and Contact** views. Oeuvre contains every published work; a piece can also be
 tagged for any combination of the three focused galleries. Each gallery has its own
-drag-and-drop salon arrangement in the private Portfolio tab. The About page holds
-the artist bio, achievements, writing, and an expandable Fidelity 529 invitation.
+drag-and-drop salon arrangement in the private Portfolio tab. Portfolio entries also
+control creation date, hover biography, Oeuvre visibility, and four required ceramic
+views. The About page holds an Admin-managed artist bio, artist statement, CV,
+achievements, writing, and an expandable Fidelity 529 invitation.
 The illustrated skeleton is the intentionally unlabelled entrance to the private
 roadmap login.
 

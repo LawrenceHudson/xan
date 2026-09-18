@@ -23,13 +23,25 @@ const blank = () => ({
   scholarships: [],
   notes: '',
   caption: '',
+  created: '',
   target: '',
   image: '',
   images: [],
   video: '',
   imagesText: '',
   publicCategories: [],
+  hideFromOeuvre: false,
+  ceramicViews: { sideA: '', front: '', sideB: '', back: '' },
 });
+
+function ceramicComplete(piece) {
+  const views = piece.ceramicViews || {};
+  return ['sideA', 'front', 'sideB', 'back'].every((key) => String(views[key] || '').trim());
+}
+
+function canPublishPiece(piece) {
+  return !(piece.publicCategories || []).includes('ceramics') || ceramicComplete(piece);
+}
 
 export default function PortfolioTracker() {
   const [pieces, setPieces] = useStored('viol_portfolio', []);
@@ -68,7 +80,11 @@ export default function PortfolioTracker() {
     setPieces((list) => list.filter((p) => p.id !== id));
   }
   function togglePublic(id) {
-    setPieces((list) => list.map((p) => (p.id === id ? { ...p, public: !p.public } : p)));
+    setPieces((list) => list.map((p) => {
+      if (p.id !== id) return p;
+      if (!p.public && !canPublishPiece(p)) return p;
+      return { ...p, public: !p.public };
+    }));
   }
   function toggleTag(field, val) {
     setDraft((d) => {
@@ -112,6 +128,9 @@ export default function PortfolioTracker() {
             </label>
             <label>Target date<input type="date" value={draft.target} onChange={(e) => setDraft({ ...draft, target: e.target.value })} /></label>
           </div>
+          <div className="form-row">
+            <label>Date created<input type="date" value={draft.created || ''} onChange={(e) => setDraft({ ...draft, created: e.target.value })} /></label>
+          </div>
           <label className="full">Cover image / GIF URL (optional)<input value={draft.image} onChange={(e) => setDraft({ ...draft, image: e.target.value })} placeholder="paste a link to a photo (or a .gif — it'll animate)" /></label>
           {pubMedia.length > 0 && (
             <div className="form-row">
@@ -138,6 +157,26 @@ export default function PortfolioTracker() {
             ))}
             <span className="muted small full-width-hint">Every published piece appears in Oeuvre automatically. Leave all three unselected for an Oeuvre-only piece.</span>
           </div>
+          <label className="check-inline">
+            <input type="checkbox" checked={!!draft.hideFromOeuvre} onChange={(e) => setDraft({ ...draft, hideFromOeuvre: e.target.checked })} />
+            Hide this piece from Oeuvre
+          </label>
+
+          {(draft.publicCategories || []).includes('ceramics') && (
+            <div className="ceramic-editor">
+              <strong>Ceramic turnaround — all four views are required to publish</strong>
+              <div className="ceramic-slot-grid">
+                {[
+                  ['sideA', 'Side 1'], ['front', 'Front'], ['sideB', 'Side 2'], ['back', 'Back'],
+                ].map(([key, label]) => (
+                  <label key={key}>{label}
+                    <input value={draft.ceramicViews?.[key] || ''} onChange={(e) => setDraft({ ...draft, ceramicViews: { ...(draft.ceramicViews || {}), [key]: e.target.value } })} placeholder="Image URL" />
+                    {pickUrl && <button type="button" className="btn small ghost" onClick={() => setDraft({ ...draft, ceramicViews: { ...(draft.ceramicViews || {}), [key]: pickUrl } })}>Use selected media</button>}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="tag-picker">
             <span className="picker-label">For schools:</span>
@@ -186,15 +225,18 @@ export default function PortfolioTracker() {
               </div>
               {p.medium && <div className="kv"><span>Medium</span><strong>{p.medium}</strong></div>}
               {p.target && <div className="kv"><span>Target</span><strong className={d !== null && d < 14 && d >= 0 ? 'warn' : ''}>{fmt(p.target)} {d >= 0 ? `(${d}d)` : '(passed)'}</strong></div>}
+              {p.created && <div className="kv"><span>Created</span><strong>{fmt(p.created)}</strong></div>}
               {p.schools.length > 0 && <div className="tags"><span className="micro">Schools:</span>{p.schools.map((id) => <span key={id} className="tag purple">{SCHOOL_OPTS.find((o) => o.id === id)?.label}</span>)}</div>}
               {p.scholarships.length > 0 && <div className="tags"><span className="micro">Scholarships:</span>{p.scholarships.map((id) => <span key={id} className="tag amber">{SCH_OPTS.find((o) => o.id === id)?.label}</span>)}</div>}
               {p.notes && <p className="deliverable">{p.notes}</p>}
               {(p.publicCategories || []).length > 0 && (
                 <div className="tags"><span className="micro">Public sections:</span>{p.publicCategories.map((id) => <span key={id} className="tag purple">{PUBLIC_GALLERIES.find((g) => g.id === id)?.label || id}</span>)}</div>
               )}
-              {(p.image || p.video) ? (
+              {p.hideFromOeuvre && <span className="tag">Hidden from Oeuvre</span>}
+              {(p.publicCategories || []).includes('ceramics') && !ceramicComplete(p) && <p className="publish-hint muted small">Add all four ceramic views before publishing.</p>}
+              {(p.image || p.video || ceramicComplete(p)) ? (
                 <label className={`publish-toggle ${p.public ? 'on' : ''}`} title="Show this piece on your public Art Gallery wall">
-                  <input type="checkbox" checked={!!p.public} onChange={() => togglePublic(p.id)} />
+                  <input type="checkbox" checked={!!p.public} disabled={!p.public && !canPublishPiece(p)} onChange={() => togglePublic(p.id)} />
                   {p.public ? '🖼️ Published to Gallery' : 'Publish to Gallery'}
                 </label>
               ) : (

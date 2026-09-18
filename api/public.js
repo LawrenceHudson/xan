@@ -13,6 +13,7 @@
 // ============================================================================
 
 import { readStateKeys } from './_supabase.js';
+import { DEFAULT_ABOUT } from '../shared/about.js';
 
 // First N words of a body, with an ellipsis if trimmed.
 function excerpt(text, words = 60) {
@@ -64,20 +65,35 @@ function publicWriting(items = []) {
 // We DROP notes/schools/scholarships/target — those reveal application strategy.
 function publicGallery(items = []) {
   return (items || [])
-    .filter((p) => p && p.public && (p.image || p.video))
+    .filter((p) => p && p.public && (p.image || p.video || Object.values(p.ceramicViews || {}).some(Boolean)))
     .map((p) => ({
       id: p.id,
       title: p.title || '',
       medium: p.medium || '',
       caption: p.caption || '',
+      created: p.created || '',
       status: p.status || '',
       image: p.image || '',
       images: Array.isArray(p.images) ? p.images.filter(Boolean) : [],
       video: p.video || '',
+      hideFromOeuvre: !!p.hideFromOeuvre,
+      ceramicViews: Object.fromEntries(['sideA', 'front', 'sideB', 'back'].map((key) => [key, String(p.ceramicViews?.[key] || '')])),
       publicCategories: Array.isArray(p.publicCategories)
         ? p.publicCategories.filter((c) => ['illustrations', 'ceramics', 'paintings'].includes(c))
         : [],
     }));
+}
+
+function publicAbout(value) {
+  const source = value && typeof value === 'object' ? value : DEFAULT_ABOUT;
+  return {
+    bio: String(source.bio ?? DEFAULT_ABOUT.bio),
+    statement: String(source.statement ?? DEFAULT_ABOUT.statement),
+    cv: Array.isArray(source.cv) ? source.cv.slice(0, 100).map((item) => ({
+      id: String(item.id || ''), year: String(item.year || ''), title: String(item.title || ''),
+      organization: String(item.organization || ''), details: String(item.details || ''), link: String(item.link || ''),
+    })).filter((item) => item.title || item.organization || item.details) : [],
+  };
 }
 
 function publicLayouts(value) {
@@ -105,7 +121,7 @@ function buildJsonLd({ origin, bio, gallery, writing, trophies }) {
       artMedium: g.medium || undefined,
       abstract: g.caption || undefined,
       image: g.image,
-      creator: { '@type': 'Person', name: 'Xanderr' },
+      creator: { '@type': 'Person', name: 'Xander Hudson', alternateName: 'XANDERR' },
     });
   }
   for (const w of writing) {
@@ -113,13 +129,14 @@ function buildJsonLd({ origin, bio, gallery, writing, trophies }) {
       '@type': 'CreativeWork',
       name: w.title || 'Untitled',
       abstract: w.excerpt || undefined,
-      creator: { '@type': 'Person', name: 'Xanderr' },
+      creator: { '@type': 'Person', name: 'Xander Hudson', alternateName: 'XANDERR' },
     });
   }
   const person = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: 'Xanderr',
+    name: 'Xander Hudson',
+    alternateName: 'XANDERR',
     description: bio || 'Young visual artist and writer building an art-school portfolio.',
     url: origin || undefined,
     knowsAbout: ['Visual Art', 'Creative Writing', 'Illustration'],
@@ -146,7 +163,7 @@ export default async function handler(req, res) {
   // we serve an empty-but-valid gallery rather than erroring.
   let state = {};
   try {
-    state = await readStateKeys(['viol_achievements', 'viol_writing', 'viol_portfolio', 'viol_bio', 'viol_public_theme', 'viol_gallery_layouts']);
+    state = await readStateKeys(['viol_achievements', 'viol_writing', 'viol_portfolio', 'viol_bio', 'viol_public_theme', 'viol_gallery_layouts', 'viol_about']);
   } catch {
     state = {};
   }
@@ -155,8 +172,9 @@ export default async function handler(req, res) {
   const writing = publicWriting(state.viol_writing);
   const gallery = publicGallery(state.viol_portfolio);
   const layouts = publicLayouts(state.viol_gallery_layouts);
+  const about = publicAbout(state.viol_about);
   const bioRaw = state.viol_bio || {};
-  const bio = bioRaw && bioRaw.public && bioRaw.text ? String(bioRaw.text) : '';
+  const bio = about.bio || (bioRaw && bioRaw.public && bioRaw.text ? String(bioRaw.text) : '');
   const rawTheme = String(state.viol_public_theme || '').trim().toLowerCase();
   const theme = rawTheme === 'classic' ? 'classic' : 'chaos';
 
@@ -168,8 +186,9 @@ export default async function handler(req, res) {
 
   return res.status(200).json({
     ok: true,
-    student: { name: 'Xanderr' },
+    student: { name: 'Xander Hudson', artistName: 'XANDERR' },
     bio,
+    about,
     theme,
     gallery,
     layouts,

@@ -8,9 +8,28 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.23.0';
+export const APP_VERSION = '1.24.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.24.0',
+    date: '2026-09-17',
+    notes: [
+      'Made the public About page editable from Admin, with saved artist bio, artist statement, and structured CV listings. The supplied formal bio and statement are included as the starting content.',
+      'Added creation date, Hide from Oeuvre, and four required ceramic turnaround slots to portfolio pieces. Ceramic publication now requires Side, Front, Side, and Back views.',
+      'Added white-on-hover artwork information cards showing title, piece bio, creation date, and medium, with a touch-friendly mobile presentation.',
+      'Made page titles return to the portfolio home and made video thumbnails open their linked films directly.',
+      'Added a crossed-hands X favicon and a skull-based XANDERR social-sharing preview image.',
+      'Standardized public artist-name references as XANDERR and formal biographical references as Xander Hudson.',
+    ],
+  },
+  {
+    version: '1.23.1',
+    date: '2026-09-17',
+    notes: [
+      'Fixed public video pieces rendering as broken poster images. YouTube links now use a responsive embedded player, direct MP4/WebM/Ogg links use native video controls, and unsupported links get a clean open-video fallback.',
+    ],
+  },
   {
     version: '1.23.0',
     date: '2026-09-17',

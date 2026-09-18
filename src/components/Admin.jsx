@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { APP_VERSION, CHANGELOG } from '../../shared/version.js';
+import { DEFAULT_ABOUT, newCvEntry } from '../../shared/about.js';
 import { fmt, useFeedback, useStored } from '../lib/util.js';
 import { listMedia, uploadMedia, patchMedia, deleteMedia } from '../lib/api.js';
 
@@ -15,10 +16,9 @@ export default function Admin() {
   const [fbType, setFbType] = useState('bug');
   const [fbText, setFbText] = useState('');
 
-  const [bio, setBio] = useStored('viol_bio', { text: '', public: false });
-  const [bioDraft, setBioDraft] = useState(bio.text || '');
-  const [bioSaved, setBioSaved] = useState(false);
-  const [publicTheme, setPublicTheme] = useStored('viol_public_theme', 'chaos');
+  const [about, setAbout] = useStored('viol_about', DEFAULT_ABOUT);
+  const [aboutDraft, setAboutDraft] = useState(() => ({ ...DEFAULT_ABOUT, ...about, cv: about.cv || [] }));
+  const [aboutSaved, setAboutSaved] = useState(false);
   const [media, setMedia] = useState([]);
   const [mediaState, setMediaState] = useState('all');
   const [mediaMsg, setMediaMsg] = useState('');
@@ -30,10 +30,22 @@ export default function Admin() {
     refreshMedia();
   }, [mediaState]);
 
-  function saveBio() {
-    setBio({ ...bio, text: bioDraft });
-    setBioSaved(true);
-    setTimeout(() => setBioSaved(false), 1500);
+  useEffect(() => {
+    setAboutDraft({ ...DEFAULT_ABOUT, ...about, cv: about.cv || [] });
+  }, [about]);
+
+  function saveAbout() {
+    setAbout(aboutDraft);
+    setAboutSaved(true);
+    setTimeout(() => setAboutSaved(false), 1500);
+  }
+
+  function updateCv(id, field, value) {
+    setAboutDraft((current) => ({ ...current, cv: current.cv.map((item) => item.id === id ? { ...item, [field]: value } : item) }));
+  }
+
+  function removeCv(id) {
+    setAboutDraft((current) => ({ ...current, cv: current.cv.filter((item) => item.id !== id) }));
   }
 
   function submitFeedback() {
@@ -162,56 +174,39 @@ export default function Admin() {
       </section>
 
       <section>
-        <h3>🎨 Public artist bio</h3>
-        <p className="muted small">Write a short bio for Xanderr’s public Art Gallery. When you publish it, a <strong>Bio</strong> button appears on the public page; leave it unpublished (or empty) and the button stays hidden. No email or contact info is ever shown.</p>
-        <div className="card editor">
-          <div className="form-row">
-            <label className="full">Bio
-              <textarea
-                rows="5"
-                value={bioDraft}
-                onChange={(e) => setBioDraft(e.target.value)}
-                placeholder="Xanderr is a young artist working in charcoal, ink, and digital illustration, building a portfolio for art school…"
-              />
-            </label>
-          </div>
-          <label className="check-inline">
-            <input type="checkbox" checked={!!bio.public} onChange={(e) => setBio({ ...bio, public: e.target.checked })} />
-            Publish this bio on the public gallery
+        <h3>🎨 Public About page</h3>
+        <p className="muted small">Manage the biography, artist statement, and CV shown on the public About page. The site handles the typography and layout automatically.</p>
+        <div className="card editor about-editor">
+          <label className="full">Artist bio
+            <textarea rows="12" value={aboutDraft.bio} onChange={(e) => setAboutDraft({ ...aboutDraft, bio: e.target.value })} />
           </label>
-          <div className="editor-actions">
-            <button className="btn primary" onClick={saveBio}>Save bio</button>
-            {bioSaved && <span className="celebrate">Saved ✓</span>}
-          </div>
-          {bio.public && bio.text && bio.text.trim()
-            ? <p className="muted small">✅ The <strong>Bio</strong> button is live on the public gallery.</p>
-            : bio.public
-              ? <p className="muted small">Add some text and click <strong>Save bio</strong> — an empty bio keeps the button hidden.</p>
-              : null}
-        </div>
-      </section>
+          <label className="full">Artist statement
+            <textarea rows="16" value={aboutDraft.statement} onChange={(e) => setAboutDraft({ ...aboutDraft, statement: e.target.value })} />
+          </label>
 
-      <section>
-        <h3>🖼️ Public page theme</h3>
-        <p className="muted small">Choose the look for the public gallery page. This setting syncs and can be switched anytime for an instant revert.</p>
-        <div className="card editor">
-          <div className="filters">
-            <button
-              className={`chip ${publicTheme === 'chaos' ? 'on' : ''}`}
-              onClick={() => setPublicTheme('chaos')}
-            >
-              Chaos collage (current)
-            </button>
-            <button
-              className={`chip ${publicTheme === 'classic' ? 'on' : ''}`}
-              onClick={() => setPublicTheme('classic')}
-            >
-              Classic editorial (revert)
-            </button>
+          <div className="about-cv-head">
+            <div><strong>Artist CV</strong><p className="muted small">Add exhibitions, awards, education, publications, and professional projects.</p></div>
+            <button type="button" className="btn small ghost" onClick={() => setAboutDraft((current) => ({ ...current, cv: [...current.cv, newCvEntry()] }))}>+ Add CV listing</button>
           </div>
-          <p className="muted small" style={{ margin: 0 }}>
-            Active theme: <strong>{publicTheme === 'classic' ? 'Classic editorial' : 'Chaos collage'}</strong>
-          </p>
+          <div className="about-cv-list">
+            {aboutDraft.cv.length === 0 && <p className="muted small">No CV listings yet.</p>}
+            {aboutDraft.cv.map((item) => (
+              <div className="about-cv-item" key={item.id}>
+                <div className="form-row">
+                  <label>Year<input value={item.year} onChange={(e) => updateCv(item.id, 'year', e.target.value)} placeholder="2026" /></label>
+                  <label>Title<input value={item.title} onChange={(e) => updateCv(item.id, 'title', e.target.value)} placeholder="Exhibition, award, publication…" /></label>
+                </div>
+                <label className="full">Organization / venue<input value={item.organization} onChange={(e) => updateCv(item.id, 'organization', e.target.value)} /></label>
+                <label className="full">Details<textarea rows="2" value={item.details} onChange={(e) => updateCv(item.id, 'details', e.target.value)} /></label>
+                <label className="full">Link (optional)<input type="url" value={item.link} onChange={(e) => updateCv(item.id, 'link', e.target.value)} /></label>
+                <button type="button" className="btn small danger" onClick={() => removeCv(item.id)}>Remove listing</button>
+              </div>
+            ))}
+          </div>
+          <div className="editor-actions">
+            <button className="btn primary" onClick={saveAbout}>Save About page</button>
+            {aboutSaved && <span className="celebrate">Saved ✓</span>}
+          </div>
         </div>
       </section>
 

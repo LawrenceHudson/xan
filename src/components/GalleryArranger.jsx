@@ -16,8 +16,9 @@ const SIZES = [
 ];
 
 function belongs(piece, gallery) {
-  if (!piece.public || (!piece.image && !piece.video)) return false;
-  return gallery === 'oeuvre' || (piece.publicCategories || []).includes(gallery);
+  const hasCeramicViews = ['sideA', 'front', 'sideB', 'back'].every((key) => piece.ceramicViews?.[key]);
+  if (!piece.public || (!piece.image && !piece.video && !hasCeramicViews)) return false;
+  return gallery === 'oeuvre' ? !piece.hideFromOeuvre : (piece.publicCategories || []).includes(gallery);
 }
 
 export default function GalleryArranger({ pieces }) {
@@ -75,13 +76,11 @@ export default function GalleryArranger({ pieces }) {
               onDrop={() => moveBefore(piece.id)}
             >
               <span className="arranger-grip" aria-hidden>⠿</span>
-              {piece.image ? <img src={piece.image} alt="" /> : <span className="arranger-video">▶</span>}
+              {(piece.image || piece.ceramicViews?.front) ? <img src={piece.image || piece.ceramicViews.front} alt="" /> : <span className="arranger-video">▶</span>}
               <div className="arranger-name"><span>{String(index + 1).padStart(2, '0')}</span><strong>{piece.title || 'Untitled'}</strong></div>
-              <div className="arranger-sizes" aria-label={`Size for ${piece.title || 'Untitled'}`}>
-                {SIZES.map((size) => (
-                  <button type="button" key={size.id} className={(saved.sizes[piece.id] || 'standard') === size.id ? 'active' : ''} onClick={() => setSize(piece.id, size.id)}>{size.label}</button>
-                ))}
-              </div>
+              {gallery !== 'ceramics' && <div className="arranger-sizes" aria-label={`Size for ${piece.title || 'Untitled'}`}>
+                {SIZES.map((size) => <button type="button" key={size.id} className={(saved.sizes[piece.id] || 'standard') === size.id ? 'active' : ''} onClick={() => setSize(piece.id, size.id)}>{size.label}</button>)}
+              </div>}
             </article>
           ))}
         </div>
