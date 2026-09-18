@@ -8,9 +8,16 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.24.0';
+export const APP_VERSION = '1.24.1';
 
 export const CHANGELOG = [
+  {
+    version: '1.24.1',
+    date: '2026-09-17',
+    notes: [
+      'Made selected tags and toggles unmistakable in dark mode with the XANDERR green accent, a checkmark, stronger borders, and clearer keyboard focus. Unselected options now stay visibly muted.',
+    ],
+  },
   {
     version: '1.24.0',
     date: '2026-09-17',

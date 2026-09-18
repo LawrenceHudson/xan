@@ -153,7 +153,7 @@ export default function PortfolioTracker() {
           <div className="tag-picker public-category-picker">
             <span className="picker-label">Public gallery sections:</span>
             {PUBLIC_GALLERIES.filter((g) => g.id !== 'oeuvre').map((g) => (
-              <button key={g.id} type="button" className={`chip ${(draft.publicCategories || []).includes(g.id) ? 'on' : ''}`} onClick={() => toggleTag('publicCategories', g.id)}>{g.label}</button>
+              <button key={g.id} type="button" className={`chip ${(draft.publicCategories || []).includes(g.id) ? 'on' : ''}`} aria-pressed={(draft.publicCategories || []).includes(g.id)} onClick={() => toggleTag('publicCategories', g.id)}>{g.label}</button>
             ))}
             <span className="muted small full-width-hint">Every published piece appears in Oeuvre automatically. Leave all three unselected for an Oeuvre-only piece.</span>
           </div>
@@ -181,13 +181,13 @@ export default function PortfolioTracker() {
           <div className="tag-picker">
             <span className="picker-label">For schools:</span>
             {SCHOOL_OPTS.map((o) => (
-              <button key={o.id} type="button" className={`chip ${draft.schools.includes(o.id) ? 'on' : ''}`} onClick={() => toggleTag('schools', o.id)}>{o.label}</button>
+              <button key={o.id} type="button" className={`chip ${draft.schools.includes(o.id) ? 'on' : ''}`} aria-pressed={draft.schools.includes(o.id)} onClick={() => toggleTag('schools', o.id)}>{o.label}</button>
             ))}
           </div>
           <div className="tag-picker">
             <span className="picker-label">For scholarships:</span>
             {SCH_OPTS.map((o) => (
-              <button key={o.id} type="button" className={`chip ${draft.scholarships.includes(o.id) ? 'on' : ''}`} onClick={() => toggleTag('scholarships', o.id)}>{o.label}</button>
+              <button key={o.id} type="button" className={`chip ${draft.scholarships.includes(o.id) ? 'on' : ''}`} aria-pressed={draft.scholarships.includes(o.id)} onClick={() => toggleTag('scholarships', o.id)}>{o.label}</button>
             ))}
           </div>
 

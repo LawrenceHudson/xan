@@ -58,7 +58,7 @@ export default function GalleryArranger({ pieces }) {
       </div>
       <div className="arranger-tabs" role="tablist" aria-label="Gallery to arrange">
         {PUBLIC_GALLERIES.map((g) => (
-          <button type="button" key={g.id} className={`chip ${gallery === g.id ? 'on' : ''}`} onClick={() => setGallery(g.id)}>{g.label}</button>
+          <button type="button" key={g.id} className={`chip ${gallery === g.id ? 'on' : ''}`} aria-pressed={gallery === g.id} onClick={() => setGallery(g.id)}>{g.label}</button>
         ))}
       </div>
       {ordered.length === 0 ? (
