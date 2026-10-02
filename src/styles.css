@@ -1130,8 +1130,8 @@ h3 { margin: 18px 0 8px; letter-spacing: -.01em; }
 .xp-work.xp-wide { grid-column: span 6; }
 .xp-work.xp-feature { grid-column: span 7; }
 .xp-work.xp-tall { grid-column: span 4; margin-top: clamp(20px, 5vw, 70px); }
-.xp-art { display: block; position: relative; width: 100%; padding: 8px; border: 1px solid #777; background: #060606; color: #fff; cursor: zoom-in; box-shadow: 0 16px 40px rgba(0,0,0,.55); overflow: hidden; text-align: left; text-decoration: none; }
-.xp-art::after { content: ''; position: absolute; inset: 3px; border: 1px solid rgba(255,255,255,.4); pointer-events: none; }
+.xp-art { display: block; position: relative; width: 100%; padding: 0; border: 0; background: transparent; color: #fff; cursor: zoom-in; box-shadow: none; overflow: hidden; text-align: left; text-decoration: none; }
+.xp-art::after { content: none; }
 .xp-art img { display: block; width: 100%; height: auto; max-height: 72vh; object-fit: contain; background: #080808; transition: transform .25s ease, filter .25s ease; }
 .xp-art:hover img, .xp-art:focus-visible img { transform: scale(.985); filter: brightness(1.08); }
 .xp-art:focus-visible { outline: 3px solid var(--xp-green); outline-offset: 5px; }
@@ -1141,7 +1141,7 @@ h3 { margin: 18px 0 8px; letter-spacing: -.01em; }
 .xp-piece-meta p { margin: 3px 0; color: #222; font-size: .88rem; }
 .xp-piece-meta .xp-piece-bio { margin-top: 10px; line-height: 1.45; }
 .xp-video-poster { min-height: clamp(220px, 27vw, 420px); background-position: center; background-repeat: no-repeat; background-size: cover; cursor: pointer; }
-.xp-video-poster::before { content: ''; position: absolute; inset: 8px; background: linear-gradient(0deg, rgba(0,0,0,.28), transparent 60%); }
+.xp-video-poster::before { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.28), transparent 60%); }
 .xp-video-play { position: absolute; z-index: 1; inset: 50% auto auto 50%; translate: -50% -50%; width: 62px; aspect-ratio: 1; border: 2px solid var(--xp-green); border-radius: 50%; display: grid; place-items: center; background: rgba(0,0,0,.78); color: var(--xp-green); font-size: 1.15rem; }
 .xp-video-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; padding: 8px; border: 1px solid #777; background: #060606; box-shadow: 0 16px 40px rgba(0,0,0,.55); overflow: hidden; }
 .xp-video-frame::after { content: ''; position: absolute; inset: 3px; border: 1px solid rgba(255,255,255,.4); pointer-events: none; z-index: 1; }

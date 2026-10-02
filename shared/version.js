@@ -8,9 +8,16 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.25.0';
+export const APP_VERSION = '1.25.1';
 
 export const CHANGELOG = [
+  {
+    version: '1.25.1',
+    date: '2026-10-02',
+    notes: [
+      'Removed the outer and inset frame lines, padding, and shadow from portfolio artwork so gallery images display cleanly on their own.',
+    ],
+  },
   {
     version: '1.25.0',
     date: '2026-10-02',
