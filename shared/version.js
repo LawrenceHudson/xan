@@ -8,9 +8,17 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.24.1';
+export const APP_VERSION = '1.25.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.25.0',
+    date: '2026-10-02',
+    notes: [
+      'Added a reusable, accessible Instagram invitation to the public Home and About pages, linking to @xanolascage in a new tab.',
+      'Removed decorative framing from artist imagery while preserving artwork and gallery presentation.',
+    ],
+  },
   {
     version: '1.24.1',
     date: '2026-09-17',
