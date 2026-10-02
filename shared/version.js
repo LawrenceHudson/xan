@@ -8,9 +8,16 @@
 // The Admin tab renders this automatically.
 // ============================================================================
 
-export const APP_VERSION = '1.25.1';
+export const APP_VERSION = '1.26.0';
 
 export const CHANGELOG = [
+  {
+    version: '1.26.0',
+    date: '2026-10-02',
+    notes: [
+      'Added an optional Admin-managed Spotify playlist link beside Instagram on the public Home and About pages. Playback stays entirely in Spotify, and the link remains hidden when no valid URL is saved.',
+    ],
+  },
   {
     version: '1.25.1',
     date: '2026-10-02',

@@ -1,4 +1,5 @@
 export const DEFAULT_ABOUT = {
+  spotifyUrl: '',
   bio: `Xander Hudson is a freelance multidisciplinary illustrator and high school student living in the Upper Valley area. A senior at Lebanon High School and prospective art college student for Fall 2027, they spend most of their days washing ink and paint out of their clothes after long hours invested in the school art room.
 
 Xander’s work explores multi-medium illustrations using traditional pen and brush ink, alcohol markers, colored pencils, and acrylic paint markers, while frequently venturing into exploring other mediums, such as ceramics or mono-medium painting. Driven by vibrant colors, figurative expressionism, and fantastical absurdism, their visual language pulls inspiration from the outsider art movement.

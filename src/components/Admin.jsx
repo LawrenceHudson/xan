@@ -183,6 +183,10 @@ export default function Admin() {
           <label className="full">Artist statement
             <textarea rows="16" value={aboutDraft.statement} onChange={(e) => setAboutDraft({ ...aboutDraft, statement: e.target.value })} />
           </label>
+          <label className="full">Spotify playlist URL (optional)
+            <input type="url" value={aboutDraft.spotifyUrl || ''} onChange={(e) => setAboutDraft({ ...aboutDraft, spotifyUrl: e.target.value })} placeholder="https://open.spotify.com/playlist/…" />
+            <span className="muted small">Links visitors to Spotify for playback. Leave blank to hide the Spotify link from the public site.</span>
+          </label>
 
           <div className="about-cv-head">
             <div><strong>Artist CV</strong><p className="muted small">Add exhibitions, awards, education, publications, and professional projects.</p></div>

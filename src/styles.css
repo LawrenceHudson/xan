@@ -1103,14 +1103,15 @@ h3 { margin: 18px 0 8px; letter-spacing: -.01em; }
 .xp-skeleton-key:hover img, .xp-skeleton-key:focus-visible img { filter: brightness(1.14) saturate(1.08); transform: translateY(-3px); }
 .xp-skeleton-key:focus-visible { outline: 2px dashed var(--xp-green); outline-offset: 8px; }
 
-.xp-instagram { width: min(100%, 900px); margin: clamp(44px, 7vw, 84px) auto 0; text-align: center; }
-.xp-instagram h2 { margin: 0 0 14px; color: #aaa; font: 800 clamp(.78rem, 1.4vw, .92rem)/1.4 'Nunito', system-ui, sans-serif; letter-spacing: .15em; text-transform: uppercase; }
-.xp-instagram a { display: inline-flex; align-items: center; gap: 10px; padding: 8px 3px; color: var(--xp-white); font-weight: 800; font-size: clamp(1rem, 2vw, 1.18rem); text-decoration-color: var(--xp-green); text-decoration-thickness: 1px; text-underline-offset: 5px; transition: color .18s ease; }
-.xp-instagram a:hover { color: var(--xp-green); }
-.xp-instagram a:focus-visible { color: var(--xp-green); outline: 2px solid var(--xp-green); outline-offset: 5px; }
-.xp-instagram svg { width: 20px; height: 20px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.75; }
-.xp-instagram .xp-instagram-dot { fill: currentColor; stroke: none; }
-.xp-about > .xp-instagram { margin-top: 90px; padding-top: 42px; border-top: 1px solid #333; }
+.xp-social-presence { width: min(100%, 900px); margin: clamp(44px, 7vw, 84px) auto 0; display: grid; grid-template-columns: 1fr; gap: 38px; text-align: center; }
+.xp-social-presence.has-spotify { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.xp-social-presence h2 { margin: 0 0 14px; color: #aaa; font: 800 clamp(.78rem, 1.4vw, .92rem)/1.4 'Nunito', system-ui, sans-serif; letter-spacing: .15em; text-transform: uppercase; }
+.xp-social-presence a { display: inline-flex; align-items: center; gap: 10px; padding: 8px 3px; color: var(--xp-white); font-weight: 800; font-size: clamp(1rem, 2vw, 1.18rem); text-decoration-color: var(--xp-green); text-decoration-thickness: 1px; text-underline-offset: 5px; transition: color .18s ease; }
+.xp-social-presence a:hover { color: var(--xp-green); }
+.xp-social-presence a:focus-visible { color: var(--xp-green); outline: 2px solid var(--xp-green); outline-offset: 5px; }
+.xp-social-presence svg { width: 20px; height: 20px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; }
+.xp-social-presence .xp-social-dot { fill: currentColor; stroke: none; }
+.xp-about > .xp-social-presence { margin-top: 90px; padding-top: 42px; border-top: 1px solid #333; }
 
 .xp-page { width: min(1380px, 100%); margin: 0 auto; padding: clamp(38px, 6vw, 90px) clamp(20px, 6vw, 80px) 110px; min-height: 62vh; }
 .xp-page-title { display: flex; align-items: end; gap: 22px; border-bottom: 2px solid #fff; padding-bottom: 16px; margin-bottom: 54px; }
@@ -1270,6 +1271,7 @@ h3 { margin: 18px 0 8px; letter-spacing: -.01em; }
   .xp-nav a { font-size: 1rem; }
   .xp-home { min-height: 480px; padding-top: 20px; }
   .xp-skeleton-key { width: 100%; }
+  .xp-social-presence.has-spotify { grid-template-columns: 1fr; }
   .xp-page { padding-inline: 16px; }
   .xp-salon { display: block; }
   .xp-work { margin: 0 0 48px !important; }

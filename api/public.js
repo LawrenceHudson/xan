@@ -86,9 +86,19 @@ function publicGallery(items = []) {
 
 function publicAbout(value) {
   const source = value && typeof value === 'object' ? value : DEFAULT_ABOUT;
+  let spotifyUrl = '';
+  try {
+    const candidate = new URL(String(source.spotifyUrl || ''));
+    const host = candidate.hostname.toLowerCase();
+    const isSpotify = host === 'spotify.com' || host.endsWith('.spotify.com') || host === 'spotify.link';
+    if (candidate.protocol === 'https:' && isSpotify) spotifyUrl = candidate.href;
+  } catch {
+    spotifyUrl = '';
+  }
   return {
     bio: String(source.bio ?? DEFAULT_ABOUT.bio),
     statement: String(source.statement ?? DEFAULT_ABOUT.statement),
+    spotifyUrl,
     cv: Array.isArray(source.cv) ? source.cv.slice(0, 100).map((item) => ({
       id: String(item.id || ''), year: String(item.year || ''), title: String(item.title || ''),
       organization: String(item.organization || ''), details: String(item.details || ''), link: String(item.link || ''),

@@ -38,7 +38,8 @@ tagged for any combination of the three focused galleries. Each gallery has its 
 drag-and-drop salon arrangement in the private Portfolio tab. Portfolio entries also
 control creation date, hover biography, Oeuvre visibility, and four required ceramic
 views. The About page holds an Admin-managed artist bio, artist statement, CV,
-achievements, writing, and an expandable Fidelity 529 invitation.
+achievements, writing, an optional Spotify studio-playlist link, and an expandable
+Fidelity 529 invitation.
 The illustrated skeleton is the intentionally unlabelled entrance to the private
 roadmap login.
 
